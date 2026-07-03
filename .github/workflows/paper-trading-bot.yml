@@ -1,0 +1,40 @@
+# Save this file as: .github/workflows/paper-trading-bot.yml
+# (the .github/workflows/ path is required — GitHub only looks there)
+
+name: Paper Trading Bot
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'   # every 15 min — see SETUP.md for the public/private repo tradeoff
+  workflow_dispatch: {}       # lets you click "Run workflow" manually to test
+
+permissions:
+  contents: write             # required so the bot can push data/latest.json back to the repo
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run bot
+        env:
+          SHEETS_URL: ${{ secrets.SHEETS_URL }}
+        run: node bot.js
+
+      - name: Commit live snapshot
+        run: |
+          git config user.name "paper-trading-bot"
+          git config user.email "actions@github.com"
+          git add data/latest.json
+          if ! git diff --staged --quiet; then
+            git commit -m "Update trade snapshot"
+            git push
+          else
+            echo "No snapshot changes to commit"
+          fi
