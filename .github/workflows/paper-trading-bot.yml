@@ -5,7 +5,7 @@ name: Paper Trading Bot
 
 on:
   schedule:
-    - cron: '*/15 * * * *'   # every 15 min — see SETUP.md for the public/private repo tradeoff
+    - cron: '*/5 * * * *'   # every 5 min — see SETUP.md for the public/private repo tradeoff
   workflow_dispatch: {}       # lets you click "Run workflow" manually to test
 
 permissions:
