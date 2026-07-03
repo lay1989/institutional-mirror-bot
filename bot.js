@@ -15,8 +15,7 @@
 
 const SHEETS_URL = process.env.SHEETS_URL;
 const PAIRS = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT'];
-const BINANCE = 'https://api.binance.com';
-const BINANCE_FUTURES = 'https://fapi.binance.com';
+const BYBIT = 'https://api.bybit.com';
 
 if (!SHEETS_URL) {
   console.error('Missing SHEETS_URL environment variable. Set it as a GitHub Actions secret.');
@@ -86,29 +85,73 @@ const CONFIG = {
 };
 
 // ---------------------------------------------------------
-// Data fetching — Binance public endpoints (no key needed)
+// Data fetching — Bybit V5 public endpoints (no key needed)
 // ---------------------------------------------------------
 
+// Helper to translate Binance interval strings to Bybit V5 format
+function mapBybitInterval(interval) {
+  const map = {
+    '15m': '15',
+    '1h': '60',
+    '4h': '240',
+    '1d': 'D',
+    '1w': 'W'
+  };
+  return map[interval] || interval;
+}
+
 async function getKlines(symbol, interval, limit = 150) {
-  const url = `${BINANCE}/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`;
+  const bbInterval = mapBybitInterval(interval);
+  const url = `${BYBIT}/v5/market/kline?category=linear&symbol=${symbol}&interval=${bbInterval}&limit=${limit}`;
+  
   const res = await fetch(url);
   if (!res.ok) throw new Error(`klines ${symbol} ${interval} failed: HTTP ${res.status}`);
+  
   const raw = await res.json();
-  return raw.map(c => ({ openTime: c[0], open: +c[1], high: +c[2], low: +c[3], close: +c[4], volume: +c[5], closeTime: c[6] }));
+  if (raw.retCode !== 0) throw new Error(`Bybit API error: ${raw.retMsg}`);
+
+  // Bybit returns newest candles first. We MUST reverse them so 
+  // [0] is the oldest candle, which the rest of the bot expects.
+  const list = raw.result.list.reverse();
+
+  return list.map(c => ({ 
+    openTime: +c[0], 
+    open: +c[1], 
+    high: +c[2], 
+    low: +c[3], 
+    close: +c[4], 
+    volume: +c[5] 
+  }));
 }
 
 async function getPrice(symbol) {
-  const res = await fetch(`${BINANCE}/api/v3/ticker/price?symbol=${symbol}`);
+  const url = `${BYBIT}/v5/market/tickers?category=linear&symbol=${symbol}`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error(`price ${symbol} failed: HTTP ${res.status}`);
-  return +(await res.json()).price;
+  
+  const raw = await res.json();
+  if (raw.retCode !== 0 || !raw.result.list.length) {
+    throw new Error(`Bybit price error: ${raw.retMsg}`);
+  }
+  
+  return +(raw.result.list[0].lastPrice);
 }
 
 async function getFundingRate(symbol) {
   try {
-    const res = await fetch(`${BINANCE_FUTURES}/fapi/v1/premiumIndex?symbol=${symbol}`);
+    const url = `${BYBIT}/v5/market/tickers?category=linear&symbol=${symbol}`;
+    const res = await fetch(url);
     if (!res.ok) return null;
-    return +(await res.json()).lastFundingRate * 100;
-  } catch { return null; }
+    
+    const raw = await res.json();
+    if (raw.retCode !== 0 || !raw.result.list.length) return null;
+    
+    // Bybit returns it as a decimal (e.g., "0.0001" for 0.01%).
+    // We multiply by 100 to match the bot's expected percentage format.
+    return +(raw.result.list[0].fundingRate) * 100;
+  } catch { 
+    return null; 
+  }
 }
 
 async function getFearGreed() {
