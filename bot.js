@@ -170,7 +170,17 @@ async function getFearGreed() {
 async function sheetsGet(status) {
   const url = status ? `${SHEETS_URL}?status=${status}` : SHEETS_URL;
   const res = await fetch(url);
-  return res.json();
+  const text = await res.text(); // Fetch as raw text first
+  
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    console.error(`\n🚨 SHEETS API ERROR (GET) 🚨`);
+    console.error(`URL: ${url}`);
+    console.error(`HTTP Status: ${res.status}`);
+    console.error(`Response received:\n${text.substring(0, 500)}\n`);
+    throw new Error('Google Apps Script returned HTML instead of JSON. Check the log above for the real error.');
+  }
 }
 
 async function sheetsPost(body) {
@@ -179,7 +189,16 @@ async function sheetsPost(body) {
     headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(body),
   });
-  return res.json();
+  const text = await res.text();
+  
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    console.error(`\n🚨 SHEETS API ERROR (POST) 🚨`);
+    console.error(`HTTP Status: ${res.status}`);
+    console.error(`Response received:\n${text.substring(0, 500)}\n`);
+    throw new Error('Google Apps Script returned HTML instead of JSON. Check the log above for the real error.');
+  }
 }
 
 // ---------------------------------------------------------
