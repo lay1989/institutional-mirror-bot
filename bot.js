@@ -94,9 +94,21 @@ const CONFIG = {
 
 // Disguise the Node fetch as a normal Chrome browser to bypass Cloudflare 403s
 const BYBIT_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36',
   'Accept': 'application/json'
 };
+
+// This helper routes the request through a public proxy to bypass Bybit's US IP block
+async function fetchWithProxy(targetUrl) {
+  // Using corsproxy.io as the middleman
+  const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`;
+  const res = await fetch(proxyUrl, { headers: BYBIT_HEADERS });
+  
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} from proxy for ${targetUrl}`);
+  }
+  return res;
+}
 
 function mapBybitInterval(interval) {
   const map = {
@@ -113,12 +125,12 @@ async function getKlines(symbol, interval, limit = 150) {
   const bbInterval = mapBybitInterval(interval);
   const url = `${BYBIT}/v5/market/kline?category=linear&symbol=${symbol}&interval=${bbInterval}&limit=${limit}`;
   
-  const res = await fetch(url, { headers: BYBIT_HEADERS });
-  if (!res.ok) throw new Error(`klines ${symbol} ${interval} failed: HTTP ${res.status}`);
-  
+  const res = await fetchWithProxy(url);
   const raw = await res.json();
+  
   if (raw.retCode !== 0) throw new Error(`Bybit API error: ${raw.retMsg}`);
 
+  // Bybit returns newest candles first; reverse to oldest first
   const list = raw.result.list.reverse();
   return list.map(c => ({ 
     openTime: +c[0], open: +c[1], high: +c[2], low: +c[3], close: +c[4], volume: +c[5] 
@@ -127,8 +139,7 @@ async function getKlines(symbol, interval, limit = 150) {
 
 async function getPrice(symbol) {
   const url = `${BYBIT}/v5/market/tickers?category=linear&symbol=${symbol}`;
-  const res = await fetch(url, { headers: BYBIT_HEADERS });
-  if (!res.ok) throw new Error(`price ${symbol} failed: HTTP ${res.status}`);
+  const res = await fetchWithProxy(url);
   
   const raw = await res.json();
   if (raw.retCode !== 0 || !raw.result.list.length) {
@@ -141,8 +152,7 @@ async function getPrice(symbol) {
 async function getFundingRate(symbol) {
   try {
     const url = `${BYBIT}/v5/market/tickers?category=linear&symbol=${symbol}`;
-    const res = await fetch(url, { headers: BYBIT_HEADERS });
-    if (!res.ok) return null;
+    const res = await fetchWithProxy(url);
     
     const raw = await res.json();
     if (raw.retCode !== 0 || !raw.result.list.length) return null;
