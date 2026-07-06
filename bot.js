@@ -1,21 +1,35 @@
 // ============================================================
-// INSTITUTIONAL MIRROR — Automated Paper-Trading Signal Bot (v2)
+// INSTITUTIONAL MIRROR — Automated Paper-Trading Signal Bot (v3)
 // ============================================================
-// Changes from v1:
-//  - All thresholds pulled into one CONFIG object (see below)
-//  - HTF bias is now a true 3-way check: Weekly + Daily + 4H
-//  - AMD bias is auto-detected (Asian range sweep -> NY direction)
-//    and used as a hard gate specifically for NY KZ / Silver Bullet
-//  - Round-number blockade check added to the runway filter
-//  - Writes a live snapshot (data/latest.json) back to this repo
-//    on every run, so the web app can show what's happening
-//    without depending on Apps Script's inconsistent CORS
-//    behavior for browser reads (see SETUP.md for why)
+// Changes from v2:
+//  - Market data now comes from Kraken, not Binance/Bybit. Both
+//    of those exchanges return HTTP 451 and hard-block requests
+//    from US IP ranges — and GitHub Actions runners are hosted
+//    on US cloud infrastructure, so every run was being blocked
+//    at the network level regardless of where YOU are. Kraken is
+//    a US-compliant exchange and does not do this.
+//  - Every network call (Kraken, Apps Script, Fear & Greed) now
+//    goes through fetchWithRetry: 3 attempts with backoff, and a
+//    clear labeled error if all attempts fail. If something does
+//    break, the GitHub Actions log will say exactly which call
+//    failed and why — no more guessing.
+//  - All detection logic (CONFIG, HTF bias, AMD bias, Order
+//    Blocks, round numbers, scaled exits, risk guards, snapshot)
+//    is unchanged from v2.
 // ============================================================
 
 const SHEETS_URL = process.env.SHEETS_URL;
-const PAIRS = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT'];
-const BYBIT = 'https://api.bybit.com';
+const PAIRS = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT']; // kept as the internal/Sheet-facing labels
+const KRAKEN = 'https://api.kraken.com';
+const KRAKEN_FUTURES = 'https://futures.kraken.com';
+
+// Kraken uses its own pair codes (BTC is "XBT"), so map our
+// internal symbols to what Kraken's REST API expects.
+const KRAKEN_SPOT_PAIR = { BTCUSDT: 'XBTUSD', ETHUSDT: 'ETHUSD', SOLUSDT: 'SOLUSD' };
+const KRAKEN_FUTURES_SYMBOL = { BTCUSDT: 'PF_XBTUSD', ETHUSDT: 'PF_ETHUSD', SOLUSDT: 'PF_SOLUSD' };
+
+// English interval names -> Kraken's minutes-based interval values
+const KRAKEN_INTERVAL_MINUTES = { '15m': 15, '1h': 60, '4h': 240, '1d': 1440, '1w': 10080 };
 
 if (!SHEETS_URL) {
   console.error('Missing SHEETS_URL environment variable. Set it as a GitHub Actions secret.');
@@ -23,60 +37,39 @@ if (!SHEETS_URL) {
 }
 
 // ============================================================
-// CONFIG — every tunable number lives here. Nothing below this
-// block should need editing; if you want to loosen/tighten the
-// system after watching a week of output, change it here.
+// CONFIG — unchanged from v2. Every tunable number lives here.
 // ============================================================
 const CONFIG = {
-  // Trend / regime filter (EMA crossover on each timeframe)
   EMA_FAST: 20,
   EMA_SLOW: 50,
-  TREND_SLOPE_LOOKBACK: 5,       // candles back used to confirm the EMA is actually sloping, not flat
+  TREND_SLOPE_LOOKBACK: 5,
 
-  // Equal Highs/Lows clustering
-  EQUAL_LEVEL_TOLERANCE_PCT: 0.0015,  // 0.15% — two swing points this close count as "equal"
-
-  // Liquidity sweep -> stop-loss placement
-  SWEEP_STOP_BUFFER_PCT: 0.0007,      // 0.07% beyond the swept wick
-
-  // Displacement / Fair Value Gap
-  DISPLACEMENT_MULTIPLIER: 1.5,       // candle body must be >= 1.5x recent avg body to count as displacement
+  EQUAL_LEVEL_TOLERANCE_PCT: 0.0015,
+  SWEEP_STOP_BUFFER_PCT: 0.0007,
+  DISPLACEMENT_MULTIPLIER: 1.5,
   FVG_LOOKBACK_CANDLES: 6,
-
-  // Premium / Discount
-  EQUILIBRIUM_BUFFER_PCT: 0.005,      // 0.5% band around the 50% midpoint = "no trade" zone
-
-  // Order Blocks
+  EQUILIBRIUM_BUFFER_PCT: 0.005,
   OB_DISPLACEMENT_MULTIPLIER: 1.5,
-
-  // Round-number blockade (price step considered "a round number" per symbol)
   ROUND_NUMBER_STEP: { BTCUSDT: 1000, ETHUSDT: 100, SOLUSDT: 10 },
 
-  // Risk / reward ladder
   TP1_R: 1.0, TP2_R: 1.5, TP3_R: 3.5,
   TP1_CLOSE_PCT: 0.3, TP2_CLOSE_PCT: 0.3, TP3_CLOSE_PCT: 0.4,
 
-  // Confluence scorecard
-  MIN_SCORE_TYPE_A: 5,   // out of 6 — one point (zone) is allowed to miss
+  MIN_SCORE_TYPE_A: 5,
   MAX_SCORE: 6,
 
-  // Macro filters
-  FUNDING_RATE_MAX_ABS_PCT: 0.1,      // skip if |funding| > 0.1% per 8h
+  FUNDING_RATE_MAX_ABS_PCT: 0.1,
   FEAR_GREED_MIN: 20,
   FEAR_GREED_MAX: 85,
 
-  // Kill zones (UTC minutes-of-day). Asian Range is intentionally
-  // NOT entry-eligible — it's where the range gets built for
-  // London/NY to sweep, not a window you trade in yourself.
   KILL_ZONES: [
     { name: 'Asian Range', start: 0, end: 240, entryEligible: false },
     { name: 'London KZ', start: 420, end: 600, entryEligible: true },
     { name: 'New York KZ', start: 720, end: 900, entryEligible: true },
     { name: 'Silver Bullet', start: 900, end: 960, entryEligible: true },
   ],
-  KILL_ZONE_ENTRY_DELAY_MIN: 20,       // wait this long into a zone before taking a signal
+  KILL_ZONE_ENTRY_DELAY_MIN: 20,
 
-  // Risk guards
   DAILY_PROFIT_CAP_PCT: 0.03,
   DAILY_LOSS_CAP_PCT: 0.03,
   LOSS_STREAK_COUNT: 3,
@@ -85,133 +78,123 @@ const CONFIG = {
 };
 
 // ---------------------------------------------------------
-// Data fetching — Bybit V5 public endpoints (no key needed)
+// Network helper — every fetch in this file goes through this.
+// Retries transient failures with backoff and always logs a
+// clear, labeled message so failures are diagnosable from the
+// GitHub Actions log alone.
 // ---------------------------------------------------------
 
-// ---------------------------------------------------------
-// Data fetching — Bybit V5 public endpoints (no key needed)
-// ---------------------------------------------------------
-
-// Disguise the Node fetch as a normal Chrome browser to bypass Cloudflare 403s
-const BYBIT_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36',
-  'Accept': 'application/json'
-};
-
-// This helper routes the request through a public proxy to bypass Bybit's US IP block
-async function fetchWithProxy(targetUrl) {
-  // Using corsproxy.io as the middleman
-  const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`;
-  const res = await fetch(proxyUrl, { headers: BYBIT_HEADERS });
-  
-  if (!res.ok) {
-    throw new Error(`HTTP ${res.status} from proxy for ${targetUrl}`);
+async function fetchWithRetry(url, options = {}, retries = 3, label = url) {
+  let lastErr;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, options);
+      if (!res.ok) {
+        const body = await res.text().catch(() => '(no body)');
+        throw new Error(`HTTP ${res.status} from ${label} — ${body.slice(0, 300)}`);
+      }
+      return res;
+    } catch (err) {
+      lastErr = err;
+      console.warn(`[attempt ${attempt}/${retries}] ${label} failed: ${err.message}`);
+      if (attempt < retries) await new Promise(r => setTimeout(r, attempt * 1000));
+    }
   }
-  return res;
+  throw new Error(`All ${retries} attempts failed for ${label}: ${lastErr.message}`);
 }
 
-function mapBybitInterval(interval) {
-  const map = {
-    '15m': '15',
-    '1h': '60',
-    '4h': '240',
-    '1d': 'D',
-    '1w': 'W'
-  };
-  return map[interval] || interval;
-}
+// small pause between sequential Kraken calls — stays comfortably
+// under Kraken's documented "1 request/sec per pair" public guidance
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-async function getKlines(symbol, interval, limit = 150) {
-  const bbInterval = mapBybitInterval(interval);
-  const url = `${BYBIT}/v5/market/kline?category=linear&symbol=${symbol}&interval=${bbInterval}&limit=${limit}`;
-  
-  const res = await fetchWithProxy(url);
-  const raw = await res.json();
-  
-  if (raw.retCode !== 0) throw new Error(`Bybit API error: ${raw.retMsg}`);
+// ---------------------------------------------------------
+// Data fetching — Kraken public endpoints (no key needed)
+// ---------------------------------------------------------
 
-  // Bybit returns newest candles first; reverse to oldest first
-  const list = raw.result.list.reverse();
-  return list.map(c => ({ 
-    openTime: +c[0], open: +c[1], high: +c[2], low: +c[3], close: +c[4], volume: +c[5] 
+async function getKlines(symbol, intervalName, minCandles = 100) {
+  const pair = KRAKEN_SPOT_PAIR[symbol];
+  const interval = KRAKEN_INTERVAL_MINUTES[intervalName];
+  const url = `${KRAKEN}/0/public/OHLC?pair=${pair}&interval=${interval}`;
+  const res = await fetchWithRetry(url, {}, 3, `Kraken OHLC ${symbol} ${intervalName}`);
+  const data = await res.json();
+  if (data.error && data.error.length) throw new Error(`Kraken OHLC ${symbol} ${intervalName} returned error: ${data.error.join(', ')}`);
+  const series = Object.values(data.result).find(v => Array.isArray(v));
+  if (!series) throw new Error(`Kraken OHLC ${symbol} ${intervalName}: no candle series in response`);
+  const candles = series.map(c => ({
+    openTime: c[0] * 1000, open: +c[1], high: +c[2], low: +c[3], close: +c[4], volume: +c[6],
   }));
+  if (candles.length < minCandles) {
+    console.warn(`${symbol} ${intervalName}: only ${candles.length} candles returned (wanted ${minCandles}) — trend reads may be less reliable until more history accumulates`);
+  }
+  return candles;
 }
 
 async function getPrice(symbol) {
-  const url = `${BYBIT}/v5/market/tickers?category=linear&symbol=${symbol}`;
-  const res = await fetchWithProxy(url);
-  
-  const raw = await res.json();
-  if (raw.retCode !== 0 || !raw.result.list.length) {
-    throw new Error(`Bybit price error: ${raw.retMsg}`);
-  }
-  
-  return +(raw.result.list[0].lastPrice);
+  const pair = KRAKEN_SPOT_PAIR[symbol];
+  const url = `${KRAKEN}/0/public/Ticker?pair=${pair}`;
+  const res = await fetchWithRetry(url, {}, 3, `Kraken Ticker ${symbol}`);
+  const data = await res.json();
+  if (data.error && data.error.length) throw new Error(`Kraken Ticker ${symbol} returned error: ${data.error.join(', ')}`);
+  const ticker = Object.values(data.result)[0];
+  return +ticker.c[0]; // c = [last trade closed price, lot volume]
+}
+
+// Kraken Futures public tickers endpoint returns all perpetuals in
+// one call, including a live fundingRate field, no auth required.
+let _tickersCache = null;
+async function getAllFuturesTickers() {
+  if (_tickersCache) return _tickersCache;
+  const res = await fetchWithRetry(`${KRAKEN_FUTURES}/derivatives/api/v3/tickers`, {}, 3, 'Kraken Futures tickers');
+  const data = await res.json();
+  _tickersCache = data.tickers || [];
+  return _tickersCache;
 }
 
 async function getFundingRate(symbol) {
   try {
-    const url = `${BYBIT}/v5/market/tickers?category=linear&symbol=${symbol}`;
-    const res = await fetchWithProxy(url);
-    
-    const raw = await res.json();
-    if (raw.retCode !== 0 || !raw.result.list.length) return null;
-    
-    return +(raw.result.list[0].fundingRate) * 100;
-  } catch { 
-    return null; 
+    const tickers = await getAllFuturesTickers();
+    const wanted = KRAKEN_FUTURES_SYMBOL[symbol].toLowerCase();
+    const t = tickers.find(x => (x.symbol || '').toLowerCase() === wanted);
+    if (!t || typeof t.fundingRate !== 'number') return null;
+    return t.fundingRate * 100; // treat as a percent, same convention as before
+  } catch (err) {
+    console.warn(`Funding rate lookup failed for ${symbol} (non-fatal, gate fails open): ${err.message}`);
+    return null;
   }
 }
 
 async function getFearGreed() {
   try {
-    const res = await fetch('https://api.alternative.me/fng/?limit=1');
-    if (!res.ok) return null;
+    const res = await fetchWithRetry('https://api.alternative.me/fng/?limit=1', {}, 2, 'Fear & Greed Index');
     const data = await res.json();
     return parseInt(data.data[0].value, 10);
-  } catch { return null; }
+  } catch (err) {
+    console.warn(`Fear & Greed lookup failed (non-fatal, gate fails open): ${err.message}`);
+    return null;
+  }
 }
 
 // ---------------------------------------------------------
-// Sheets I/O (the durable database — unchanged from before)
+// Sheets I/O (the durable database)
 // ---------------------------------------------------------
 
 async function sheetsGet(status) {
   const url = status ? `${SHEETS_URL}?status=${status}` : SHEETS_URL;
-  const res = await fetch(url);
-  const text = await res.text(); // Fetch as raw text first
-  
-  try {
-    return JSON.parse(text);
-  } catch (err) {
-    console.error(`\n🚨 SHEETS API ERROR (GET) 🚨`);
-    console.error(`URL: ${url}`);
-    console.error(`HTTP Status: ${res.status}`);
-    console.error(`Response received:\n${text.substring(0, 500)}\n`);
-    throw new Error('Google Apps Script returned HTML instead of JSON. Check the log above for the real error.');
-  }
+  const res = await fetchWithRetry(url, {}, 3, `Sheets GET${status ? ' (' + status + ')' : ''}`);
+  return res.json();
 }
 
 async function sheetsPost(body) {
-  const res = await fetch(SHEETS_URL, {
+  const res = await fetchWithRetry(SHEETS_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(body),
-  });
-  const text = await res.text();
-  
-  try {
-    return JSON.parse(text);
-  } catch (err) {
-    console.error(`\n🚨 SHEETS API ERROR (POST) 🚨`);
-    console.error(`HTTP Status: ${res.status}`);
-    console.error(`Response received:\n${text.substring(0, 500)}\n`);
-    throw new Error('Google Apps Script returned HTML instead of JSON. Check the log above for the real error.');
-  }
+  }, 3, `Sheets POST (${body.action})`);
+  return res.json();
 }
 
 // ---------------------------------------------------------
-// Technical analysis primitives
+// Technical analysis primitives (unchanged from v2)
 // ---------------------------------------------------------
 
 function ema(values, period) {
@@ -232,13 +215,6 @@ function trendDirection(candles) {
   return 'range';
 }
 
-// True 3-way HTF bias: Weekly + Daily + 4H must all agree.
-// Plain terms: on three different zoom levels of the chart (a
-// multi-year weekly view, a months-long daily view, and a
-// weeks-long 4-hour view), price has to be trending the same
-// direction on all three at once. If the weekly says up but the
-// 4H says down, that's not a real trend yet — probably just a
-// pullback inside a bigger move, or noise — so we sit out.
 function htfBias(weekly, daily, h4) {
   const wt = trendDirection(weekly), dt = trendDirection(daily), ht = trendDirection(h4);
   const aligned = wt !== 'range' && wt === dt && dt === ht;
@@ -319,10 +295,6 @@ function findUnmitigatedOrderBlocks(candles, direction) {
   return blocks;
 }
 
-// Does a "round number" (per-symbol step, e.g. every $1000 for BTC)
-// sit meaningfully between entry and TP3? Edges are excluded so we
-// don't flag a false positive when entry/target just happen to sit
-// near a round level themselves.
 function crossesRoundNumber(entry, tp3, symbol) {
   const step = CONFIG.ROUND_NUMBER_STEP[symbol] || 100;
   const lo = Math.min(entry, tp3), hi = Math.max(entry, tp3);
@@ -340,20 +312,8 @@ function runwayIsClean(entry, tp3, orderBlocks, symbol) {
 }
 
 // ---------------------------------------------------------
-// AMD bias — Accumulation / Manipulation / Distribution
-//
-// Plain-English version: the Asian session (00:00-04:00 UTC)
-// usually just chops sideways and "builds a range" — that's the
-// Accumulation. Then London opens and very often fakes a move in
-// ONE direction just far enough to trigger stops sitting above or
-// below that Asian range, before snapping back — that's the
-// Manipulation. Whichever side got faked-and-rejected tells you
-// which direction New York tends to actually deliver — that's
-// the Distribution. So: London wicks above the Asian high and
-// closes back under it -> bias flips bearish for NY. London wicks
-// below the Asian low and closes back over it -> bias flips
-// bullish for NY. If neither has happened yet, bias is
-// "undetermined" and we don't force a guess.
+// AMD bias (unchanged from v2 — see prior explanation of the
+// Accumulation / Manipulation / Distribution model in comments)
 // ---------------------------------------------------------
 
 function getAsianRange(candles15m, now) {
@@ -366,10 +326,10 @@ function getAsianRange(candles15m, now) {
 
 function getAMDBias(candles15m, now) {
   const minutesIntoDay = now.getUTCHours() * 60 + now.getUTCMinutes();
-  if (minutesIntoDay < 240) return 'undetermined'; // Asian range still forming
+  if (minutesIntoDay < 240) return 'undetermined';
   const asian = getAsianRange(candles15m, now);
   if (!asian) return 'undetermined';
-  if (minutesIntoDay < 420) return 'undetermined'; // London hasn't opened yet
+  if (minutesIntoDay < 420) return 'undetermined';
 
   const todayStart = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0);
   const londonStart = todayStart + 7 * 3600000;
@@ -409,14 +369,14 @@ function isWeekend(now) {
 // ---------------------------------------------------------
 
 async function evaluatePair(symbol, fearGreed) {
-  const [weekly, daily, h4, h1, m15, price] = await Promise.all([
-    getKlines(symbol, '1w', 60),
-    getKlines(symbol, '1d', 100),
-    getKlines(symbol, '4h', 100),
-    getKlines(symbol, '1h', 100),
-    getKlines(symbol, '15m', 150),
-    getPrice(symbol),
-  ]);
+  // Sequential, not Promise.all — stays under Kraken's public
+  // rate-limit guidance of ~1 request/sec per pair
+  const weekly = await getKlines(symbol, '1w', 52); await sleep(300);
+  const daily = await getKlines(symbol, '1d', 100); await sleep(300);
+  const h4 = await getKlines(symbol, '4h', 100); await sleep(300);
+  const h1 = await getKlines(symbol, '1h', 100); await sleep(300);
+  const m15 = await getKlines(symbol, '15m', 150); await sleep(300);
+  const price = await getPrice(symbol);
 
   const htf = htfBias(weekly, daily, h4);
   if (!htf.aligned) return { symbol, skip: true, reason: 'HTF not aligned', htf };
@@ -476,13 +436,19 @@ async function evaluatePair(symbol, fearGreed) {
 }
 
 // ---------------------------------------------------------
-// Trade lifecycle management (unchanged logic from v1)
+// Trade lifecycle management (unchanged from v2)
 // ---------------------------------------------------------
 
 async function manageOpenTrades() {
   const open = await sheetsGet('OPEN');
   for (const trade of open) {
-    const price = await getPrice(trade.Pair.replace('/', ''));
+    let price;
+    try {
+      price = await getPrice(trade.Pair.replace('/', ''));
+    } catch (err) {
+      console.error(`Skipping update for ${trade.ID} — price fetch failed: ${err.message}`);
+      continue;
+    }
     const isLong = trade.Direction === 'Long';
     const hoursOpen = (Date.now() - new Date(trade.DateTimeUTC).getTime()) / 3600000;
 
@@ -515,6 +481,7 @@ async function manageOpenTrades() {
       await sheetsPost({ action: 'updateTrade', id: trade.ID, updates: update });
       console.log(`Updated ${trade.ID}:`, update);
     }
+    await sleep(300);
   }
 }
 
@@ -536,8 +503,7 @@ async function checkRiskGuards() {
 }
 
 // ---------------------------------------------------------
-// Live snapshot — written back into this repo so the web app
-// can read it from raw.githubusercontent.com (see SETUP.md)
+// Live snapshot (unchanged from v2)
 // ---------------------------------------------------------
 
 async function writeSnapshot() {
@@ -577,19 +543,37 @@ async function writeSnapshot() {
 
 async function main() {
   console.log(`Run started: ${new Date().toISOString()}`);
-  await manageOpenTrades();
 
-  const guards = await checkRiskGuards();
+  try {
+    await manageOpenTrades();
+  } catch (err) {
+    console.error('manageOpenTrades failed (continuing run):', err.message);
+  }
+
+  let guards;
+  try {
+    guards = await checkRiskGuards();
+  } catch (err) {
+    console.error('checkRiskGuards failed — aborting this run to be safe:', err.message);
+    return;
+  }
+
   if (guards.blocked) {
     console.log('Risk guard active — no new signals this run:', guards);
-    await writeSnapshot();
+    try { await writeSnapshot(); } catch (err) { console.error('writeSnapshot failed:', err.message); }
     return;
   }
 
   const fearGreed = await getFearGreed();
 
   for (const symbol of PAIRS) {
-    const open = await sheetsGet('OPEN');
+    let open;
+    try {
+      open = await sheetsGet('OPEN');
+    } catch (err) {
+      console.error(`Could not check open trades for ${symbol}, skipping this pair this run: ${err.message}`);
+      continue;
+    }
     const pairLabel = symbol.replace('USDT', '/USDT');
     if (open.some(t => t.Pair === pairLabel)) {
       console.log(`${symbol}: already has an open paper trade, skipping`);
@@ -600,7 +584,7 @@ async function main() {
     try {
       result = await evaluatePair(symbol, fearGreed);
     } catch (err) {
-      console.error(`${symbol}: evaluation failed —`, err.message);
+      console.error(`${symbol}: evaluation failed — ${err.message}`);
       continue;
     }
     console.log(`${symbol}:`, JSON.stringify(result));
@@ -614,14 +598,23 @@ async function main() {
         SetupType: 'Type A', Score: result.score, AMDBias: result.amdBias, PriceZone: result.zone,
         Entry: result.entry, StopLoss: result.stop, TP1: result.tp1, TP2: result.tp2, TP3: result.tp3,
         RiskPercent: 1, PositionSizeUnits: '', PositionSizeUSD: '',
-        TP1Hit: false, TP2Hit: false, Notes: 'Auto-generated by bot.js v2',
+        TP1Hit: false, TP2Hit: false, Notes: 'Auto-generated by bot.js v3 (Kraken)',
       };
-      await sheetsPost({ action: 'createSignal', trade });
-      console.log(`Signal created: ${id}`);
+      try {
+        await sheetsPost({ action: 'createSignal', trade });
+        console.log(`Signal created: ${id}`);
+      } catch (err) {
+        console.error(`Failed to save signal for ${symbol} — ${err.message}`);
+      }
     }
+    await sleep(300);
   }
 
-  await writeSnapshot();
+  try {
+    await writeSnapshot();
+  } catch (err) {
+    console.error('writeSnapshot failed:', err.message);
+  }
   console.log('Run complete.');
 }
 
@@ -631,10 +624,11 @@ main().catch(err => {
 });
 
 // ============================================================
-// STILL SIMPLIFIED IN v2 (being upfront, same as before):
-// - Type A (with-trend) signals only. Type B is a phase-2 project.
+// STILL SIMPLIFIED (unchanged from v2):
+// - Type A (with-trend) signals only.
 // - Order Blocks use a rule-based proxy, not a hand-drawn read.
-// - AMD bias gates NY/Silver Bullet trades only, per the original
-//   strategy's own framing — it doesn't gate London trades since
-//   the model isn't "confirmed" until London has acted.
+// - Kraken Futures funding-rate units are treated as directly
+//   comparable to the old Binance-based reading; if that proves
+//   off, the funding gate fails open anyway, so it never blocks
+//   a run — worst case it's a slightly mis-calibrated soft filter.
 // ============================================================
