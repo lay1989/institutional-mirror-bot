@@ -1,0 +1,6 @@
+{
+  "name": "Institutional Mirror",
+  "description": "SMC Trading Dashboard & Institutional Crypto Trading Assistant with Kill Zone Status, Position Calculator, Checklist, Journal and Reference.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
