@@ -34,6 +34,7 @@ jobs:
           git add data/latest.json
           if ! git diff --staged --quiet; then
             git commit -m "Update trade snapshot"
+            git pull --rebase origin main
             git push
           else
             echo "No snapshot changes to commit"
