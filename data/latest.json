@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-09T11:55:52.790Z",
+  "generatedAtUTC": "2026-07-09T12:15:54.219Z",
   "open": [],
   "recentClosed": [],
   "stats": {
@@ -11,6 +11,74 @@
       "London KZ": null,
       "New York KZ": null,
       "Silver Bullet": null
+    }
+  },
+  "evaluations": {
+    "BTCUSDT": {
+      "symbol": "BTCUSDT",
+      "skip": true,
+      "score": 0,
+      "reason": "HTF not aligned",
+      "htf": {
+        "aligned": false,
+        "bias": "range",
+        "weekly": "bear",
+        "daily": "range",
+        "h4": "range"
+      },
+      "dailyH4Aligned": false,
+      "checklist": {
+        "htfAligned": false,
+        "inKillZone": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
+        "cleanRunway": null
+      }
+    },
+    "ETHUSDT": {
+      "symbol": "ETHUSDT",
+      "skip": true,
+      "score": 0,
+      "reason": "HTF not aligned",
+      "htf": {
+        "aligned": false,
+        "bias": "range",
+        "weekly": "bear",
+        "daily": "range",
+        "h4": "range"
+      },
+      "dailyH4Aligned": false,
+      "checklist": {
+        "htfAligned": false,
+        "inKillZone": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
+        "cleanRunway": null
+      }
+    },
+    "SOLUSDT": {
+      "symbol": "SOLUSDT",
+      "skip": true,
+      "score": 0,
+      "reason": "HTF not aligned",
+      "htf": {
+        "aligned": false,
+        "bias": "range",
+        "weekly": "bear",
+        "daily": "range",
+        "h4": "range"
+      },
+      "dailyH4Aligned": false,
+      "checklist": {
+        "htfAligned": false,
+        "inKillZone": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
+        "cleanRunway": null
+      }
     }
   }
 }
