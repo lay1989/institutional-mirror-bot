@@ -58,6 +58,10 @@ const CONFIG = {
   MIN_SCORE_TYPE_A: 5,
   MAX_SCORE: 6,
 
+  // FUNDING_RATE_MAX_ABS_PCT of 0.1 (percent, per 8h) annualizes to
+  // ~110%/year — already a euphoria-extreme threshold, not a
+  // "no crowd allowed" filter. Ordinary healthy bull-market funding
+  // (~0.01-0.03%/8h) passes through untouched.
   FUNDING_RATE_MAX_ABS_PCT: 0.1,
   FEAR_GREED_MIN: 20,
   FEAR_GREED_MAX: 85,
@@ -171,6 +175,38 @@ async function getFearGreed() {
   } catch (err) {
     console.warn(`Fear & Greed lookup failed (non-fatal, gate fails open): ${err.message}`);
     return null;
+  }
+}
+
+// News calendar — pulls the free, widely-used ForexFactory JSON
+// mirror (nfs.faireconomy.media) that many trading bots rely on.
+// It's not an official ForexFactory product, so treat it as
+// best-effort: if the feed is unreachable or its shape changes,
+// this fails open (doesn't block trading) rather than breaking
+// the run. First live run is the real test of the exact field
+// names below (date / impact / title) — check the log.
+let _newsCache = null;
+async function getHighImpactNewsBlock(now) {
+  try {
+    if (!_newsCache) {
+      const res = await fetchWithRetry('https://nfs.faireconomy.media/ff_calendar_thisweek.json', {}, 2, 'ForexFactory calendar');
+      _newsCache = await res.json();
+    }
+    const nowMs = now.getTime();
+    for (const ev of _newsCache) {
+      if (ev.impact !== 'High') continue;
+      const evMs = new Date(ev.date).getTime();
+      if (isNaN(evMs)) continue;
+      const minutesAway = (evMs - nowMs) / 60000;
+      // strategy rule: skip 30 min before through 15 min after a high-impact event
+      if (minutesAway <= 30 && minutesAway >= -15) {
+        return { blocked: true, event: ev.title, minutesAway: Math.round(minutesAway) };
+      }
+    }
+    return { blocked: false };
+  } catch (err) {
+    console.warn(`News calendar check failed (non-fatal, gate fails open): ${err.message}`);
+    return { blocked: false, error: err.message };
   }
 }
 
@@ -368,7 +404,7 @@ function isWeekend(now) {
 // Setup evaluation — the algorithmic 6-point scorecard
 // ---------------------------------------------------------
 
-async function evaluatePair(symbol, fearGreed) {
+async function evaluatePair(symbol, fearGreed, newsBlock) {
   // Sequential, not Promise.all — stays under Kraken's public
   // rate-limit guidance of ~1 request/sec per pair
   const weekly = await getKlines(symbol, '1w', 52); await sleep(300);
@@ -379,7 +415,19 @@ async function evaluatePair(symbol, fearGreed) {
   const price = await getPrice(symbol);
 
   const htf = htfBias(weekly, daily, h4);
-  if (!htf.aligned) return { symbol, skip: true, reason: 'HTF not aligned', htf };
+  // Informational only — does NOT gate trades. Logged so that after
+  // the trial we can see, with real data, how often requiring the
+  // Weekly to agree cost us vs. saved us, instead of guessing.
+  const dailyH4Aligned = htf.daily !== 'range' && htf.daily === htf.h4;
+  if (!htf.aligned) {
+    return {
+      symbol, skip: true, score: 0, reason: 'HTF not aligned', htf, dailyH4Aligned,
+      checklist: {
+        htfAligned: false, inKillZone: null, correctZone: null,
+        sweepConfirmed: null, mssConfirmed: null, cleanRunway: null,
+      },
+    };
+  }
 
   const direction = htf.bias === 'bull' ? 'long' : 'short';
   const zone = premiumDiscountZone(h1, price);
@@ -425,13 +473,23 @@ async function evaluatePair(symbol, fearGreed) {
     runwayOk = runwayIsClean(entry, tp3, obs, symbol);
   }
 
-  const hardGatesPass = kz.active && kz.tradable && !weekend && fundingOk && macroOk && mss.found && runwayOk && !amdContradicts;
+  const newsOk = !newsBlock.blocked;
+
+  const hardGatesPass = kz.active && kz.tradable && !weekend && fundingOk && macroOk && mss.found && runwayOk && !amdContradicts && newsOk;
   const score = [true, kz.active && kz.tradable, zoneOk, sweepLevel !== null, mss.found, runwayOk].filter(Boolean).length;
 
   return {
     symbol, skip: !(hardGatesPass && score >= CONFIG.MIN_SCORE_TYPE_A), score, direction, zone,
-    killZoneName: kz.name, weekend, funding, fundingOk, fearGreed, macroOk, amdBias, amdContradicts,
-    entry, stop, tp1, tp2, tp3, price, htf,
+    killZoneName: kz.name, killZoneActive: kz.active, weekend, funding, fundingOk, fearGreed, macroOk,
+    amdBias, amdContradicts, newsOk, newsBlock, entry, stop, tp1, tp2, tp3, price, htf, dailyH4Aligned, pdh, pdl,
+    checklist: {
+      htfAligned: htf.aligned,
+      inKillZone: kz.active && kz.tradable,
+      correctZone: zoneOk,
+      sweepConfirmed: sweepLevel !== null,
+      mssConfirmed: mss.found,
+      cleanRunway: mss.found ? runwayOk : null, // null = not evaluated yet (no MSS to check a runway from)
+    },
   };
 }
 
@@ -506,7 +564,7 @@ async function checkRiskGuards() {
 // Live snapshot (unchanged from v2)
 // ---------------------------------------------------------
 
-async function writeSnapshot() {
+async function writeSnapshot(evaluations = {}) {
   const fs = await import('node:fs/promises');
   const all = await sheetsGet();
   const open = all.filter(t => t.Status === 'OPEN');
@@ -530,6 +588,7 @@ async function writeSnapshot() {
     open,
     recentClosed,
     stats: { totalClosed: closed.length, winRate, avgR, winRateByZone: byZone },
+    evaluations, // per-pair live checklist state from this run — see evaluatePair()
   };
 
   await fs.mkdir('data', { recursive: true });
@@ -560,11 +619,16 @@ async function main() {
 
   if (guards.blocked) {
     console.log('Risk guard active — no new signals this run:', guards);
-    try { await writeSnapshot(); } catch (err) { console.error('writeSnapshot failed:', err.message); }
+    const evaluations = {};
+    for (const symbol of PAIRS) evaluations[symbol] = { skip: true, reason: 'Risk guard active — see guards', guards };
+    try { await writeSnapshot(evaluations); } catch (err) { console.error('writeSnapshot failed:', err.message); }
     return;
   }
 
   const fearGreed = await getFearGreed();
+  const newsBlock = await getHighImpactNewsBlock(new Date());
+  if (newsBlock.blocked) console.log(`News gate active: "${newsBlock.event}" is ${newsBlock.minutesAway} min away — new signals paused`);
+  const evaluations = {};
 
   for (const symbol of PAIRS) {
     let open;
@@ -572,22 +636,26 @@ async function main() {
       open = await sheetsGet('OPEN');
     } catch (err) {
       console.error(`Could not check open trades for ${symbol}, skipping this pair this run: ${err.message}`);
+      evaluations[symbol] = { skip: true, reason: 'Could not reach Sheets this run', error: err.message };
       continue;
     }
     const pairLabel = symbol.replace('USDT', '/USDT');
     if (open.some(t => t.Pair === pairLabel)) {
       console.log(`${symbol}: already has an open paper trade, skipping`);
+      evaluations[symbol] = { skip: true, reason: 'Already has an open paper trade — not re-evaluated this run' };
       continue;
     }
 
     let result;
     try {
-      result = await evaluatePair(symbol, fearGreed);
+      result = await evaluatePair(symbol, fearGreed, newsBlock);
     } catch (err) {
       console.error(`${symbol}: evaluation failed — ${err.message}`);
+      evaluations[symbol] = { skip: true, reason: 'Evaluation failed this run', error: err.message };
       continue;
     }
     console.log(`${symbol}:`, JSON.stringify(result));
+    evaluations[symbol] = result;
 
     if (!result.skip) {
       const id = `${symbol}-${Date.now()}`;
@@ -611,7 +679,7 @@ async function main() {
   }
 
   try {
-    await writeSnapshot();
+    await writeSnapshot(evaluations);
   } catch (err) {
     console.error('writeSnapshot failed:', err.message);
   }
