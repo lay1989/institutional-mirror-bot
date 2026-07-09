@@ -8,6 +8,10 @@ on:
     - cron: '*/5 * * * *'   # every 5 min — see SETUP.md for the public/private repo tradeoff
   workflow_dispatch: {}       # lets you click "Run workflow" manually to test
 
+concurrency: 
+  group: trading-bot-main
+  cancel-in-progress: false
+
 permissions:
   contents: write             # required so the bot can push data/latest.json back to the repo
 
