@@ -657,6 +657,17 @@ async function main() {
     console.log(`${symbol}:`, JSON.stringify(result));
     evaluations[symbol] = result;
 
+    if (result.dailyH4Aligned && result.htf && !result.htf.aligned) {
+      try {
+        await sheetsPost({
+          action: 'logDivergence', pair: symbol, timestamp: new Date().toISOString(),
+          weeklyBias: result.htf.weekly, dailyBias: result.htf.daily, h4Bias: result.htf.h4,
+        });
+      } catch (err) {
+        console.warn(`Divergence log failed (non-fatal): ${err.message}`);
+      }
+    }
+
     if (!result.skip) {
       const id = `${symbol}-${Date.now()}`;
       const trade = {
