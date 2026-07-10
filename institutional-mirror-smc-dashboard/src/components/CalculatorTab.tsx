@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, TrendingUp, TrendingDown, AlertCircle, Info, Check } from 'lucide-react';
+import { Shield, TrendingUp, TrendingDown, AlertCircle, Info } from 'lucide-react';
 
 export default function CalculatorTab() {
   // Inputs with defaults, loaded from localStorage if exists
@@ -71,16 +71,6 @@ export default function CalculatorTab() {
   const tp3Profit = dollarRisk * 3.5 * 0.4;
   const totalPotentialProfit = tp1Profit + tp2Profit + tp3Profit;
 
-  // For visual price ladder offsets
-  // Total distance is 4.5R (-1.0R to +3.5R)
-  // Let's compute positions in percentage from the bottom of the ladder card.
-  // For LONG:
-  // - Stop Loss is at bottom (0%)
-  // - Entry is at 22.2% from bottom
-  // - TP1 is at 44.4% from bottom
-  // - TP2 is at 55.6% from bottom
-  // - TP3 is at 100% from bottom
-  // For SHORT, we reverse it
   const getLadderPosition = (level: 'STOP' | 'ENTRY' | 'TP1' | 'TP2' | 'TP3') => {
     if (direction === 'LONG') {
       switch (level) {
@@ -102,15 +92,15 @@ export default function CalculatorTab() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6" id="im_calculator_view">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 animate-fade-in" id="im_calculator_view">
       {/* Inputs Column */}
-      <div className="lg:col-span-7 bg-[#161b22] border border-zinc-800/80 p-6 rounded-lg shadow-xl space-y-5" id="im_calc_inputs_column">
+      <div className="lg:col-span-7 bg-[#12151B] border border-[#1F2430] p-5 rounded-[2px] space-y-4" id="im_calc_inputs_column">
         <div>
-          <h2 className="text-lg font-semibold text-[#e6edf3] tracking-tight flex items-center gap-2">
-            <Shield className="w-5 h-5 text-sky-400" /> Position Risk & Size Calculator
+          <h2 className="text-xs font-bold font-mono text-[#D7DCE5] uppercase tracking-wider flex items-center gap-2">
+            <Shield className="w-4 h-4 text-[#16C784]" /> Position Risk & Size Calculator
           </h2>
-          <p className="text-xs text-zinc-400 mt-0.5">
-            Perfect position mathematical scaling. Enter parameters to instantly map order flow execution.
+          <p className="text-[10px] text-[#6B7280] mt-0.5">
+            Mathematical parameters to determine position unit size scaling and risk parameters in live execution.
           </p>
         </div>
 
@@ -119,39 +109,39 @@ export default function CalculatorTab() {
           <button
             type="button"
             onClick={() => setDirection('LONG')}
-            className={`py-2.5 rounded-md font-bold tracking-wider text-xs transition-all flex items-center justify-center gap-1.5 border
+            className={`py-2 rounded-[2px] font-bold font-mono text-[10px] tracking-wider transition-all flex items-center justify-center gap-1.5 border
               ${direction === 'LONG'
-                ? 'bg-emerald-500/10 border-emerald-500/40 text-[#00ff88] shadow-md shadow-emerald-500/5'
-                : 'bg-[#0d1117]/60 border-zinc-800 text-zinc-500 hover:text-zinc-400 hover:bg-[#0d1117]'
+                ? 'bg-[#16C784]/15 border-[#16C784]/30 text-[#16C784]'
+                : 'bg-[#0A0C10] border-[#1F2430] text-[#6B7280] hover:text-[#D7DCE5]'
               }`}
           >
-            <TrendingUp className="w-4 h-4" /> LONG SETUP
+            <TrendingUp className="w-3.5 h-3.5" /> LONG SETUP
           </button>
           <button
             type="button"
             onClick={() => setDirection('SHORT')}
-            className={`py-2.5 rounded-md font-bold tracking-wider text-xs transition-all flex items-center justify-center gap-1.5 border
+            className={`py-2 rounded-[2px] font-bold font-mono text-[10px] tracking-wider transition-all flex items-center justify-center gap-1.5 border
               ${direction === 'SHORT'
-                ? 'bg-rose-500/10 border-rose-500/40 text-[#ff4444] shadow-md shadow-rose-500/5'
-                : 'bg-[#0d1117]/60 border-zinc-800 text-zinc-500 hover:text-zinc-400 hover:bg-[#0d1117]'
+                ? 'bg-[#EA3943]/15 border-[#EA3943]/30 text-[#EA3943]'
+                : 'bg-[#0A0C10] border-[#1F2430] text-[#6B7280] hover:text-[#D7DCE5]'
               }`}
           >
-            <TrendingDown className="w-4 h-4" /> SHORT SETUP
+            <TrendingDown className="w-3.5 h-3.5" /> SHORT SETUP
           </button>
         </div>
 
         {/* Inputs Form */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           {/* Account Size */}
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-zinc-400 tracking-wider">Account Size (USD)</label>
+            <label className="text-[10px] font-bold font-mono uppercase text-[#6B7280] tracking-wider">Account Size (USD)</label>
             <div className="relative">
-              <span className="absolute left-3 top-2.5 text-zinc-500 font-mono text-xs">$</span>
+              <span className="absolute left-3 top-2 text-[#6B7280] font-mono text-xs">$</span>
               <input
                 type="number"
                 value={accountSize || ''}
                 onChange={(e) => setAccountSize(Math.max(0, parseFloat(e.target.value) || 0))}
-                className="w-full bg-[#0d1117] border border-zinc-800 rounded-md py-2 pl-7 pr-3 text-xs font-mono text-[#e6edf3] focus:outline-none focus:border-sky-500"
+                className="w-full bg-[#0A0C10] border border-[#1F2430] rounded-[2px] py-1.5 pl-7 pr-3 text-xs font-mono text-[#D7DCE5] focus:outline-none focus:border-[#16C784] transition-all"
               />
             </div>
           </div>
@@ -159,10 +149,10 @@ export default function CalculatorTab() {
           {/* Risk Percent */}
           <div className="space-y-1">
             <div className="flex justify-between items-center">
-              <label className="text-xs font-semibold text-zinc-400 tracking-wider">Risk Percent (%)</label>
+              <label className="text-[10px] font-bold font-mono uppercase text-[#6B7280] tracking-wider">Risk Percent (%)</label>
               {isRiskTooHigh && (
-                <span className="text-[10px] text-[#ff4444] font-mono flex items-center gap-0.5">
-                  <AlertCircle className="w-3 h-3" /> Exceeds strategy limit (1.0%)
+                <span className="text-[9px] text-[#EA3943] font-mono flex items-center gap-0.5 font-bold">
+                  ⚠️ Exceeds cap (1.0%)
                 </span>
               )}
             </div>
@@ -172,24 +162,24 @@ export default function CalculatorTab() {
                 step="0.1"
                 value={riskPercent || ''}
                 onChange={(e) => setRiskPercent(Math.max(0, parseFloat(e.target.value) || 0))}
-                className={`w-full bg-[#0d1117] border rounded-md py-2 px-3 text-xs font-mono text-[#e6edf3] focus:outline-none 
-                  ${isRiskTooHigh ? 'border-rose-500/50 focus:border-rose-500' : 'border-zinc-800 focus:border-sky-500'}`}
+                className={`w-full bg-[#0A0C10] border rounded-[2px] py-1.5 px-3 text-xs font-mono text-[#D7DCE5] focus:outline-none transition-all
+                  ${isRiskTooHigh ? 'border-[#EA3943]/50 focus:border-[#EA3943]' : 'border-[#1F2430] focus:border-[#16C784]'}`}
               />
-              <span className="absolute right-3 top-2 text-zinc-500 font-mono text-xs">%</span>
+              <span className="absolute right-3 top-2 text-[#6B7280] font-mono text-xs">%</span>
             </div>
           </div>
 
           {/* Entry Price */}
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-zinc-400 tracking-wider">Entry Price (USD)</label>
+            <label className="text-[10px] font-bold font-mono uppercase text-[#6B7280] tracking-wider">Entry Price (USD)</label>
             <div className="relative">
-              <span className="absolute left-3 top-2.5 text-zinc-500 font-mono text-xs">$</span>
+              <span className="absolute left-3 top-2 text-[#6B7280] font-mono text-xs">$</span>
               <input
                 type="number"
                 step="any"
                 value={entryPrice || ''}
                 onChange={(e) => setEntryPrice(Math.max(0, parseFloat(e.target.value) || 0))}
-                className="w-full bg-[#0d1117] border border-zinc-800 rounded-md py-2 pl-7 pr-3 text-xs font-mono text-[#e6edf3] focus:outline-none focus:border-sky-500"
+                className="w-full bg-[#0A0C10] border border-[#1F2430] rounded-[2px] py-1.5 pl-7 pr-3 text-xs font-mono text-[#D7DCE5] focus:outline-none focus:border-[#16C784] transition-all"
               />
             </div>
           </div>
@@ -197,22 +187,22 @@ export default function CalculatorTab() {
           {/* Stop Loss */}
           <div className="space-y-1">
             <div className="flex justify-between items-center">
-              <label className="text-xs font-semibold text-zinc-400 tracking-wider">Stop Loss (USD)</label>
+              <label className="text-[10px] font-bold font-mono uppercase text-[#6B7280] tracking-wider">Stop Loss (USD)</label>
               {isStopLossViolated && entryPrice > 0 && stopLoss > 0 && (
-                <span className="text-[10px] text-[#ff4444] font-mono flex items-center gap-0.5">
-                  <AlertCircle className="w-3 h-3" /> Invalid for {direction}
+                <span className="text-[9px] text-[#EA3943] font-mono flex items-center gap-0.5 font-bold">
+                  ⚠️ Invalid for {direction}
                 </span>
               )}
             </div>
             <div className="relative">
-              <span className="absolute left-3 top-2.5 text-zinc-500 font-mono text-xs">$</span>
+              <span className="absolute left-3 top-2 text-[#6B7280] font-mono text-xs">$</span>
               <input
                 type="number"
                 step="any"
                 value={stopLoss || ''}
                 onChange={(e) => setStopLoss(Math.max(0, parseFloat(e.target.value) || 0))}
-                className={`w-full bg-[#0d1117] border rounded-md py-2 pl-7 pr-3 text-xs font-mono text-[#e6edf3] focus:outline-none 
-                  ${isStopLossViolated ? 'border-rose-500/50 focus:border-rose-500' : 'border-zinc-800 focus:border-sky-500'}`}
+                className={`w-full bg-[#0A0C10] border rounded-[2px] py-1.5 pl-7 pr-3 text-xs font-mono text-[#D7DCE5] focus:outline-none transition-all
+                  ${isStopLossViolated ? 'border-[#EA3943]/50 focus:border-[#EA3943] text-[#EA3943]' : 'border-[#1F2430] focus:border-[#16C784]'}`}
               />
             </div>
           </div>
@@ -220,25 +210,25 @@ export default function CalculatorTab() {
           {/* Leverage */}
           <div className="space-y-1 md:col-span-2">
             <div className="flex justify-between items-center">
-              <label className="text-xs font-semibold text-zinc-400 tracking-wider">Leverage (Max 5x)</label>
+              <label className="text-[10px] font-bold font-mono uppercase text-[#6B7280] tracking-wider">Leverage (Max 5x)</label>
               {isLeverageTooHigh && (
-                <span className="text-[10px] text-[#ffd700] font-mono flex items-center gap-0.5">
-                  <AlertCircle className="w-3 h-3" /> Max 5x — use Isolated Margin
+                <span className="text-[9px] text-amber-500 font-mono flex items-center gap-0.5 font-bold">
+                  ⚠️ Max 5x — use Isolated Margin
                 </span>
               )}
             </div>
-            <div className="flex items-center space-x-3 bg-[#0d1117] border border-zinc-800 rounded-md p-1.5">
+            <div className="flex items-center space-x-1.5 bg-[#0A0C10] border border-[#1F2430] rounded-[2px] p-1">
               {[1, 2, 3, 4, 5, 10].map((lev) => (
                 <button
                   key={lev}
                   type="button"
                   onClick={() => setLeverage(lev)}
-                  className={`flex-1 py-1 rounded text-xs font-mono font-bold transition-all
+                  className={`flex-1 py-1 rounded-[2px] text-[10px] font-mono font-bold transition-all border border-transparent
                     ${leverage === lev
                       ? lev > 5
-                        ? 'bg-yellow-500/25 border border-yellow-500/40 text-[#ffd700]'
-                        : 'bg-sky-500/10 border border-sky-500/40 text-sky-400'
-                      : 'text-zinc-500 hover:text-zinc-300'
+                        ? 'bg-amber-500/20 border-amber-500/30 text-amber-500'
+                        : 'bg-[#16C784]/15 border-[#16C784]/30 text-[#16C784]'
+                      : 'text-[#6B7280] hover:text-[#D7DCE5]'
                     }`}
                 >
                   {lev}x
@@ -250,144 +240,144 @@ export default function CalculatorTab() {
 
         {/* Validation error message box */}
         {isStopLossViolated && (
-          <div className="p-3 bg-rose-500/10 border border-rose-500/20 text-[#ff4444] rounded text-xs leading-relaxed flex gap-2">
+          <div className="p-3 bg-[#EA3943]/10 border border-[#EA3943]/20 text-[#EA3943] rounded-[2px] text-[10px] font-mono leading-normal flex gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <div>
-              <strong className="font-bold">Execution Error:</strong> Stop Loss must be {direction === 'LONG' ? 'BELOW' : 'ABOVE'} Entry Price for a {direction} trade. Calculation outputs are locked until corrected.
+              <strong className="font-bold">EXECUTION GATING ERROR:</strong> Stop Loss must be {direction === 'LONG' ? 'BELOW' : 'ABOVE'} Entry Price. Output fields locked.
             </div>
           </div>
         )}
 
         {/* Calculated parameters output panel */}
         {!isStopLossViolated && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-[#0d1117] border border-zinc-800/80 rounded-md" id="im_calc_metrics_panel">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-3 bg-[#0A0C10] border border-[#1F2430] rounded-[2px]" id="im_calc_metrics_panel">
             <div className="space-y-0.5">
-              <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest font-mono">Dollar Risk</div>
-              <div className="text-base font-bold font-mono text-[#ffd700]">${dollarRisk.toFixed(2)}</div>
-              <div className="text-[10px] text-zinc-500 font-mono">{riskPercent}% of Acct</div>
+              <div className="text-[9px] font-bold text-[#6B7280] uppercase tracking-wider font-mono">Dollar Risk</div>
+              <div className="text-sm font-bold font-mono text-amber-500">${dollarRisk.toFixed(2)}</div>
+              <div className="text-[9px] text-[#4B5563] font-mono">{riskPercent}% of Acct</div>
             </div>
             <div className="space-y-0.5">
-              <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest font-mono">Stop Distance</div>
-              <div className="text-base font-bold font-mono text-zinc-300">${stopDistance.toFixed(2)}</div>
-              <div className="text-[10px] text-zinc-500 font-mono">{stopDistancePercent.toFixed(2)}% distance</div>
+              <div className="text-[9px] font-bold text-[#6B7280] uppercase tracking-wider font-mono">Stop Distance</div>
+              <div className="text-sm font-bold font-mono text-[#D7DCE5]">${stopDistance.toFixed(2)}</div>
+              <div className="text-[9px] text-[#4B5563] font-mono">{stopDistancePercent.toFixed(2)}% dist</div>
             </div>
             <div className="space-y-0.5">
-              <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest font-mono">Units to Trade</div>
-              <div className="text-base font-bold font-mono text-emerald-400">{units.toFixed(4)}</div>
-              <div className="text-[10px] text-zinc-500 font-mono">contracts / tokens</div>
+              <div className="text-[9px] font-bold text-[#6B7280] uppercase tracking-wider font-mono">Units to Trade</div>
+              <div className="text-sm font-bold font-mono text-[#16C784]">{units.toFixed(4)}</div>
+              <div className="text-[9px] text-[#4B5563] font-mono">tokens / contracts</div>
             </div>
             <div className="space-y-0.5">
-              <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest font-mono">Position Size</div>
-              <div className="text-base font-bold font-mono text-[#00ff88]">${positionSizeUsd.toFixed(2)}</div>
-              <div className="text-[10px] text-zinc-500 font-mono">Req. {maxLeverageRequired.toFixed(1)}x Lev</div>
+              <div className="text-[9px] font-bold text-[#6B7280] uppercase tracking-wider font-mono">Position Size</div>
+              <div className="text-sm font-bold font-mono text-[#22D3EE]">${positionSizeUsd.toFixed(2)}</div>
+              <div className="text-[9px] text-[#4B5563] font-mono">Req. {maxLeverageRequired.toFixed(1)}x Lev</div>
             </div>
           </div>
         )}
 
         {/* Strategy Note */}
-        <div className="bg-zinc-800/25 border border-zinc-800 p-4 rounded-md text-xs leading-relaxed text-zinc-400">
-          <div className="font-semibold text-zinc-300 flex items-center gap-1.5 mb-1.5">
-            <Info className="w-4 h-4 text-[#ffd700]" /> High-Probability Partial Rules:
+        <div className="bg-[#12151B] border border-[#1F2430] p-4 rounded-[2px] text-[11px] leading-relaxed text-[#6B7280]">
+          <div className="font-bold text-[#D7DCE5] flex items-center gap-1.5 mb-2 font-mono uppercase tracking-wider">
+            <Info className="w-3.5 h-3.5 text-[#22D3EE]" /> High-Probability Partial Rules:
           </div>
-          <p className="mb-2">
-            <strong className="text-zinc-300 font-semibold">TP1 hit</strong> &rarr; close 30% of position, move stop loss to breakeven (entry).
+          <p className="mb-1">
+            <strong className="text-[#D7DCE5] font-semibold">TP1 hit</strong> &rarr; close 30% of position, move stop loss to breakeven (entry).
           </p>
-          <p className="mb-2">
-            <strong className="text-zinc-300 font-semibold">TP2 hit</strong> &rarr; close 30% of position, move stop loss to TP1 level.
+          <p className="mb-1">
+            <strong className="text-[#D7DCE5] font-semibold">TP2 hit</strong> &rarr; close 30% of position, move stop loss to TP1 level.
           </p>
-          <p className="mb-2">
-            <strong className="text-zinc-300 font-semibold">TP3 hit</strong> &rarr; close the remaining 40% (accounts for perp trading fees).
+          <p className="mb-1">
+            <strong className="text-[#D7DCE5] font-semibold">TP3 hit</strong> &rarr; close the remaining 40% (accounts for perp trading fees).
           </p>
-          <p className="text-rose-400/90 font-mono text-[11px] leading-tight mt-1.5">
-            * TIME-LIMIT EXCLUSION: If TP1 is not hit within 4 hours, close the entire trade. Algorithmic delivery speed has failed.
+          <p className="text-[#EA3943] font-mono text-[10px] leading-tight mt-3">
+            * TIME-LIMIT EXCLUSION: If TP1 is not hit within 4 hours, close the entire trade. Algorithmic speed metrics failed.
           </p>
         </div>
       </div>
 
       {/* Price Ladder Column */}
-      <div className="lg:col-span-5 bg-[#161b22] border border-zinc-800/80 p-6 rounded-lg shadow-xl flex flex-col justify-between" id="im_calc_ladder_column">
+      <div className="lg:col-span-5 bg-[#12151B] border border-[#1F2430] p-5 rounded-[2px] flex flex-col justify-between" id="im_calc_ladder_column">
         <div>
-          <h3 className="text-sm font-semibold text-[#e6edf3] tracking-tight">Trade Price Ladder Mapping</h3>
-          <p className="text-xs text-zinc-400">Scale visualization based on Risk-to-Reward (R) tranches.</p>
+          <h3 className="text-xs font-bold font-mono text-[#D7DCE5] uppercase tracking-wider">Trade Price Ladder Mapping</h3>
+          <p className="text-[10px] text-[#6B7280]">Scale visualization based on Risk-to-Reward (R) tranches.</p>
         </div>
 
         {isStopLossViolated ? (
-          <div className="flex-1 flex flex-col items-center justify-center py-12 text-center text-zinc-600 border border-dashed border-zinc-800 rounded-md mt-4">
-            <AlertCircle className="w-8 h-8 mb-2" />
-            <div className="text-xs font-semibold">Price Ladder Locked</div>
-            <div className="text-[10px] max-w-[200px] mt-1 text-zinc-500">Provide a valid stop loss relation to render structural target ladder.</div>
+          <div className="flex-1 flex flex-col items-center justify-center py-12 text-center text-[#6B7280] border border-dashed border-[#1F2430] rounded-[2px] mt-4">
+            <AlertCircle className="w-6 h-6 mb-2 text-[#EA3943]/40" />
+            <div className="text-xs font-bold font-mono uppercase">Price Ladder Locked</div>
+            <div className="text-[10px] max-w-[200px] mt-1 text-[#6B7280]/60">Provide a valid stop loss relation to render structural target ladder.</div>
           </div>
         ) : (
-          <div className="flex-1 flex flex-col justify-between mt-5" id="im_price_ladder_render">
+          <div className="flex-1 flex flex-col justify-between mt-4" id="im_price_ladder_render">
             {/* Visual Container */}
-            <div className="relative h-[280px] bg-[#0d1117] rounded-md border border-zinc-800 p-4 mb-4 flex">
+            <div className="relative h-[270px] bg-[#0A0C10] rounded-[2px] border border-[#1F2430] p-3 mb-3 flex">
               
               {/* Dynamic bar background filling segments */}
-              <div className="absolute left-8 top-4 bottom-4 w-1.5 bg-zinc-800 rounded-full flex flex-col justify-between overflow-hidden">
-                <div className={`w-full ${direction === 'LONG' ? 'h-[77.8%] bg-emerald-500/20' : 'h-[22.2%] bg-rose-500/20'}`}></div>
-                <div className={`w-full ${direction === 'LONG' ? 'h-[22.2%] bg-rose-500/20' : 'h-[77.8%] bg-emerald-500/20'}`}></div>
+              <div className="absolute left-8 top-4 bottom-4 w-[2px] bg-[#1F2430] rounded-full flex flex-col justify-between overflow-hidden">
+                <div className={`w-full ${direction === 'LONG' ? 'h-[77.8%] bg-[#16C784]/20' : 'h-[22.2%] bg-[#EA3943]/20'}`}></div>
+                <div className={`w-full ${direction === 'LONG' ? 'h-[22.2%] bg-[#EA3943]/20' : 'h-[77.8%] bg-[#16C784]/20'}`}></div>
               </div>
 
               {/* Levels container overlay */}
               <div className="relative flex-1 h-full pl-6">
                 
                 {/* TP3 Target level */}
-                <div className={`absolute left-0 right-0 border-b border-emerald-500/30 flex justify-between items-center pb-0.5 ${getLadderPosition('TP3')}`} id="im_ladder_tp3">
+                <div className={`absolute left-0 right-0 border-b border-[#1F2430] flex justify-between items-center pb-0.5 ${getLadderPosition('TP3')}`} id="im_ladder_tp3">
                   <div className="flex items-center space-x-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#00ff88]"></span>
-                    <span className="text-[11px] font-mono font-bold text-[#00ff88]">TP3 (3.5R - Close 40%)</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#16C784]"></span>
+                    <span className="text-[10px] font-mono font-bold text-[#16C784]">TP3 (3.5R - Close 40%)</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-[11px] font-bold font-mono text-[#00ff88]">${tp3Price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                    <div className="text-[9px] text-zinc-400 font-mono">Profit: +${tp3Profit.toFixed(2)}</div>
+                    <div className="text-[11px] font-bold font-mono text-[#16C784]">${tp3Price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                    <div className="text-[9px] text-[#6B7280] font-mono">Profit: +${tp3Profit.toFixed(2)}</div>
                   </div>
                 </div>
 
                 {/* TP2 Target level */}
-                <div className={`absolute left-0 right-0 border-b border-emerald-500/30 flex justify-between items-center pb-0.5 ${getLadderPosition('TP2')}`} id="im_ladder_tp2">
+                <div className={`absolute left-0 right-0 border-b border-[#1F2430] flex justify-between items-center pb-0.5 ${getLadderPosition('TP2')}`} id="im_ladder_tp2">
                   <div className="flex items-center space-x-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <span className="text-[11px] font-mono font-medium text-emerald-400">TP2 (1.5R - Close 30%)</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#22D3EE]"></span>
+                    <span className="text-[10px] font-mono font-bold text-[#22D3EE]">TP2 (1.5R - Close 30%)</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-[11px] font-bold font-mono text-emerald-400">${tp2Price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                    <div className="text-[9px] text-zinc-500 font-mono">Profit: +${tp2Profit.toFixed(2)}</div>
+                    <div className="text-[11px] font-bold font-mono text-[#22D3EE]">${tp2Price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                    <div className="text-[9px] text-[#6B7280] font-mono">Profit: +${tp2Profit.toFixed(2)}</div>
                   </div>
                 </div>
 
                 {/* TP1 Target level */}
-                <div className={`absolute left-0 right-0 border-b border-emerald-400/30 flex justify-between items-center pb-0.5 ${getLadderPosition('TP1')}`} id="im_ladder_tp1">
+                <div className={`absolute left-0 right-0 border-b border-[#1F2430] flex justify-between items-center pb-0.5 ${getLadderPosition('TP1')}`} id="im_ladder_tp1">
                   <div className="flex items-center space-x-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-300"></span>
-                    <span className="text-[11px] font-mono text-emerald-300">TP1 (1.0R - Close 30%)</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#16C784]/50"></span>
+                    <span className="text-[10px] font-mono text-[#16C784]/70">TP1 (1.0R - Close 30%)</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-[11px] font-bold font-mono text-emerald-300">${tp1Price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                    <div className="text-[9px] text-zinc-500 font-mono">Profit: +${tp1Profit.toFixed(2)}</div>
+                    <div className="text-[11px] font-bold font-mono text-[#6B7280]">${tp1Price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                    <div className="text-[9px] text-[#6B7280] font-mono">Profit: +${tp1Profit.toFixed(2)}</div>
                   </div>
                 </div>
 
                 {/* Entry Target level */}
-                <div className={`absolute left-0 right-0 border-b-2 border-dashed border-white flex justify-between items-center pb-1 ${getLadderPosition('ENTRY')}`} id="im_ladder_entry">
-                  <div className="flex items-center space-x-1.5 bg-[#0d1117] px-1">
-                    <span className="w-2 h-2 bg-white"></span>
-                    <span className="text-[11px] font-mono font-bold text-white uppercase tracking-wider">ENTRY PRICE</span>
+                <div className={`absolute left-0 right-0 border-b border-[#D7DCE5]/40 flex justify-between items-center pb-1 ${getLadderPosition('ENTRY')}`} id="im_ladder_entry">
+                  <div className="flex items-center space-x-1.5 bg-[#0A0C10] px-1.5">
+                    <span className="w-1.5 h-1.5 bg-[#D7DCE5]"></span>
+                    <span className="text-[10px] font-mono font-bold text-[#D7DCE5] uppercase tracking-wider">ENTRY PRICE</span>
                   </div>
-                  <div className="text-right bg-[#0d1117] px-1">
-                    <div className="text-[11px] font-bold font-mono text-white">${entryPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                    <div className="text-[9px] text-zinc-400 font-mono">Pivot base line</div>
+                  <div className="text-right bg-[#0A0C10] px-1.5">
+                    <div className="text-[11px] font-bold font-mono text-[#D7DCE5]">${entryPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                    <div className="text-[9px] text-[#6B7280] font-mono">Baseline</div>
                   </div>
                 </div>
 
                 {/* Stop Loss Target level */}
-                <div className={`absolute left-0 right-0 border-b border-rose-500/50 flex justify-between items-center pb-0.5 ${getLadderPosition('STOP')}`} id="im_ladder_stop">
+                <div className={`absolute left-0 right-0 border-b border-[#EA3943]/30 flex justify-between items-center pb-0.5 ${getLadderPosition('STOP')}`} id="im_ladder_stop">
                   <div className="flex items-center space-x-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#ff4444]"></span>
-                    <span className="text-[11px] font-mono font-bold text-[#ff4444]">STOP LOSS (-1.0R)</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#EA3943]"></span>
+                    <span className="text-[10px] font-mono font-bold text-[#EA3943]">STOP LOSS (-1.0R)</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-[11px] font-bold font-mono text-[#ff4444]">${stopLoss.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                    <div className="text-[9px] text-rose-400/70 font-mono">Risk: -${dollarRisk.toFixed(2)} (-{stopDistancePercent.toFixed(2)}%)</div>
+                    <div className="text-[11px] font-bold font-mono text-[#EA3943]">${stopLoss.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                    <div className="text-[9px] text-[#EA3943]/70 font-mono">Risk: -${dollarRisk.toFixed(2)} (-{stopDistancePercent.toFixed(2)}%)</div>
                   </div>
                 </div>
 
@@ -395,13 +385,13 @@ export default function CalculatorTab() {
             </div>
 
             {/* Total Math summary bar */}
-            <div className="bg-[#0d1117] p-3 rounded border border-zinc-800 text-xs">
-              <div className="flex justify-between font-mono font-bold text-[#e6edf3]">
+            <div className="bg-[#0A0C10] p-3 rounded-[2px] border border-[#1F2430] text-xs">
+              <div className="flex justify-between font-mono font-bold text-[#D7DCE5]">
                 <span>Total Potential Yield:</span>
-                <span className="text-[#00ff88]">+{(2.15).toFixed(2)}R (+${totalPotentialProfit.toFixed(2)})</span>
+                <span className="text-[#16C784]">+{(2.15).toFixed(2)}R (+${totalPotentialProfit.toFixed(2)})</span>
               </div>
-              <div className="text-[10px] text-zinc-500 mt-1 flex justify-between">
-                <span>R-Multiple expectation</span>
+              <div className="text-[9px] text-[#6B7280] mt-1 flex justify-between">
+                <span>R-Multiple expectancy</span>
                 <span>Combined tranches value</span>
               </div>
             </div>

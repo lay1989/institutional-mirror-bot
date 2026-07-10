@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Trade } from '../types';
-import { BookOpen, BarChart3, Plus, Calendar, Save, Trash2, Download, AlertOctagon, CheckCircle2, RefreshCw, Star } from 'lucide-react';
+import { BookOpen, BarChart3, Plus, Calendar, Save, Trash2, Download, AlertOctagon, CheckCircle2, RefreshCw } from 'lucide-react';
 
 interface JournalTabProps {
   prefilledSetup: any | null;
@@ -89,8 +89,11 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
   // Chart Refs
   const barChartRef = useRef<HTMLCanvasElement | null>(null);
   const lineChartRef = useRef<HTMLCanvasElement | null>(null);
+  const donutChartRef = useRef<HTMLCanvasElement | null>(null);
+
   const barChartInstance = useRef<any>(null);
   const lineChartInstance = useRef<any>(null);
+  const donutChartInstance = useRef<any>(null);
 
   // Load trades from localStorage on mount
   useEffect(() => {
@@ -102,7 +105,6 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
         setTrades([]);
       }
     }
-    // Set default datetime to now
     resetDateTime();
   }, []);
 
@@ -115,14 +117,12 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
       if (prefilledSetup.amdBias) setAmdBias(prefilledSetup.amdBias);
       if (prefilledSetup.priceZone) setPriceZone(prefilledSetup.priceZone);
       
-      // Auto assign some logical defaults
       if (prefilledSetup.confluenceScore === 6) {
         setRMultiple(3.5);
       } else {
         setRMultiple(1.5);
       }
 
-      // Clear the bridge state
       onClearPrefilledSetup();
     }
   }, [prefilledSetup]);
@@ -132,7 +132,6 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
     if (entryPrice && stopLoss && typeof entryPrice === 'number' && typeof stopLoss === 'number') {
       const distance = Math.abs(entryPrice - stopLoss);
       if (distance > 0) {
-        // TP1 (1R), TP2 (1.5R), TP3 (3.5R)
         if (direction === 'Long') {
           setTp1(parseFloat((entryPrice + distance * 1.0).toFixed(4)));
           setTp2(parseFloat((entryPrice + distance * 1.5).toFixed(4)));
@@ -143,7 +142,6 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
           setTp3(parseFloat((entryPrice - distance * 3.5).toFixed(4)));
         }
 
-        // Auto position size if risk% and account size are cached in localStorage
         const accountSize = parseFloat(localStorage.getItem('im_calc_account_size') || '10000');
         const dollarRisk = accountSize * (riskPercent / 100);
         const units = dollarRisk / distance;
@@ -171,14 +169,13 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
         setRMultiple(0.0);
         break;
       case 'Closed-Time-Limit':
-        setRMultiple(-0.2); // minor loss due to spread/fees or break even
+        setRMultiple(-0.2);
         break;
     }
   }, [result]);
 
   const resetDateTime = () => {
     const d = new Date();
-    // format as YYYY-MM-DDTHH:mm
     const year = d.getUTCFullYear();
     const month = String(d.getUTCMonth() + 1).padStart(2, '0');
     const day = String(d.getUTCDate()).padStart(2, '0');
@@ -227,7 +224,6 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
       syncToSheets('saveTrade', { trade: newTrade });
     }
 
-    // Reset Form (except sizing preferences)
     setEntryPrice('');
     setStopLoss('');
     setTp1('');
@@ -241,7 +237,6 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
     setRMultiple(3.5);
     resetDateTime();
 
-    // Switch view to see history & statistics
     setSubTab('history');
   };
 
@@ -266,54 +261,22 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
     setDeleteConfirmId(null);
   };
 
-  // CSV Export
   const handleExportCsv = () => {
     if (mergedTrades.length === 0) return;
     
     const headers = [
-      'Date (UTC)',
-      'Pair',
-      'Kill Zone',
-      'Direction',
-      'Setup Type',
-      'Confluence Score',
-      'AMD Bias',
-      'Price Zone',
-      'Entry Price',
-      'Stop Loss',
-      'TP1',
-      'TP2',
-      'TP3',
-      'Risk %',
-      'Position Size (USD)',
-      'Result',
-      'R-Multiple Achieved',
-      'What Went Right',
-      'What Went Wrong',
-      'Would Take Again'
+      'Date (UTC)', 'Pair', 'Kill Zone', 'Direction', 'Setup Type',
+      'Confluence Score', 'AMD Bias', 'Price Zone', 'Entry Price',
+      'Stop Loss', 'TP1', 'TP2', 'TP3', 'Risk %', 'Position Size (USD)',
+      'Result', 'R-Multiple Achieved', 'What Went Right', 'What Went Wrong', 'Would Take Again'
     ];
 
     const rows = mergedTrades.map((t) => [
-      t.dateTimeUtc,
-      t.pair,
-      t.killZone,
-      t.direction,
-      t.setupType,
-      t.confluenceScore,
-      t.amdBias,
-      t.priceZone,
-      t.entryPrice,
-      t.stopLoss,
-      t.tp1,
-      t.tp2,
-      t.tp3,
-      t.riskPercent,
-      t.positionSizeUsd,
-      t.result,
-      t.rMultiple,
-      `"${t.whatWentRight.replace(/"/g, '""')}"`,
-      `"${t.whatWentWrong.replace(/"/g, '""')}"`,
-      t.wouldTakeAgain
+      t.dateTimeUtc, t.pair, t.killZone, t.direction, t.setupType,
+      t.confluenceScore, t.amdBias, t.priceZone, t.entryPrice,
+      t.stopLoss, t.tp1, t.tp2, t.tp3, t.riskPercent, t.positionSizeUsd,
+      t.result, t.rMultiple, `"${t.whatWentRight.replace(/"/g, '""')}"`,
+      `"${t.whatWentWrong.replace(/"/g, '""')}"`, t.wouldTakeAgain
     ]);
 
     const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' 
@@ -330,35 +293,31 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
 
   // --- STATS CALCULATIONS ---
   const totalTrades = mergedTrades.length;
-  
-  // Wins count: 'Win-TP3' | 'Partial-TP2' | 'Partial-TP1'
   const winningTrades = mergedTrades.filter(t => t.result === 'Win-TP3' || t.result === 'Partial-TP2' || t.result === 'Partial-TP1');
-  const winRate = totalTrades > 0 ? (winningTrades.length / totalTrades) * 100 : 0;
+  const lossTrades = mergedTrades.filter(t => t.result === 'Loss');
+  const breakEvenTrades = mergedTrades.filter(t => t.result === 'Breakeven');
   
+  const winRate = totalTrades > 0 ? (winningTrades.length / totalTrades) * 100 : 0;
   const sumR = mergedTrades.reduce((acc, t) => acc + t.rMultiple, 0);
   const avgR = totalTrades > 0 ? sumR / totalTrades : 0;
 
-  // Profit Factor = Sum of positive R / absolute Sum of negative R
   const positiveRSum = mergedTrades.filter(t => t.rMultiple > 0).reduce((acc, t) => acc + t.rMultiple, 0);
   const negativeRSum = Math.abs(mergedTrades.filter(t => t.rMultiple < 0).reduce((acc, t) => acc + t.rMultiple, 0));
   const profitFactor = negativeRSum === 0 ? (positiveRSum > 0 ? 'N/A' : '1.00') : (positiveRSum / negativeRSum).toFixed(2);
 
-  // Consecutive losses streak
   let currentLossStreak = 0;
   for (let i = 0; i < mergedTrades.length; i++) {
     if (mergedTrades[i].result === 'Loss') {
       currentLossStreak++;
     } else {
-      break; // stop on first non-loss
+      break;
     }
   }
 
-  // Today's R-sum * riskPercent (limit check)
   const todayUtcString = new Date().toISOString().split('T')[0];
   const todayTrades = mergedTrades.filter(t => t.dateTimeUtc.startsWith(todayUtcString));
   const todayNetRValue = todayTrades.reduce((acc, t) => acc + (t.rMultiple * t.riskPercent), 0);
 
-  // Best Kill Zone by Win Rate
   const zones = ['Asian Range', 'London KZ', 'NY KZ', 'Silver Bullet'];
   let bestZoneName = 'N/A';
   let bestZoneWinRate = -1;
@@ -383,21 +342,19 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
     }
   });
 
-  // Type A vs B win rates
   const typeATrades = mergedTrades.filter(t => t.setupType === 'Type A');
   const typeBTrades = mergedTrades.filter(t => t.setupType === 'Type B');
   const typeAWinRate = typeATrades.length > 0 ? (typeATrades.filter(t => t.result === 'Win-TP3' || t.result === 'Partial-TP2' || t.result === 'Partial-TP1').length / typeATrades.length) * 100 : 0;
   const typeBWinRate = typeBTrades.length > 0 ? (typeBTrades.filter(t => t.result === 'Win-TP3' || t.result === 'Partial-TP2' || t.result === 'Partial-TP1').length / typeBTrades.length) * 100 : 0;
 
-  // 6/6 vs 5/6 win rates
   const score6Trades = mergedTrades.filter(t => t.confluenceScore === 6);
   const score5Trades = mergedTrades.filter(t => t.confluenceScore === 5);
   const score6WinRate = score6Trades.length > 0 ? (score6Trades.filter(t => t.result === 'Win-TP3' || t.result === 'Partial-TP2' || t.result === 'Partial-TP1').length / score6Trades.length) * 100 : 0;
   const score5WinRate = score5Trades.length > 0 ? (score5Trades.filter(t => t.result === 'Win-TP3' || t.result === 'Partial-TP2' || t.result === 'Partial-TP1').length / score5Trades.length) * 100 : 0;
 
-  // --- RENDER CHART.JS LOGIC ---
+  // --- RENDER DYNAMIC CHARTS WITH EXCHAGE COLORS ---
   useEffect(() => {
-    if (subTab !== 'history' || mergedTrades.length === 0) return;
+    if (subTab !== 'history' || mergedTrades.length === 0 || !(window as any).Chart) return;
 
     // 1. BAR CHART: Win Rate by Kill Zone
     const barCtx = barChartRef.current?.getContext('2d');
@@ -423,24 +380,24 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
       barChartInstance.current = new (window as any).Chart(barCtx, {
         type: 'bar',
         data: {
-          labels: zones,
+          labels: zones.map(z => z.replace(' Range', '').replace(' KZ', '')),
           datasets: [{
             label: 'Win Rate %',
             data: zoneData,
             backgroundColor: [
-              'rgba(0, 255, 136, 0.15)',
-              'rgba(56, 189, 248, 0.15)',
-              'rgba(168, 85, 247, 0.15)',
-              'rgba(245, 158, 11, 0.15)'
+              'rgba(34, 211, 238, 0.15)',
+              'rgba(22, 199, 132, 0.15)',
+              'rgba(22, 199, 132, 0.15)',
+              'rgba(251, 191, 36, 0.15)'
             ],
             borderColor: [
-              '#00ff88',
-              '#38bdf8',
-              '#a855f7',
-              '#f59e0b'
+              '#22D3EE',
+              '#16C784',
+              '#16C784',
+              '#FBBF24'
             ],
-            borderWidth: 1.5,
-            borderRadius: 4
+            borderWidth: 1,
+            borderRadius: 2
           }]
         },
         options: {
@@ -458,12 +415,12 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
             y: {
               beginAtZero: true,
               max: 100,
-              grid: { color: 'rgba(255, 255, 255, 0.05)' },
-              ticks: { color: '#888', font: { family: 'JetBrains Mono', size: 10 } }
+              grid: { color: 'rgba(31, 36, 48, 0.5)' },
+              ticks: { color: '#6B7280', font: { family: 'IBM Plex Mono', size: 9 } }
             },
             x: {
               grid: { display: false },
-              ticks: { color: '#aaa', font: { family: 'Inter', size: 11 } }
+              ticks: { color: '#6B7280', font: { family: 'Inter', size: 9.5, weight: 'bold' } }
             }
           }
         }
@@ -477,7 +434,6 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
         lineChartInstance.current.destroy();
       }
 
-      // Compute cumulative R chronological order (oldest first)
       const chronTrades = [...mergedTrades].reverse();
       let totalRAccumulator = 0;
       const cumulativeRValues = chronTrades.map((t) => {
@@ -486,12 +442,11 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
       });
 
       const lineLabels = chronTrades.map((t, idx) => `#${idx + 1}`);
-
-      // Glow color based on positive or negative final R balance
       const finalPositive = totalRAccumulator >= 0;
-      const colorHex = finalPositive ? '#00ff88' : '#ff4444';
-      const fillGradient = lineCtx.createLinearGradient(0, 0, 0, 150);
-      fillGradient.addColorStop(0, finalPositive ? 'rgba(0, 255, 136, 0.12)' : 'rgba(255, 68, 68, 0.12)');
+      const colorHex = finalPositive ? '#16C784' : '#EA3943';
+      
+      const fillGradient = lineCtx.createLinearGradient(0, 0, 0, 200);
+      fillGradient.addColorStop(0, finalPositive ? 'rgba(22, 199, 132, 0.12)' : 'rgba(234, 57, 67, 0.12)');
       fillGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
       lineChartInstance.current = new (window as any).Chart(lineCtx, {
@@ -502,12 +457,12 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
             label: 'Cumulative R',
             data: cumulativeRValues.length > 0 ? cumulativeRValues : [0],
             borderColor: colorHex,
-            borderWidth: 2,
+            borderWidth: 1.5,
             pointBackgroundColor: colorHex,
-            pointRadius: 3,
+            pointRadius: 1.5,
             fill: true,
             backgroundColor: fillGradient,
-            tension: 0.2
+            tension: 0.1
           }]
         },
         options: {
@@ -518,89 +473,128 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
           },
           scales: {
             y: {
-              grid: { color: 'rgba(255, 255, 255, 0.05)' },
-              ticks: { color: '#888', font: { family: 'JetBrains Mono', size: 10 } }
+              grid: { color: 'rgba(31, 36, 48, 0.5)' },
+              ticks: { color: '#6B7280', font: { family: 'IBM Plex Mono', size: 9 } }
             },
             x: {
               grid: { display: false },
-              ticks: { color: '#aaa', font: { family: 'JetBrains Mono', size: 10 } }
+              ticks: { color: '#6B7280', font: { family: 'IBM Plex Mono', size: 9 } }
             }
           }
         }
       });
     }
-  }, [subTab, trades, botData]);
+
+    // 3. DONUT CHART: Win / Loss / Breakeven Ratio
+    const donutCtx = donutChartRef.current?.getContext('2d');
+    if (donutCtx) {
+      if (donutChartInstance.current) {
+        donutChartInstance.current.destroy();
+      }
+
+      donutChartInstance.current = new (window as any).Chart(donutCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Wins', 'Losses', 'Breakeven'],
+          datasets: [{
+            data: [winningTrades.length, lossTrades.length, breakEvenTrades.length],
+            backgroundColor: ['#16C784', '#EA3943', '#6B7280'],
+            borderWidth: 0,
+            borderRadius: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '75%',
+          plugins: {
+            legend: {
+              display: true,
+              position: 'bottom',
+              labels: {
+                color: '#6B7280',
+                font: { family: 'Inter', size: 10, weight: 'bold' },
+                padding: 10,
+                boxWidth: 8
+              }
+            }
+          }
+        }
+      });
+    }
+
+  }, [subTab, trades, botData, mergedTrades.length]);
 
   return (
-    <div className="space-y-6" id="im_journal_view">
+    <div className="space-y-4" id="im_journal_view">
       
       {/* SUB-TABS NAVIGATION */}
-      <div className="flex border-b border-zinc-800">
+      <div className="flex overflow-x-auto whitespace-nowrap scrollbar-none border-b border-[#1F2430]" id="im_journal_sub_tabs">
         <button
           onClick={() => setSubTab('log')}
-          className={`flex items-center gap-2 px-6 py-3.5 border-b-2 font-semibold text-xs tracking-wider uppercase transition-all
+          className={`flex items-center gap-2 px-5 py-3 border-b-2 font-mono font-bold text-xs tracking-wider uppercase transition-all
             ${subTab === 'log'
-              ? 'border-[#00ff88] text-[#00ff88]'
-              : 'border-transparent text-zinc-500 hover:text-zinc-300'
+              ? 'border-[#22D3EE] text-[#22D3EE]'
+              : 'border-transparent text-[#6B7280] hover:text-[#D7DCE5]'
             }`}
           id="im_subtab_log"
         >
-          <Plus className="w-4 h-4" /> Log Trade
+          <Plus className="w-4 h-4" /> Log Trade Entry
         </button>
         <button
           onClick={() => setSubTab('history')}
-          className={`flex items-center gap-2 px-6 py-3.5 border-b-2 font-semibold text-xs tracking-wider uppercase transition-all
+          className={`flex items-center gap-2 px-5 py-3 border-b-2 font-mono font-bold text-xs tracking-wider uppercase transition-all
             ${subTab === 'history'
-              ? 'border-[#00ff88] text-[#00ff88]'
-              : 'border-transparent text-zinc-500 hover:text-zinc-300'
+              ? 'border-[#22D3EE] text-[#22D3EE]'
+              : 'border-transparent text-[#6B7280] hover:text-[#D7DCE5]'
             }`}
           id="im_subtab_history"
         >
-          <BarChart3 className="w-4 h-4" /> History & Stats {trades.length > 0 && <span className="ml-1 text-[10px] bg-zinc-800 px-1.5 py-0.5 rounded-full text-zinc-300">{trades.length}</span>}
+          <BarChart3 className="w-4 h-4" /> Performance & Analytics {trades.length > 0 && <span className="ml-1 text-[9px] bg-[#1F2430] px-1.5 py-0.2 rounded-[2px] text-[#D7DCE5]">{trades.length}</span>}
         </button>
       </div>
 
       {/* VIEW 1: LOG TRADE FORM */}
       {subTab === 'log' && (
-        <form onSubmit={handleSaveTrade} className="bg-[#161b22] border border-zinc-800/80 p-6 rounded-lg shadow-xl space-y-6" id="im_log_trade_form">
-          <div className="border-b border-zinc-850 pb-3 flex justify-between items-center">
+        <form onSubmit={handleSaveTrade} className="bg-[#12151B] border border-[#1F2430] p-4 rounded-[2px] space-y-4 animate-fade-in" id="im_log_trade_form">
+          <div className="border-b border-[#1F2430] pb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
-              <h2 className="text-base font-semibold text-[#e6edf3] tracking-tight">Record Live Execution Parameters</h2>
-              <p className="text-xs text-zinc-400">Save trade performance statistics to analyze expected value over time.</p>
+              <h2 className="text-xs font-bold font-mono text-[#D7DCE5] tracking-wider uppercase">Record Paper Execution Parameters</h2>
+              <p className="text-[10px] text-[#6B7280]">Store telemetry metrics to backtest system expected value over chronological samples.</p>
             </div>
             <button
               type="button"
               onClick={resetDateTime}
-              className="text-xs font-mono text-sky-400 hover:text-sky-300 flex items-center gap-1 bg-[#0d1117] px-2 py-1 border border-zinc-800 rounded"
+              className="text-[10px] font-mono text-[#22D3EE] bg-[#0A0C10] px-2.5 py-1 border border-[#1F2430] rounded-[2px] font-bold hover:bg-[#1F2430]/30 transition-all flex items-center gap-1"
               id="im_form_reset_time"
             >
-              <RefreshCw className="w-3.5 h-3.5" /> Sync UTC Time
+              <RefreshCw className="w-3 h-3 text-[#22D3EE]" /> Sync UTC Time
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             
             {/* Datetime */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-zinc-400 tracking-wider flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-zinc-500" /> Date & Time (UTC)
+              <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-[#6B7280]" /> Date & Time (UTC)
               </label>
               <input
                 type="datetime-local"
                 value={dateTimeUtc}
                 onChange={(e) => setDateTimeUtc(e.target.value)}
-                className="w-full bg-[#0d1117] border border-zinc-800 rounded-md py-2 px-3 text-xs font-mono text-[#e6edf3] focus:outline-none focus:border-[#00ff88]"
+                className="w-full bg-[#0A0C10] border border-[#1F2430] rounded-[2px] py-1.5 px-2.5 text-xs font-mono text-[#D7DCE5] focus:outline-none focus:border-[#22D3EE] transition-all"
                 required
               />
             </div>
 
             {/* Trading Pair */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-zinc-400 tracking-wider">Asset Pair</label>
+              <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider">Asset Pair</label>
               <select
                 value={pair}
                 onChange={(e) => setPair(e.target.value)}
-                className="w-full bg-[#0d1117] border border-zinc-800 rounded-md py-2 px-3 text-xs font-mono text-[#e6edf3] focus:outline-none focus:border-[#00ff88]"
+                className="w-full bg-[#0A0C10] border border-[#1F2430] rounded-[2px] py-1.5 px-2.5 text-xs font-mono text-[#D7DCE5] focus:outline-none focus:border-[#22D3EE] transition-all"
               >
                 <option value="BTC/USDT">BTC/USDT</option>
                 <option value="ETH/USDT">ETH/USDT</option>
@@ -611,11 +605,11 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
 
             {/* Kill Zone */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-zinc-400 tracking-wider">Kill Zone Window</label>
+              <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider">Kill Zone Window</label>
               <select
                 value={killZone}
                 onChange={(e) => setKillZone(e.target.value)}
-                className="w-full bg-[#0d1117] border border-zinc-800 rounded-md py-2 px-3 text-xs font-mono text-[#e6edf3] focus:outline-none focus:border-[#00ff88]"
+                className="w-full bg-[#0A0C10] border border-[#1F2430] rounded-[2px] py-1.5 px-2.5 text-xs font-mono text-[#D7DCE5] focus:outline-none focus:border-[#22D3EE] transition-all"
               >
                 <option value="Asian Range">Asian Range (00:00 - 04:00)</option>
                 <option value="London KZ">London KZ (07:00 - 10:00)</option>
@@ -627,15 +621,15 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
 
             {/* Direction */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-zinc-400 tracking-wider">Direction</label>
-              <div className="grid grid-cols-2 gap-2">
+              <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider">Direction</label>
+              <div className="grid grid-cols-2 gap-1.5">
                 <button
                   type="button"
                   onClick={() => setDirection('Long')}
-                  className={`py-2 rounded text-xs font-bold transition-all border
+                  className={`py-1.5 rounded-[2px] text-xs font-bold transition-all border
                     ${direction === 'Long'
-                      ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400'
-                      : 'bg-[#0d1117] border-zinc-800 text-zinc-500'
+                      ? 'bg-[#16C784]/10 border-[#16C784]/30 text-[#16C784]'
+                      : 'bg-[#0A0C10] border-[#1F2430] text-[#6B7280]'
                     }`}
                 >
                   LONG
@@ -643,10 +637,10 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
                 <button
                   type="button"
                   onClick={() => setDirection('Short')}
-                  className={`py-2 rounded text-xs font-bold transition-all border
+                  className={`py-1.5 rounded-[2px] text-xs font-bold transition-all border
                     ${direction === 'Short'
-                      ? 'bg-rose-500/15 border-rose-500/40 text-rose-400'
-                      : 'bg-[#0d1117] border-zinc-800 text-zinc-500'
+                      ? 'bg-[#EA3943]/10 border-[#EA3943]/30 text-[#EA3943]'
+                      : 'bg-[#0A0C10] border-[#1F2430] text-[#6B7280]'
                     }`}
                 >
                   SHORT
@@ -656,15 +650,15 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
 
             {/* Setup Type */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-zinc-400 tracking-wider">Setup Type</label>
-              <div className="grid grid-cols-2 gap-2">
+              <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider">Setup Type</label>
+              <div className="grid grid-cols-2 gap-1.5">
                 <button
                   type="button"
                   onClick={() => setSetupType('Type A')}
-                  className={`py-2 rounded text-xs font-bold transition-all border
+                  className={`py-1.5 rounded-[2px] text-xs font-bold transition-all border
                     ${setupType === 'Type A'
-                      ? 'bg-sky-500/15 border-sky-500/40 text-sky-400'
-                      : 'bg-[#0d1117] border-zinc-800 text-zinc-500'
+                      ? 'bg-[#22D3EE]/15 border-[#22D3EE]/30 text-[#22D3EE]'
+                      : 'bg-[#0A0C10] border-[#1F2430] text-[#6B7280]'
                     }`}
                 >
                   Type A (Trend)
@@ -672,10 +666,10 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
                 <button
                   type="button"
                   onClick={() => setSetupType('Type B')}
-                  className={`py-2 rounded text-xs font-bold transition-all border
+                  className={`py-1.5 rounded-[2px] text-xs font-bold transition-all border
                     ${setupType === 'Type B'
-                      ? 'bg-amber-500/15 border-amber-500/40 text-amber-400'
-                      : 'bg-[#0d1117] border-zinc-800 text-zinc-500'
+                      ? 'bg-amber-500/15 border-amber-500/30 text-amber-500'
+                      : 'bg-[#0A0C10] border-[#1F2430] text-[#6B7280]'
                     }`}
                 >
                   Type B (Counter)
@@ -685,11 +679,11 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
 
             {/* Confluence Score */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-zinc-400 tracking-wider">Confluence Score (1-6)</label>
+              <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider">Confluence Score (1-6)</label>
               <select
                 value={confluenceScore}
                 onChange={(e) => setConfluenceScore(Number(e.target.value))}
-                className="w-full bg-[#0d1117] border border-zinc-800 rounded-md py-2 px-3 text-xs font-mono text-[#e6edf3] focus:outline-none focus:border-[#00ff88]"
+                className="w-full bg-[#0A0C10] border border-[#1F2430] rounded-[2px] py-1.5 px-2.5 text-xs font-mono text-[#D7DCE5] focus:outline-none focus:border-[#22D3EE] transition-all"
               >
                 {[1, 2, 3, 4, 5, 6].map(num => (
                   <option key={num} value={num}>{num} / 6 Confluences</option>
@@ -699,11 +693,11 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
 
             {/* AMD Bias */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-zinc-400 tracking-wider">AMD Session Bias</label>
+              <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider">AMD Session Bias</label>
               <select
                 value={amdBias}
                 onChange={(e) => setAmdBias(e.target.value as any)}
-                className="w-full bg-[#0d1117] border border-zinc-800 rounded-md py-2 px-3 text-xs font-sans text-[#e6edf3] focus:outline-none focus:border-[#00ff88]"
+                className="w-full bg-[#0A0C10] border border-[#1F2430] rounded-[2px] py-1.5 px-2.5 text-xs text-[#D7DCE5] focus:outline-none focus:border-[#22D3EE] transition-all"
               >
                 <option value="N/A">N/A / No sweep mapped</option>
                 <option value="Bullish NY">Bullish NY (London swept low)</option>
@@ -713,163 +707,157 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
 
             {/* Price Zone location */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-zinc-400 tracking-wider">Swing Price Zone Location</label>
+              <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider">Price Zone Location</label>
               <select
                 value={priceZone}
                 onChange={(e) => setPriceZone(e.target.value as any)}
-                className="w-full bg-[#0d1117] border border-zinc-800 rounded-md py-2 px-3 text-xs font-sans text-[#e6edf3] focus:outline-none focus:border-[#00ff88]"
+                className="w-full bg-[#0A0C10] border border-[#1F2430] rounded-[2px] py-1.5 px-2.5 text-xs text-[#D7DCE5] focus:outline-none focus:border-[#22D3EE] transition-all"
               >
-                <option value="Discount">Discount (Buying low)</option>
-                <option value="Premium">Premium (Selling high)</option>
-                <option value="Neutral">Neutral (Equilibrium 50%)</option>
+                <option value="Neutral">Neutral Equilibrium (50% block)</option>
+                <option value="Discount">Discount Zone (below 50%)</option>
+                <option value="Premium">Premium Zone (above 50%)</option>
               </select>
             </div>
 
-            {/* Risk Percent */}
+            {/* Risk size percent */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-zinc-400 tracking-wider">Risk Percent Used (%)</label>
-              <input
-                type="number"
-                step="0.1"
+              <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider">Capital Risk Unit</label>
+              <select
                 value={riskPercent}
-                onChange={(e) => setRiskPercent(Math.max(0, parseFloat(e.target.value) || 0))}
-                className="w-full bg-[#0d1117] border border-zinc-800 rounded-md py-2 px-3 text-xs font-mono text-[#e6edf3] focus:outline-none focus:border-[#00ff88]"
-                required
-              />
+                onChange={(e) => setRiskPercent(Number(e.target.value))}
+                className="w-full bg-[#0A0C10] border border-[#1F2430] rounded-[2px] py-1.5 px-2.5 text-xs font-mono text-[#D7DCE5] focus:outline-none focus:border-[#22D3EE] transition-all"
+              >
+                <option value={0.25}>0.25% (Defensive)</option>
+                <option value={0.5}>0.50% (SMC Standard)</option>
+                <option value={1.0}>1.00% (Normal Unit)</option>
+                <option value={1.5}>1.50% (High Confidence)</option>
+                <option value={2.0}>2.00% (Maximum Ceiling)</option>
+              </select>
             </div>
 
           </div>
 
-          {/* Pricing parameters details */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-[#0d1117] p-4 border border-zinc-800 rounded-md">
-            
-            <div className="space-y-1">
-              <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest font-mono">Entry Price (USD)</label>
-              <input
-                type="number"
-                step="any"
-                value={entryPrice}
-                onChange={(e) => setEntryPrice(e.target.value !== '' ? parseFloat(e.target.value) : '')}
-                placeholder="65000"
-                className="w-full bg-[#161b22] border border-zinc-850 rounded py-1.5 px-2 text-xs font-mono text-[#e6edf3] focus:outline-none focus:border-emerald-400"
-                required
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest font-mono">Stop Loss (USD)</label>
-              <input
-                type="number"
-                step="any"
-                value={stopLoss}
-                onChange={(e) => setStopLoss(e.target.value !== '' ? parseFloat(e.target.value) : '')}
-                placeholder="64350"
-                className="w-full bg-[#161b22] border border-zinc-850 rounded py-1.5 px-2 text-xs font-mono text-[#e6edf3] focus:outline-none focus:border-rose-400"
-                required
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest font-mono">Target TP1 (1R)</label>
-              <input
-                type="number"
-                step="any"
-                value={tp1}
-                onChange={(e) => setTp1(e.target.value !== '' ? parseFloat(e.target.value) : '')}
-                className="w-full bg-[#161b22] border border-zinc-850 rounded py-1.5 px-2 text-xs font-mono text-emerald-400 focus:outline-none"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest font-mono">Target TP2 (1.5R)</label>
-              <input
-                type="number"
-                step="any"
-                value={tp2}
-                onChange={(e) => setTp2(e.target.value !== '' ? parseFloat(e.target.value) : '')}
-                className="w-full bg-[#161b22] border border-zinc-850 rounded py-1.5 px-2 text-xs font-mono text-emerald-300 focus:outline-none"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest font-mono">Target TP3 (3.5R)</label>
-              <input
-                type="number"
-                step="any"
-                value={tp3}
-                onChange={(e) => setTp3(e.target.value !== '' ? parseFloat(e.target.value) : '')}
-                className="w-full bg-[#161b22] border border-zinc-850 rounded py-1.5 px-2 text-xs font-mono text-[#00ff88] focus:outline-none"
-              />
-            </div>
-
-            <div className="md:col-span-5 pt-2 flex flex-col md:flex-row justify-between text-[11px] text-zinc-500 font-mono">
-              <span>* Entry, Stop Loss, and Risk% will auto-calculate standard SMC 1R, 1.5R, 3.5R tranches.</span>
-              <div className="mt-1 md:mt-0">
-                Position Size estimation: <span className="text-[#00ff88] font-bold">{positionSizeUsd ? `$${positionSizeUsd}` : 'N/A'}</span>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Trade Execution Outcome & Notes */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 pt-3 border-t border-zinc-850">
-            
-            {/* Notes */}
-            <div className="md:col-span-4 space-y-1.5">
-              <label className="text-xs font-semibold text-zinc-400 tracking-wider">Pre-Trade Context / Thesis</label>
-              <textarea
-                value={preTradeNotes}
-                onChange={(e) => setPreTradeNotes(e.target.value)}
-                placeholder="Market swept daily lows at 07:20 UTC. Spotted MSS on 5m, entering on FVG retest."
-                rows={4}
-                className="w-full bg-[#0d1117] border border-zinc-800 rounded-md py-2 px-3 text-xs text-[#e6edf3] focus:outline-none focus:border-[#00ff88]"
-              ></textarea>
-            </div>
-
-            {/* Results selector and R achievement */}
-            <div className="md:col-span-4 space-y-4">
+          {/* Pricing Parameters Panel */}
+          <div className="bg-[#0A0C10] border border-[#1F2430] p-3 rounded-[2px] space-y-3">
+            <h3 className="text-[10px] font-bold font-mono uppercase tracking-wider text-[#22D3EE]">Execution Coordinates Calculator</h3>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+              
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-400 tracking-wider">Trade Outcome Result</label>
+                <label className="text-[9px] font-bold font-mono text-[#6B7280] uppercase">Entry Price ($)</label>
+                <input
+                  type="number"
+                  step="any"
+                  value={entryPrice}
+                  onChange={(e) => setEntryPrice(parseFloat(e.target.value) || '')}
+                  placeholder="e.g. 64250"
+                  className="w-full bg-[#12151B] border border-[#1F2430] rounded-[2px] py-1.5 px-2.5 text-xs font-mono text-[#D7DCE5] focus:outline-none focus:border-[#22D3EE] transition-all"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold font-mono text-[#6B7280] uppercase">Stop Loss ($)</label>
+                <input
+                  type="number"
+                  step="any"
+                  value={stopLoss}
+                  onChange={(e) => setStopLoss(parseFloat(e.target.value) || '')}
+                  placeholder="e.g. 63980"
+                  className="w-full bg-[#12151B] border border-[#1F2430] rounded-[2px] py-1.5 px-2.5 text-xs font-mono text-[#EA3943] focus:outline-none focus:border-[#EA3943]/50 transition-all font-bold"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold font-mono text-[#6B7280] uppercase block">Position Value (USD)</label>
+                <div className="w-full bg-[#12151B] border border-[#1F2430] rounded-[2px] py-1.5 px-2.5 text-xs font-mono text-[#6B7280] select-none">
+                  {positionSizeUsd ? `$${positionSizeUsd.toLocaleString()}` : '$0.00'}
+                </div>
+              </div>
+
+              <div className="space-y-1 font-sans">
+                <label className="text-[9px] font-bold font-mono text-[#6B7280] uppercase block">Automated Targets</label>
+                <span className="text-[9px] text-[#6B7280] leading-tight block">T1 (1R), T2 (1.5R) and T3 (3.5R) derived dynamically.</span>
+              </div>
+
+            </div>
+
+            {entryPrice && stopLoss && (
+              <div className="grid grid-cols-3 gap-2 pt-1 text-xs">
+                <div className="bg-[#12151B] p-2 rounded-[2px] border border-[#1F2430] text-center font-mono">
+                  <span className="text-[9px] text-[#6B7280] block uppercase font-sans">TP1 TARGET (1.0R)</span>
+                  <span className="text-[#D7DCE5] font-bold text-[11px] block mt-0.5">${tp1}</span>
+                </div>
+                <div className="bg-[#12151B] p-2 rounded-[2px] border border-[#1F2430] text-center font-mono">
+                  <span className="text-[9px] text-[#6B7280] block uppercase font-sans">TP2 TARGET (1.5R)</span>
+                  <span className="text-[#D7DCE5] font-bold text-[11px] block mt-0.5">${tp2}</span>
+                </div>
+                <div className="bg-[#12151B] p-2 rounded-[2px] border border-[#1F2430] text-center font-mono">
+                  <span className="text-[9px] text-[#6B7280] block uppercase font-sans">TP3 TARGET (3.5R)</span>
+                  <span className="text-[#16C784] font-bold text-[11px] block mt-0.5">${tp3}</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Form results log */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            
+            <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-3">
+              
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider">Strategic Plan</label>
+                <textarea
+                  value={preTradeNotes}
+                  onChange={(e) => setPreTradeNotes(e.target.value)}
+                  placeholder="FVG mitigation entry on micro-reversal..."
+                  rows={3}
+                  className="w-full bg-[#0A0C10] border border-[#1F2430] rounded-[2px] py-1.5 px-2.5 text-xs text-[#D7DCE5] focus:outline-none focus:border-[#22D3EE] transition-all"
+                ></textarea>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider">Outcome Profile</label>
                 <select
                   value={result}
                   onChange={(e) => setResult(e.target.value as any)}
-                  className="w-full bg-[#0d1117] border border-zinc-800 rounded-md py-2 px-3 text-xs font-semibold text-[#e6edf3] focus:outline-none focus:border-[#00ff88]"
+                  className="w-full bg-[#0A0C10] border border-[#1F2430] rounded-[2px] py-1.5 px-2.5 text-xs text-[#D7DCE5] focus:outline-none focus:border-[#22D3EE] transition-all font-mono"
                 >
-                  <option value="Win-TP3">Win - Full TP3 Hit (+3.5R)</option>
-                  <option value="Partial-TP2">Partial Win - Closed TP2 (+1.5R)</option>
-                  <option value="Partial-TP1">Partial Win - Closed TP1 (+1.0R)</option>
-                  <option value="Breakeven">Breakeven - Closed at entry (0R)</option>
-                  <option value="Closed-Time-Limit">Closed on 4Hr Time Limit (-0.2R)</option>
-                  <option value="Loss">Loss - Hit Stop Loss (-1.0R)</option>
+                  <option value="Win-TP3">Win - TP3 hit fully (3.5R)</option>
+                  <option value="Partial-TP2">Partial Win - TP2 hit (1.5R)</option>
+                  <option value="Partial-TP1">Partial Win - TP1 hit (1.0R)</option>
+                  <option value="Breakeven">Breakeven - stopped at entry (0.0R)</option>
+                  <option value="Loss">Loss - full stop hit (-1.0R)</option>
+                  <option value="Closed-Time-Limit">Closed - Session end limit (-0.2R)</option>
                 </select>
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-400 tracking-wider">R-Multiple Achieved</label>
+                <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider">R-Multiple Achieved</label>
                 <input
                   type="number"
                   step="0.01"
                   value={rMultiple}
                   onChange={(e) => setRMultiple(parseFloat(e.target.value) || 0)}
-                  className={`w-full bg-[#0d1117] border rounded-md py-2 px-3 text-xs font-mono focus:outline-none 
+                  className={`w-full bg-[#0A0C10] border rounded-[2px] py-1.5 px-2.5 text-xs font-mono focus:outline-none transition-all
                     ${rMultiple > 0 
-                      ? 'border-emerald-500/50 text-[#00ff88]' 
+                      ? 'border-[#16C784]/30 text-[#16C784] font-bold' 
                       : rMultiple < 0 
-                        ? 'border-rose-500/50 text-[#ff4444]' 
-                        : 'border-zinc-800 text-zinc-300'}`}
+                        ? 'border-[#EA3943]/30 text-[#EA3943] font-bold' 
+                        : 'border-[#1F2430] text-[#6B7280]'}`}
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-400 tracking-wider">Would Take Again?</label>
-                <div className="grid grid-cols-2 gap-2">
+                <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider">Repeat Trade?</label>
+                <div className="grid grid-cols-2 gap-1.5">
                   <button
                     type="button"
                     onClick={() => setWouldTakeAgain('Yes')}
-                    className={`py-1.5 rounded text-xs font-bold transition-all border
+                    className={`py-1.5 rounded-[2px] text-xs font-bold transition-all border
                       ${wouldTakeAgain === 'Yes'
-                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                        : 'bg-[#0d1117] border-zinc-850 text-zinc-500'
+                        ? 'bg-[#16C784]/10 border-[#16C784]/30 text-[#16C784]'
+                        : 'bg-[#0A0C10] border-[#1F2430] text-[#6B7280]'
                       }`}
                   >
                     Yes
@@ -877,39 +865,40 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
                   <button
                     type="button"
                     onClick={() => setWouldTakeAgain('No')}
-                    className={`py-1.5 rounded text-xs font-bold transition-all border
+                    className={`py-1.5 rounded-[2px] text-xs font-bold transition-all border
                       ${wouldTakeAgain === 'No'
-                        ? 'bg-rose-500/10 border-rose-500/30 text-rose-400'
-                        : 'bg-[#0d1117] border-zinc-850 text-zinc-500'
+                        ? 'bg-[#EA3943]/10 border-[#EA3943]/30 text-[#EA3943]'
+                        : 'bg-[#0A0C10] border-[#1F2430] text-[#6B7280]'
                       }`}
                   >
                     No
                   </button>
                 </div>
               </div>
+
             </div>
 
             {/* Post-trade self assessments */}
-            <div className="md:col-span-4 space-y-3">
+            <div className="md:col-span-4 grid grid-cols-2 gap-3 md:block md:space-y-3">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-400 tracking-wider">What went right?</label>
+                <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider">What went right?</label>
                 <textarea
                   value={whatWentRight}
                   onChange={(e) => setWhatWentRight(e.target.value)}
-                  placeholder="Waited exactly 20 minutes for NY open sweeps. Execution was clean."
+                  placeholder="Execution was disciplined..."
                   rows={2}
-                  className="w-full bg-[#0d1117] border border-zinc-800 rounded-md py-1.5 px-3 text-xs text-[#e6edf3] focus:outline-none focus:border-[#00ff88]"
+                  className="w-full bg-[#0A0C10] border border-[#1F2430] rounded-[2px] py-1.5 px-2.5 text-xs text-[#D7DCE5] focus:outline-none focus:border-[#22D3EE] transition-all"
                 ></textarea>
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-400 tracking-wider">What went wrong / Lesson?</label>
+                <label className="text-[10px] font-bold font-mono text-[#6B7280] uppercase tracking-wider">What went wrong / Lesson?</label>
                 <textarea
                   value={whatWentWrong}
                   onChange={(e) => setWhatWentWrong(e.target.value)}
-                  placeholder="Felt minor FOMO as price hovered near TP2 but followed partial tranches rules."
+                  placeholder="Felt slight hesitation..."
                   rows={2}
-                  className="w-full bg-[#0d1117] border border-zinc-800 rounded-md py-1.5 px-3 text-xs text-[#e6edf3] focus:outline-none focus:border-[#00ff88]"
+                  className="w-full bg-[#0A0C10] border border-[#1F2430] rounded-[2px] py-1.5 px-2.5 text-xs text-[#D7DCE5] focus:outline-none focus:border-[#22D3EE] transition-all"
                 ></textarea>
               </div>
             </div>
@@ -917,18 +906,18 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
           </div>
 
           {/* Form Actions */}
-          <div className="flex justify-end space-x-3 pt-4 border-t border-zinc-850">
+          <div className="flex justify-end space-x-2 pt-3 border-t border-[#1F2430]">
             <button
               type="button"
               onClick={handleClearForm}
-              className="px-5 py-2.5 bg-[#0d1117] border border-zinc-800 hover:bg-[#161b22] text-zinc-400 hover:text-zinc-300 font-bold text-xs rounded transition-all tracking-wider"
+              className="px-4 py-2 bg-[#0A0C10] border border-[#1F2430] hover:bg-[#1F2430]/20 text-[#6B7280] hover:text-[#D7DCE5] font-bold text-xs rounded-[2px] transition-all tracking-wider font-mono"
               id="im_clear_form_btn"
             >
               CLEAR FORM
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-[#00ff88] text-zinc-950 font-extrabold text-xs rounded shadow-lg shadow-emerald-500/10 hover:opacity-90 transition-all tracking-wider flex items-center gap-1.5"
+              className="px-5 py-2 bg-[#22D3EE] text-[#0A0C10] font-bold text-xs rounded-[2px] hover:bg-[#22D3EE]/90 active:scale-98 transition-all tracking-wider flex items-center gap-1.5 font-mono"
               id="im_save_trade_btn"
             >
               <Save className="w-4 h-4" /> SAVE JOURNAL ENTRY
@@ -939,133 +928,184 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
 
       {/* VIEW 2: HISTORY & STATS DISPLAY */}
       {subTab === 'history' && (
-        <div className="space-y-6" id="im_history_stats_view">
+        <div className="space-y-4 animate-fade-in" id="im_history_stats_view">
           
           {/* WARNING BANNERS */}
           <div className="space-y-3">
-            {/* 3 consecutive losses ban */}
             {currentLossStreak >= 3 && (
-              <div className="bg-rose-500/10 border border-rose-500/30 p-4 rounded-lg flex items-start space-x-3 text-[#ff4444]" id="im_banner_cooling_off">
-                <AlertOctagon className="w-5 h-5 shrink-0 mt-0.5 animate-pulse" />
+              <div className="bg-[#12151B] border border-[#EA3943]/30 p-3.5 rounded-[2px] flex items-start space-x-3 text-[#EA3943]" id="im_banner_cooling_off">
+                <AlertOctagon className="w-4.5 h-4.5 shrink-0 mt-0.5 animate-pulse" />
                 <div className="text-xs leading-relaxed">
-                  <h4 className="font-extrabold tracking-wider text-sm">3 CONSECUTIVE LOSSES — Mandatory 24hr break</h4>
-                  <p className="mt-1 text-rose-300">
-                    Systemic defense trigger: You have hit the consecutive losses threshold. Stop execution, preserve remaining capital, and step away from live charts for 24 hours. Reset your emotional state and perform model backtesting on the weekend.
+                  <h4 className="font-bold font-mono tracking-wider text-[11px] uppercase">3 CONSECUTIVE LOSSES — MANDATORY 24HR COOLING PAUSE</h4>
+                  <p className="mt-1 text-[#6B7280] font-sans">
+                    Systemic defense trigger: You have hit the consecutive losses threshold. Stop execution, preserve remaining capital, and step away from live charts for 24 hours. Reset your emotional state and perform model backtesting.
                   </p>
                 </div>
               </div>
             )}
 
-            {/* Daily profit cap reached */}
             {todayNetRValue > 3.0 && (
-              <div className="bg-yellow-500/10 border border-yellow-500/30 p-4 rounded-lg flex items-start space-x-3 text-[#ffd700]" id="im_banner_profit_cap">
-                <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5 text-yellow-400" />
+              <div className="bg-[#12151B] border border-amber-500/20 p-3.5 rounded-[2px] flex items-start space-x-3 text-amber-500" id="im_banner_profit_cap">
+                <CheckCircle2 className="w-4.5 h-4.5 shrink-0 mt-0.5" />
                 <div className="text-xs leading-relaxed">
-                  <h4 className="font-extrabold tracking-wider text-sm">Daily Profit Cap Hit — Stop Trading</h4>
-                  <p className="mt-1 text-yellow-200">
-                    Congratulations! Your combined intraday yield is <span className="font-mono font-bold">+{todayNetRValue.toFixed(1)}%</span>, exceeding the maximum daily target boundary of 3.0%. Lock in these profits. Over-trading past target milestones leads to expected value degradation.
+                  <h4 className="font-bold font-mono tracking-wider text-[11px] uppercase">DAILY PROFIT TARGET HIT — PAUSE ACTIVE EXECUTION</h4>
+                  <p className="mt-1 text-[#6B7280] font-sans">
+                    Intraday yield milestone achieved: Combined yield is <span className="font-mono font-bold text-amber-500">+{todayNetRValue.toFixed(1)}%</span>, exceeding the maximum daily target boundary of 3.0%. Lock in these profits. Over-trading past target milestones leads to expected value degradation.
                   </p>
                 </div>
               </div>
             )}
           </div>
 
-          {/* STATS BENTO GRID */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4" id="im_stats_bento_grid">
+          {/* DYNAMIC EXCHANGE LAYOUT: 2-COLUMN SHRUNKEN CHARTS LEFT, EXPECTANCY MATRIX RIGHT */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4" id="im_journal_analytics_layout">
             
-            <div className="bg-[#161b22] border border-zinc-800 p-4 rounded-lg flex flex-col justify-between h-28">
-              <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest leading-none">Total Trades</span>
-              <span className="text-3xl font-extrabold font-mono text-[#e6edf3]">{totalTrades}</span>
-              <span className="text-[10px] text-zinc-400">Total samples logged</span>
-            </div>
-
-            <div className="bg-[#161b22] border border-zinc-800 p-4 rounded-lg flex flex-col justify-between h-28">
-              <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest leading-none">Win Rate %</span>
-              <span className="text-3xl font-extrabold font-mono text-[#00ff88]">{winRate.toFixed(1)}%</span>
-              <span className="text-[10px] text-zinc-400">Wins & part-profits</span>
-            </div>
-
-            <div className="bg-[#161b22] border border-zinc-800 p-4 rounded-lg flex flex-col justify-between h-28">
-              <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest leading-none">Avg R-Multiple</span>
-              <span className={`text-3xl font-extrabold font-mono ${avgR >= 0 ? 'text-[#00ff88]' : 'text-[#ff4444]'}`}>
-                {avgR >= 0 ? '+' : ''}{avgR.toFixed(2)}
-              </span>
-              <span className="text-[10px] text-zinc-400">Yield expectancy / trade</span>
-            </div>
-
-            <div className="bg-[#161b22] border border-zinc-800 p-4 rounded-lg flex flex-col justify-between h-28">
-              <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest leading-none">Profit Factor</span>
-              <span className="text-3xl font-extrabold font-mono text-[#ffd700]">{profitFactor}</span>
-              <span className="text-[10px] text-zinc-400">Gross gain / Gross loss</span>
-            </div>
-
-            <div className="bg-[#161b22] border border-zinc-800 p-4 rounded-lg flex flex-col justify-between h-28 lg:col-span-2">
-              <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest leading-none">Best Kill Zone</span>
-              <span className="text-xl font-extrabold font-mono text-sky-400 truncate">{bestZoneName}</span>
-              <span className="text-[10px] text-zinc-400">{bestZoneWinRate >= 0 ? `${bestZoneWinRate.toFixed(0)}% accuracy` : 'No trades logged'}</span>
-            </div>
-
-            <div className="bg-[#161b22] border border-zinc-800 p-4 rounded-lg flex flex-col justify-between h-28 lg:col-span-2">
-              <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest leading-none">Strict Setup Win Rate</span>
-              <div className="flex flex-col space-y-0.5 text-xs text-zinc-300 font-mono mt-1">
-                <div className="flex justify-between">
-                  <span>Type A:</span> <span className="font-bold text-[#00ff88]">{typeAWinRate.toFixed(0)}%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Type B:</span> <span className="font-bold text-[#ffd700]">{typeBWinRate.toFixed(0)}%</span>
+            {/* Left Side: Charts in compact 2-column format */}
+            <div className="xl:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3" id="im_journal_charts_grid">
+              
+              {/* Donut Ratio */}
+              <div className="bg-[#12151B] border border-[#1F2430] p-3 rounded-[2px] flex flex-col justify-between min-h-[220px]">
+                <h3 className="text-[10px] font-mono uppercase tracking-wider text-[#6B7280] border-b border-[#1F2430]/40 pb-1">Win / Loss Ratio</h3>
+                <div className="h-44 relative flex flex-col justify-center mt-2">
+                  {mergedTrades.length === 0 ? (
+                    <div className="absolute inset-0 flex items-center justify-center text-[10px] text-[#6B7280] font-mono">No trading logs mapped</div>
+                  ) : (
+                    <canvas ref={donutChartRef}></canvas>
+                  )}
                 </div>
               </div>
-              <span className="text-[9px] text-zinc-500">6/6 setup: {score6WinRate.toFixed(0)}% | 5/6: {score5WinRate.toFixed(0)}%</span>
+
+              {/* Bar Chart: Accuracy by KZ */}
+              <div className="bg-[#12151B] border border-[#1F2430] p-3 rounded-[2px] flex flex-col justify-between min-h-[220px]">
+                <h3 className="text-[10px] font-mono uppercase tracking-wider text-[#6B7280] border-b border-[#1F2430]/40 pb-1">Accuracy by Kill Zone</h3>
+                <div className="h-44 relative mt-2">
+                  {mergedTrades.length === 0 ? (
+                    <div className="absolute inset-0 flex items-center justify-center text-[10px] text-[#6B7280] font-mono">No trading logs mapped</div>
+                  ) : (
+                    <canvas ref={barChartRef}></canvas>
+                  )}
+                </div>
+              </div>
+
+              {/* Line Chart: Cumulative Equity Curve (spans 2 columns) */}
+              <div className="sm:col-span-2 bg-[#12151B] border border-[#1F2430] p-3 rounded-[2px] flex flex-col justify-between min-h-[240px]">
+                <h3 className="text-[10px] font-mono uppercase tracking-wider text-[#6B7280] border-b border-[#1F2430]/40 pb-1">Cumulative R Performance Curve</h3>
+                <div className="h-48 relative mt-2">
+                  {mergedTrades.length === 0 ? (
+                    <div className="absolute inset-0 flex items-center justify-center text-[10px] text-[#6B7280] font-mono">No trading logs mapped</div>
+                  ) : (
+                    <canvas ref={lineChartRef}></canvas>
+                  )}
+                </div>
+              </div>
+
             </div>
 
-          </div>
+            {/* Right Side: Denseexpectancy matrix */}
+            <div className="bg-[#12151B] border border-[#1F2430] p-4 rounded-[2px] flex flex-col justify-between" id="im_journal_dense_stats_panel">
+              <div>
+                <h3 className="text-xs font-bold font-mono text-[#D7DCE5] tracking-wider uppercase border-b border-[#1F2430] pb-2 mb-3 flex items-center justify-between">
+                  <span>Expectancy Matrix</span>
+                  <span className="text-[9px] text-[#6B7280] font-normal font-sans tracking-normal uppercase">Telemetry</span>
+                </h3>
+                
+                <div className="space-y-4">
+                  {/* Table 1: Core Metrics */}
+                  <table className="w-full text-xs font-mono border-collapse">
+                    <tbody>
+                      <tr className="border-b border-[#1F2430]/40">
+                        <td className="py-2 text-[#6B7280]">Total Sample Size</td>
+                        <td className="py-2 text-right text-[#D7DCE5] font-bold">{totalTrades} trades</td>
+                      </tr>
+                      <tr className="border-b border-[#1F2430]/40">
+                        <td className="py-2 text-[#6B7280]">Accuracy Win Rate</td>
+                        <td className="py-2 text-right text-[#16C784] font-bold">{winRate.toFixed(1)}%</td>
+                      </tr>
+                      <tr className="border-b border-[#1F2430]/40">
+                        <td className="py-2 text-[#6B7280]">Expectancy (Avg R)</td>
+                        <td className={`py-2 text-right font-bold ${avgR >= 0 ? 'text-[#16C784]' : 'text-[#EA3943]'}`}>
+                          {avgR >= 0 ? '+' : ''}{avgR.toFixed(2)}R
+                        </td>
+                      </tr>
+                      <tr className="border-b border-[#1F2430]/40">
+                        <td className="py-2 text-[#6B7280]">Profit Factor</td>
+                        <td className="py-2 text-right text-amber-500 font-bold">{profitFactor}</td>
+                      </tr>
+                      <tr className="border-b border-[#1F2430]/40">
+                        <td className="py-2 text-[#6B7280]">Intraday Yield (Today)</td>
+                        <td className={`py-2 text-right font-bold ${todayNetRValue >= 0 ? 'text-[#16C784]' : 'text-[#EA3943]'}`}>
+                          {todayNetRValue >= 0 ? '+' : ''}{todayNetRValue.toFixed(1)}%
+                        </td>
+                      </tr>
+                      <tr className="border-b border-[#1F2430]/40">
+                        <td className="py-2 text-[#6B7280]">Losing Streak Count</td>
+                        <td className="py-2 text-right text-[#EA3943] font-bold">{currentLossStreak} active</td>
+                      </tr>
+                    </tbody>
+                  </table>
 
-          {/* TWO GRAPH CHARTS GRID */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Kill Zone Win rate bar chart */}
-            <div className="bg-[#161b22] border border-zinc-800 p-5 rounded-lg shadow-xl">
-              <h3 className="text-sm font-semibold text-[#e6edf3] mb-3 tracking-tight">Accuracy Win Rate % by Kill Zone</h3>
-              <div className="h-56 relative">
-                {trades.length === 0 ? (
-                  <div className="absolute inset-0 flex items-center justify-center text-xs text-zinc-600">No trading data available</div>
-                ) : (
-                  <canvas ref={barChartRef}></canvas>
-                )}
+                  {/* Table 2: Model Splits */}
+                  <div className="space-y-1.5 pt-1">
+                    <h4 className="text-[10px] uppercase tracking-wider font-mono text-[#6B7280] font-bold">
+                      MODEL SPLIT ACCURACY
+                    </h4>
+                    <table className="w-full text-xs font-mono border-collapse">
+                      <tbody>
+                        <tr className="border-b border-[#1F2430]/30">
+                          <td className="py-1.5 text-[#6B7280]">Type A (Trend Setup)</td>
+                          <td className="py-1.5 text-right text-[#22D3EE] font-bold">{typeAWinRate.toFixed(0)}% WR</td>
+                        </tr>
+                        <tr className="border-b border-[#1F2430]/30">
+                          <td className="py-1.5 text-[#6B7280]">Type B (Counter-Trend)</td>
+                          <td className="py-1.5 text-right text-amber-500 font-bold">{typeBWinRate.toFixed(0)}% WR</td>
+                        </tr>
+                        <tr className="border-b border-[#1F2430]/30">
+                          <td className="py-1.5 text-[#6B7280]">6/6 Confluence Filter</td>
+                          <td className="py-1.5 text-right text-[#16C784] font-bold">{score6WinRate.toFixed(0)}% WR</td>
+                        </tr>
+                        <tr className="border-b border-[#1F2430]/30">
+                          <td className="py-1.5 text-[#6B7280]">5/6 Confluence Filter</td>
+                          <td className="py-1.5 text-right text-[#6B7280]">{score5WinRate.toFixed(0)}% WR</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Table 3: Best Execution Zone */}
+                  <div className="space-y-1.5 pt-1">
+                    <h4 className="text-[10px] uppercase tracking-wider font-mono text-[#6B7280] font-bold">
+                      OPTIMAL TRADING ENGINE
+                    </h4>
+                    <div className="bg-[#0A0C10] p-2 border border-[#1F2430] text-[11px] flex justify-between items-center rounded-[2px]">
+                      <span className="text-[#6B7280]">Best Window:</span>
+                      <span className="font-bold text-[#22D3EE] uppercase font-mono">{bestZoneName}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Cumulative R equity curve */}
-            <div className="bg-[#161b22] border border-zinc-800 p-5 rounded-lg shadow-xl">
-              <h3 className="text-sm font-semibold text-[#e6edf3] mb-3 tracking-tight">Chronological Cumulative R Performance</h3>
-              <div className="h-56 relative">
-                {trades.length === 0 ? (
-                  <div className="absolute inset-0 flex items-center justify-center text-xs text-zinc-600">No trading data available</div>
-                ) : (
-                  <canvas ref={lineChartRef}></canvas>
-                )}
-              </div>
-            </div>
           </div>
 
           {/* TRADES LOG HISTORY TABLE */}
-          <div className="bg-[#161b22] border border-zinc-800/80 rounded-lg shadow-xl overflow-hidden" id="im_trades_log_history_card">
-            <div className="p-5 border-b border-zinc-850 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+          <div className="bg-[#12151B] border border-[#1F2430] rounded-[2px]" id="im_trades_log_history_card">
+            <div className="p-4 border-b border-[#1F2430] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
               <div>
-                <h3 className="text-sm font-semibold text-[#e6edf3] tracking-tight">Archived Trade Records Log</h3>
-                <p className="text-xs text-zinc-500">Chronological history of trading execution samples.</p>
+                <h3 className="text-xs font-bold font-mono text-[#D7DCE5] uppercase tracking-wider">Archived Trade Records Log</h3>
+                <p className="text-[10px] text-[#6B7280]">Complete chronological history of model execution samples.</p>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 shrink-0">
                 <button
                   onClick={handleExportCsv}
                   disabled={mergedTrades.length === 0}
-                  className={`px-4 py-1.5 border rounded text-xs font-bold transition-all flex items-center gap-1.5
+                  className={`px-3 py-1.5 border rounded-[2px] text-[10px] font-bold transition-all flex items-center gap-1.5 font-mono uppercase
                     ${mergedTrades.length > 0
-                      ? 'bg-[#0d1117] hover:bg-[#161b22] border-zinc-800 text-zinc-300'
-                      : 'bg-zinc-800 border-zinc-750 text-zinc-600 cursor-not-allowed'
+                      ? 'bg-[#0A0C10] hover:bg-[#1F2430]/40 border-[#1F2430] text-[#D7DCE5]'
+                      : 'bg-[#0A0C10] border-[#1F2430] text-[#6B7280]/50 cursor-not-allowed'
                     }`}
                   id="im_export_csv_btn"
                 >
-                  <Download className="w-3.5 h-3.5" /> Export CSV
+                  <Download className="w-3.5 h-3.5" /> Export CSV Ledger
                 </button>
               </div>
             </div>
@@ -1073,108 +1113,99 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
             {/* Table layout container */}
             <div className="overflow-x-auto w-full">
               {mergedTrades.length === 0 ? (
-                <div className="py-12 text-center text-zinc-600 flex flex-col items-center justify-center">
-                  <BookOpen className="w-8 h-8 mb-2" />
-                  <span className="text-xs font-semibold">No trades recorded in this journal.</span>
-                  <span className="text-[10px] mt-1 text-zinc-500">Create entries in the Log Trade form or wait for bot data to populate stats.</span>
+                <div className="py-12 text-center text-[#6B7280] flex flex-col items-center justify-center">
+                  <BookOpen className="w-8 h-8 mb-2 text-[#6B7280]/50" />
+                  <span className="text-xs font-semibold font-mono">No trades recorded in this journal.</span>
+                  <span className="text-[10px] mt-1 text-[#6B7280]/60 font-mono">Create entries in the Log Trade form or wait for bot data.</span>
                 </div>
               ) : (
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="bg-[#0d1117] text-zinc-400 font-semibold border-b border-zinc-800">
-                      <th className="py-3 px-4 text-center">#</th>
-                      <th className="py-3 px-3">Date (UTC)</th>
-                      <th className="py-3 px-3">Source</th>
-                      <th className="py-3 px-3">Pair</th>
-                      <th className="py-3 px-3">Zone</th>
-                      <th className="py-3 px-3">Type</th>
-                      <th className="py-3 px-3 text-center">Score</th>
-                      <th className="py-3 px-3">Direction</th>
-                      <th className="py-3 px-3">Result</th>
-                      <th className="py-3 px-3 text-right">R-Multiple</th>
-                      <th className="py-3 px-4 text-center">Action</th>
+                    <tr className="bg-[#0A0C10] text-[#6B7280] font-mono text-[10px] tracking-wider uppercase border-b border-[#1F2430]">
+                      <th className="py-2.5 px-3 text-center w-10">#</th>
+                      <th className="py-2.5 px-3">Date (UTC)</th>
+                      <th className="py-2.5 px-3">Source</th>
+                      <th className="py-2.5 px-3">Pair</th>
+                      <th className="py-2.5 px-3">Zone</th>
+                      <th className="py-2.5 px-3">Type</th>
+                      <th className="py-2.5 px-3 text-center">Score</th>
+                      <th className="py-2.5 px-3">Direction</th>
+                      <th className="py-2.5 px-3">Result</th>
+                      <th className="py-2.5 px-3 text-right">R-Multiple</th>
+                      <th className="py-2.5 px-3 text-center w-12">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-850">
+                  <tbody className="divide-y divide-[#1F2430]/50 font-mono">
                     {mergedTrades.map((t, idx) => {
                       const displayIndex = mergedTrades.length - idx;
                       const isWin = t.rMultiple > 0;
                       const isLoss = t.rMultiple < 0;
                       const isBot = t.preTradeNotes.includes('bot.js') || t.id.startsWith('bot_');
-                      
-                      // Format date nicely
                       const formattedDate = t.dateTimeUtc.replace('T', ' ');
 
                       return (
-                        <tr key={t.id} className="hover:bg-zinc-800/20 transition-colors">
-                          <td className="py-2.5 px-4 text-center font-mono text-zinc-500 font-bold">{displayIndex}</td>
-                          <td className="py-2.5 px-3 font-mono text-zinc-400">{formattedDate}</td>
-                          <td className="py-2.5 px-3">
+                        <tr key={t.id} className="hover:bg-[#1F2430]/20 transition-colors">
+                          <td className="py-2 px-3 text-center text-[#6B7280] font-bold">{displayIndex}</td>
+                          <td className="py-2 px-3 text-[#6B7280] whitespace-nowrap text-[11px]">{formattedDate}</td>
+                          <td className="py-2 px-3">
                             {isBot ? (
-                              <span className="px-1.5 py-0.5 bg-emerald-500/15 border border-emerald-500/30 text-[#00ff88] rounded font-semibold text-[9px] font-mono whitespace-nowrap">
-                                🤖 Auto
-                              </span>
+                              <span className="text-[9px] font-bold text-[#16C784]">AUTO</span>
                             ) : (
-                              <span className="px-1.5 py-0.5 bg-zinc-800 border border-zinc-700 text-zinc-400 rounded font-semibold text-[9px] font-mono whitespace-nowrap">
-                                ✍️ Manual
-                              </span>
+                              <span className="text-[9px] font-bold text-[#6B7280]">MANUAL</span>
                             )}
                           </td>
-                          <td className="py-2.5 px-3 font-semibold text-zinc-300">{t.pair}</td>
-                          <td className="py-2.5 px-3">
-                            <span className="px-2 py-0.5 bg-zinc-800 border border-zinc-750 rounded text-zinc-400 text-[10px] font-mono">
-                              {t.killZone.replace(' KZ', '')}
+                          <td className="py-2 px-3 font-bold text-[#D7DCE5]">{t.pair}</td>
+                          <td className="py-2 px-3">
+                            <span className="text-[11px] text-[#D7DCE5]">
+                              {t.killZone.replace(' Range', '').replace(' KZ', '')}
                             </span>
                           </td>
-                          <td className="py-2.5 px-3 font-medium">
-                            <span className={t.setupType === 'Type A' ? 'text-sky-400' : 'text-amber-400'}>
+                          <td className="py-2 px-3">
+                            <span className={t.setupType === 'Type A' ? 'text-[#22D3EE]' : 'text-amber-500'}>
                               {t.setupType}
                             </span>
                           </td>
-                          <td className="py-2.5 px-3 text-center">
-                            <span className={`font-mono font-bold ${t.confluenceScore === 6 ? 'text-[#00ff88]' : 'text-zinc-400'}`}>
-                              {t.confluenceScore}/6
+                          <td className="py-2 px-3 text-center text-[#D7DCE5]">
+                            {t.confluenceScore}/6
+                          </td>
+                          <td className="py-2 px-3">
+                            <span className={t.direction === 'Long' ? 'text-[#16C784]' : 'text-[#EA3943]'}>
+                              {t.direction?.toUpperCase()}
                             </span>
                           </td>
-                          <td className="py-2.5 px-3">
-                            <span className={`font-bold uppercase text-[10px] px-1.5 py-0.5 rounded
-                              ${t.direction === 'Long' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
-                              {t.direction}
-                            </span>
-                          </td>
-                          <td className="py-2.5 px-3">
-                            <span className={`font-medium ${isWin ? 'text-[#00ff88]' : isLoss ? 'text-[#ff4444]' : 'text-zinc-400'}`}>
+                          <td className="py-2 px-3">
+                            <span className={isWin ? 'text-[#16C784]' : isLoss ? 'text-[#EA3943]' : 'text-[#6B7280]'}>
                               {t.result}
                             </span>
                           </td>
-                          <td className={`py-2.5 px-3 text-right font-mono font-bold ${isWin ? 'text-[#00ff88]' : isLoss ? 'text-[#ff4444]' : 'text-zinc-400'}`}>
+                          <td className={`py-2 px-3 text-right font-bold ${isWin ? 'text-[#16C784]' : isLoss ? 'text-[#EA3943]' : 'text-[#6B7280]'}`}>
                             {isWin ? '+' : ''}{t.rMultiple.toFixed(2)}
                           </td>
-                          <td className="py-2.5 px-4 text-center">
+                          <td className="py-2 px-3 text-center">
                             {isBot ? (
-                              <span className="text-zinc-600 text-[10px] font-mono">System</span>
+                              <span className="text-[#4B5563] text-[9px] uppercase">Bot</span>
                             ) : deleteConfirmId === t.id ? (
                               <div className="flex justify-center items-center space-x-1">
                                 <button
                                   onClick={() => handleDeleteTrade(t.id)}
-                                  className="px-2 py-0.5 bg-rose-500 text-zinc-950 rounded text-[10px] font-bold"
+                                  className="px-1.5 py-0.5 bg-[#EA3943] text-[#0A0C10] rounded-[2px] text-[9px] font-bold"
                                 >
-                                  Confirm
+                                  Del
                                 </button>
                                 <button
                                   onClick={() => setDeleteConfirmId(null)}
-                                  className="px-2 py-0.5 bg-zinc-700 text-zinc-300 rounded text-[10px]"
+                                  className="px-1.5 py-0.5 bg-[#1F2430] text-[#6B7280] rounded-[2px] text-[9px]"
                                 >
-                                  Cancel
+                                  Esc
                                 </button>
                               </div>
                             ) : (
                               <button
                                 onClick={() => setDeleteConfirmId(t.id)}
-                                className="text-zinc-600 hover:text-[#ff4444] transition-colors p-1"
+                                className="text-[#6B7280] hover:text-[#EA3943] transition-colors p-1"
                                 title="Delete Trade"
                               >
-                                <Trash2 className="w-4 h-4" />
+                                <Trash2 className="w-3.5 h-3.5" />
                               </button>
                             )}
                           </td>

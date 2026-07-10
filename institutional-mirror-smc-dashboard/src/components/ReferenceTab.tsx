@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { REFERENCE_SECTIONS } from '../data';
-import { ChevronDown, ChevronUp, AlertOctagon, HelpCircle, RefreshCw, CheckCircle } from 'lucide-react';
+import { ChevronDown, ChevronUp, AlertOctagon, HelpCircle, CheckCircle } from 'lucide-react';
 
 export default function ReferenceTab() {
   const [openSection, setOpenSection] = useState<string | null>('casino-math');
@@ -31,12 +31,12 @@ export default function ReferenceTab() {
       const trimmed = line.trim();
       
       // Empty line
-      if (trimmed === '') return <div key={idx} className="h-2"></div>;
+      if (trimmed === '') return <div key={idx} className="h-1.5"></div>;
 
       // H3 Headers
       if (trimmed.startsWith('### ')) {
         return (
-          <h4 key={idx} className="text-xs font-mono font-bold tracking-widest uppercase text-sky-400 mt-4 mb-2 pb-1 border-b border-zinc-800">
+          <h4 key={idx} className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#22D3EE] mt-4 mb-1.5 pb-1 border-b border-[#1F2430]">
             {trimmed.substring(4)}
           </h4>
         );
@@ -45,24 +45,22 @@ export default function ReferenceTab() {
       // H2 Headers
       if (trimmed.startsWith('## ')) {
         return (
-          <h3 key={idx} className="text-sm font-semibold tracking-wide text-zinc-200 mt-5 mb-2.5">
+          <h3 key={idx} className="text-xs font-bold tracking-wider text-[#D7DCE5] mt-5 mb-2 font-mono uppercase">
             {trimmed.substring(3)}
           </h3>
         );
       }
 
       // Strong / Bold indicators
-      // Replace **text** with <strong> elements
       if (trimmed.startsWith('- **') || trimmed.startsWith('* **')) {
-        // Bullet list item with bold start
         const rest = trimmed.substring(2);
         const boldMatch = rest.match(/^\*\*(.*?)\*\*(.*)$/);
         if (boldMatch) {
           return (
-            <div key={idx} className="flex items-start space-x-2 pl-3 py-1 text-xs text-zinc-300">
-              <span className="text-emerald-400 mt-1.5 shrink-0 w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <div key={idx} className="flex items-start space-x-2 pl-2 py-1 text-xs text-[#6B7280]">
+              <span className="text-[#16C784] mt-1.5 shrink-0 w-1 h-1 rounded-full bg-[#16C784]"></span>
               <span>
-                <strong className="font-semibold text-zinc-100">{boldMatch[1]}</strong>
+                <strong className="font-bold text-[#D7DCE5] font-sans">{boldMatch[1]}</strong>
                 {boldMatch[2]}
               </span>
             </div>
@@ -73,8 +71,8 @@ export default function ReferenceTab() {
       // Ordinary bullets
       if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
         return (
-          <div key={idx} className="flex items-start space-x-2 pl-3 py-1 text-xs text-zinc-300">
-            <span className="text-zinc-500 mt-1.5 shrink-0 w-1.5 h-1.5 rounded-full bg-zinc-600"></span>
+          <div key={idx} className="flex items-start space-x-2 pl-2 py-1 text-xs text-[#6B7280]">
+            <span className="text-[#4B5563] mt-1.5 shrink-0 w-1 h-1 rounded-full bg-[#4B5563]"></span>
             <span>{trimmed.substring(2)}</span>
           </div>
         );
@@ -83,7 +81,7 @@ export default function ReferenceTab() {
       // Formulas (EV formula style box)
       if (trimmed.startsWith('**EV =')) {
         return (
-          <div key={idx} className="my-3 p-3.5 bg-[#0d1117] border border-emerald-500/30 text-[#00ff88] font-mono rounded text-center text-xs font-bold shadow-inner">
+          <div key={idx} className="my-3 p-3 bg-[#0A0C10] border border-[#1F2430] text-[#16C784] font-mono rounded-[2px] text-center text-xs font-bold">
             {trimmed.replace(/\*\*/g, '')}
           </div>
         );
@@ -91,29 +89,27 @@ export default function ReferenceTab() {
 
       // Table parsing
       if (trimmed.startsWith('|') && lines[idx - 1]?.includes('---')) {
-        // Divider row skip
         return null;
       }
       if (trimmed.startsWith('|') && !trimmed.includes('---') && !trimmed.includes('Session / Window')) {
         const cols = trimmed.split('|').map(c => c.trim()).filter(c => c !== '');
         return (
-          <div key={idx} className="grid grid-cols-1 md:grid-cols-4 gap-3 bg-[#0d1117]/80 p-3 border border-zinc-850 rounded-md text-xs my-2 font-sans">
-            <div className="font-bold text-[#00ff88] font-mono">{cols[0]}</div>
-            <div className="font-mono text-zinc-400 md:text-center bg-zinc-900/50 py-0.5 rounded px-1">{cols[1]}</div>
-            <div className="font-mono text-zinc-400 md:text-center">{cols[2]}</div>
-            <div className="md:col-span-1 text-zinc-300">{cols[3]}</div>
+          <div key={idx} className="grid grid-cols-1 md:grid-cols-4 gap-2 bg-[#0A0C10]/80 p-2.5 border border-[#1F2430] rounded-[2px] text-xs my-2">
+            <div className="font-bold text-[#22D3EE] font-mono">{cols[0]}</div>
+            <div className="font-mono text-[#6B7280] md:text-center bg-[#12151B] py-0.5 rounded-[2px] px-1.5 border border-[#1F2430]">{cols[1]}</div>
+            <div className="font-mono text-[#6B7280] md:text-center">{cols[2]}</div>
+            <div className="md:col-span-1 text-[#6B7280] font-sans">{cols[3]}</div>
           </div>
         );
       }
       if (trimmed.startsWith('|') && trimmed.includes('Session / Window')) {
-        // Table header: hide or style
         return null;
       }
 
       // Rule highlight paragraph
       if (trimmed.startsWith('*Golden Rule:') || trimmed.startsWith('*Tip:') || trimmed.startsWith('*Rule:')) {
         return (
-          <div key={idx} className="p-3 bg-emerald-500/5 border border-emerald-500/20 text-[#00ff88] rounded text-xs leading-relaxed my-3 italic">
+          <div key={idx} className="p-3 bg-[#16C784]/5 border border-[#16C784]/15 text-[#16C784] rounded-[2px] text-xs leading-normal my-3 italic font-sans">
             {trimmed.replace(/\*/g, '')}
           </div>
         );
@@ -121,7 +117,7 @@ export default function ReferenceTab() {
 
       // Default paragraph
       return (
-        <p key={idx} className="text-xs text-zinc-300 leading-relaxed py-1">
+        <p key={idx} className="text-xs text-[#6B7280] leading-relaxed py-0.5 font-sans">
           {trimmed}
         </p>
       );
@@ -129,52 +125,52 @@ export default function ReferenceTab() {
   };
 
   return (
-    <div className="space-y-6" id="im_reference_view">
+    <div className="space-y-4 animate-fade-in" id="im_reference_view">
       
       {/* HEADER CARD */}
-      <div className="bg-[#161b22] border border-zinc-800/80 p-6 rounded-lg shadow-xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-[#ffd700]/5 rounded-full blur-3xl pointer-events-none"></div>
-        <h2 className="text-lg font-semibold text-[#e6edf3] tracking-tight flex items-center gap-2">
-          <HelpCircle className="w-5 h-5 text-[#ffd700]" /> Smart Money Concepts (SMC) Reference Manual
+      <div className="bg-[#12151B] border border-[#1F2430] p-5 rounded-[2px] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
+        <h2 className="text-xs font-bold font-mono text-[#D7DCE5] uppercase tracking-wider flex items-center gap-2">
+          <HelpCircle className="w-4 h-4 text-amber-500" /> Smart Money Concepts (SMC) Reference Manual
         </h2>
-        <p className="text-xs text-zinc-400 mt-1">
-          The official algorithm guide for the Institutional Mirror protocol. Consult these chapters daily to maintain precision.
+        <p className="text-[10px] text-[#6B7280] mt-1">
+          The core model reference protocol for the Institutional Mirror system. Review these directives daily to prevent emotional bias.
         </p>
       </div>
 
       {/* ACCORDION CONTAINER */}
-      <div className="space-y-3" id="im_accordion_container">
+      <div className="space-y-2" id="im_accordion_container">
         {REFERENCE_SECTIONS.map((section) => {
           const isOpen = openSection === section.id;
           return (
             <div
               key={section.id}
-              className={`bg-[#161b22] border rounded-lg transition-all overflow-hidden shadow-md
-                ${isOpen ? 'border-zinc-700/80' : 'border-zinc-850 hover:border-zinc-700/40'}`}
+              className={`bg-[#12151B] border rounded-[2px] transition-all overflow-hidden
+                ${isOpen ? 'border-[#1F2430]' : 'border-[#1F2430]/60 hover:border-[#1F2430]'}`}
               id={`im_ref_acc_${section.id}`}
             >
               {/* ACCORDION TRIGGER */}
               <button
                 onClick={() => toggleSection(section.id)}
-                className="w-full flex items-center justify-between p-4 text-left select-none focus:outline-none"
+                className="w-full flex items-center justify-between p-3 text-left select-none focus:outline-none"
               >
-                <div className="flex items-center space-x-3">
-                  <span className="text-[10px] font-bold font-mono tracking-wider bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded uppercase">
+                <div className="flex items-center space-x-2.5">
+                  <span className="text-[8px] font-bold font-mono tracking-wider bg-[#1F2430] text-[#6B7280] px-1.5 py-0.5 rounded-[1px] uppercase">
                     {section.category}
                   </span>
-                  <span className="text-xs font-bold text-zinc-200 tracking-wide hover:text-white transition-colors">
+                  <span className="text-xs font-bold font-mono text-[#D7DCE5] hover:text-[#16C784] transition-colors uppercase">
                     {section.title}
                   </span>
                 </div>
-                <div className="text-zinc-500">
-                  {isOpen ? <ChevronUp className="w-4 h-4 text-[#ffd700]" /> : <ChevronDown className="w-4 h-4" />}
+                <div className="text-[#6B7280]">
+                  {isOpen ? <ChevronUp className="w-3.5 h-3.5 text-amber-500" /> : <ChevronDown className="w-3.5 h-3.5" />}
                 </div>
               </button>
 
               {/* ACCORDION CONTENT */}
               {isOpen && (
-                <div className="px-5 pb-5 pt-1 border-t border-zinc-850/80 bg-[#0d1117]/30">
-                  <div className="space-y-1.5 font-sans">
+                <div className="px-4 pb-4 pt-1.5 border-t border-[#1F2430] bg-[#0A0C10]/20">
+                  <div className="space-y-1 font-sans">
                     {renderFormattedContent(section.content)}
                   </div>
                 </div>
@@ -185,74 +181,74 @@ export default function ReferenceTab() {
       </div>
 
       {/* DATA SYSTEM PURGE ACTUATOR */}
-      <div className="bg-rose-500/5 border border-rose-500/10 p-6 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-4 mt-8" id="im_data_purge_actuator">
+      <div className="bg-[#12151B] border border-[#1F2430] p-5 rounded-[2px] flex flex-col md:flex-row md:items-center justify-between gap-4 mt-6" id="im_data_purge_actuator">
         <div>
-          <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-rose-500 flex items-center gap-1.5">
+          <h3 className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#EA3943] flex items-center gap-1.5">
             <AlertOctagon className="w-4 h-4 animate-pulse" /> SYSTEM RESET GATEWAY
           </h3>
-          <p className="text-xs text-zinc-400 mt-1">
-            Purges all journal histories, checklists, and preferences cached within this browser storage. This action is irreversible.
+          <p className="text-[10px] text-[#6B7280] mt-1">
+            Purges all journal records, backtest checklists, and customized settings cached inside this browser's local sandbox storage.
           </p>
         </div>
         <button
           onClick={() => setShowResetModal(true)}
-          className="px-5 py-2.5 bg-[#ff4444]/15 hover:bg-[#ff4444]/25 border border-rose-500/40 text-[#ff4444] font-bold text-xs rounded transition-all tracking-wider font-mono shrink-0"
+          className="px-4 py-2 bg-[#EA3943]/10 hover:bg-[#EA3943]/20 border border-[#EA3943]/30 text-[#EA3943] font-bold text-[10px] rounded-[2px] transition-all tracking-wider font-mono shrink-0 uppercase"
           id="im_show_reset_modal_btn"
         >
-          RESET ALL DATA
+          RESET ALL LOCAL DATA
         </button>
       </div>
 
       {/* SYSTEM CONFIRMATION MODAL */}
       {showResetModal && (
-        <div className="fixed inset-0 z-50 bg-[#0d1117]/95 flex items-center justify-center p-4 backdrop-blur-sm" id="im_reset_modal_overlay">
-          <div className="bg-[#161b22] border border-rose-500/30 p-6 rounded-lg max-w-sm w-full shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-[#0A0C10]/95 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in" id="im_reset_modal_overlay">
+          <div className="bg-[#12151B] border border-[#1F2430] p-5 rounded-[2px] max-w-sm w-full shadow-2xl relative">
             
-            <h3 className="text-sm font-bold tracking-wider text-rose-500 uppercase flex items-center gap-1.5">
-              <AlertOctagon className="w-5 h-5 text-rose-400 shrink-0" /> IRREVERSIBLE ACTION DETECTED
+            <h3 className="text-xs font-bold font-mono tracking-wider text-[#EA3943] uppercase flex items-center gap-1.5">
+              <AlertOctagon className="w-4 h-4 text-[#EA3943] shrink-0 animate-bounce" /> DESTRUCTIVE PROTOCOL
             </h3>
-            <p className="text-xs text-zinc-400 leading-relaxed mt-2">
-              You are about to flush all logged trades and preferences from this app instance.
+            <p className="text-[11px] text-[#6B7280] leading-normal mt-2 font-sans">
+              You are about to flush all logged trades and local preferences. This action is final and irreversible.
             </p>
 
             {resetSuccess ? (
-              <div className="p-4 bg-emerald-500/15 border border-emerald-500/30 rounded mt-4 text-center text-[#00ff88] text-xs font-mono flex flex-col items-center gap-2">
-                <CheckCircle className="w-6 h-6 animate-bounce" />
-                <span>DATA PURGED SUCCESSFUL — RELOADING SYSTEM</span>
+              <div className="p-3 bg-[#16C784]/10 border border-[#16C784]/25 rounded-[2px] mt-4 text-center text-[#16C784] text-[10px] font-mono flex flex-col items-center gap-2">
+                <CheckCircle className="w-5 h-5 animate-bounce" />
+                <span>SANDBOX PURGED — REBOOTING PROTOCOLS</span>
               </div>
             ) : (
-              <form onSubmit={handleResetPurge} className="mt-4 space-y-4">
+              <form onSubmit={handleResetPurge} className="mt-4 space-y-3">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-mono text-zinc-500">TYPE <strong className="text-rose-400 font-bold font-mono">RESET</strong> TO CONFIRM DESTRUCTION</label>
+                  <label className="text-[9px] font-mono text-[#6B7280] uppercase">TYPE <strong className="text-[#EA3943] font-bold">RESET</strong> TO CONFIRM PROTOCOL</label>
                   <input
                     type="text"
                     value={resetInput}
                     onChange={(e) => setResetInput(e.target.value)}
                     placeholder="RESET"
-                    className="w-full bg-[#0d1117] border border-zinc-800 rounded py-2 px-3 text-center text-xs font-mono font-extrabold tracking-widest text-[#ff4444] focus:outline-none focus:border-rose-500"
+                    className="w-full bg-[#0A0C10] border border-[#1F2430] rounded-[2px] py-1.5 px-3 text-center text-xs font-mono font-extrabold tracking-widest text-[#EA3943] focus:outline-none focus:border-[#EA3943] transition-all"
                     required
                     autoFocus
                   />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-2 pt-2">
+                <div className="grid grid-cols-2 gap-2 pt-1.5">
                   <button
                     type="button"
                     onClick={() => {
                       setShowResetModal(false);
                       setResetInput('');
                     }}
-                    className="py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold text-xs rounded transition-all tracking-wider"
+                    className="py-2 bg-[#0A0C10] border border-[#1F2430] hover:bg-[#1F2430]/30 text-[#6B7280] font-bold text-[10px] rounded-[2px] transition-all tracking-wider font-mono uppercase"
                   >
                     ABORT
                   </button>
                   <button
                     type="submit"
                     disabled={resetInput !== 'RESET'}
-                    className={`py-2 text-xs font-bold rounded transition-all tracking-wider font-mono
+                    className={`py-2 text-[10px] font-bold rounded-[2px] transition-all tracking-wider font-mono uppercase
                       ${resetInput === 'RESET'
-                        ? 'bg-rose-600 text-zinc-950 font-extrabold hover:bg-rose-500 cursor-pointer'
-                        : 'bg-zinc-900 text-zinc-600 cursor-not-allowed'
+                        ? 'bg-[#EA3943] text-[#0A0C10] font-extrabold hover:brightness-110 cursor-pointer'
+                        : 'bg-[#0A0C10] text-[#6B7280]/40 cursor-not-allowed border border-[#1F2430]'
                       }`}
                   >
                     PURGE ALL

@@ -127,6 +127,7 @@ export default function App() {
           <ChecklistTab 
             onSetActiveTab={setActiveTab} 
             onSetPrefilledSetup={setPrefilledSetup} 
+            botData={botData}
           />
         );
       case 'journal':
@@ -146,59 +147,62 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d1117] text-[#e6edf3] font-sans flex flex-col justify-between" id="im_master_app_root">
+    <div className="min-h-screen bg-[#0A0C10] text-[#D7DCE5] font-sans flex flex-col justify-between" id="im_master_app_root">
       
       {/* FIXED / STICKY HEADER & TOP NAVBAR */}
-      <header className="sticky top-0 z-40 bg-[#161b22]/95 border-b border-zinc-800/80 backdrop-blur-md" id="im_master_header">
+      <header className="sticky top-0 z-40 bg-[#12151B] border-b border-[#1F2430] backdrop-blur-md" id="im_master_header">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 flex-col md:flex-row py-2 md:py-0">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between py-2 lg:h-14 lg:py-0 gap-2 lg:gap-0">
             
             {/* Branding Logo Block */}
-            <div className="flex items-center space-x-2.5">
-              <div className="w-8 h-8 rounded bg-gradient-to-tr from-emerald-500 to-[#00ff88] flex items-center justify-center text-zinc-950 font-black tracking-tighter shadow-md shadow-emerald-500/10">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start lg:items-center text-center sm:text-left gap-2">
+              <div className="w-7 h-7 rounded-[2px] bg-[#1F2430] border border-[#22D3EE]/30 flex items-center justify-center text-[#22D3EE] font-bold text-xs tracking-tighter shrink-0 font-mono">
                 IM
               </div>
-              <div>
-                <h1 className="text-sm font-black tracking-widest text-white uppercase flex items-center gap-1.5 leading-none">
-                  Institutional Mirror <span className="text-[9px] bg-emerald-500/10 border border-emerald-500/30 text-[#00ff88] py-0.5 px-1.5 rounded font-mono font-normal">SMC PROTOCOL</span>
+              <div className="flex flex-col items-center sm:items-start">
+                <h1 className="text-xs font-bold tracking-wider text-[#D7DCE5] uppercase flex flex-wrap items-center justify-center sm:justify-start gap-1.5 leading-none">
+                  <span>Institutional Mirror</span>
+                  <span className="text-[9px] bg-[#22D3EE]/10 border border-[#22D3EE]/30 text-[#22D3EE] py-0.5 px-1.5 rounded-[2px] font-mono font-normal">SMC PROTOCOL</span>
                 </h1>
-                <span className="text-[10px] font-mono text-zinc-400 tracking-wider">Smart Money Concepts Execution Matrix</span>
+                <span className="text-[9px] font-mono text-[#6B7280] tracking-wider mt-0.5">Smart Money Concepts Execution Matrix</span>
               </div>
             </div>
-
+ 
             {/* Top Navbar Tabs */}
-            <div className="flex items-center gap-4 mt-2 md:mt-0">
-              {showSyncedIndicator && (
-                <div 
-                  className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-[#00ff88] rounded-full text-[10px] font-mono animate-pulse"
-                  id="im_sheets_sync_indicator"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                  <span>Synced to Sheets</span>
-                </div>
-              )}
-              {lastUpdatedText && (
-                <div className="text-[10px] font-mono text-zinc-500 bg-zinc-900 px-2.5 py-1 rounded border border-zinc-800" id="im_bot_last_updated">
-                  {lastUpdatedText}
-                </div>
-              )}
-              <nav className="flex space-x-1" id="im_top_navbar">
+            <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-end gap-2.5 w-full lg:w-auto">
+              <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                {showSyncedIndicator && (
+                  <div 
+                    className="flex items-center gap-1 px-2 py-0.5 bg-[#16C784]/10 border border-[#16C784]/20 text-[#16C784] rounded-[2px] text-[9px] font-mono animate-pulse shrink-0"
+                    id="im_sheets_sync_indicator"
+                  >
+                    <span className="w-1 h-1 rounded-full bg-[#16C784]"></span>
+                    <span>Synced</span>
+                  </div>
+                )}
+                {lastUpdatedText && (
+                  <div className="text-[9px] font-mono text-[#6B7280] bg-[#12151B] px-2 py-0.5 rounded-[2px] border border-[#1F2430] shrink-0" id="im_bot_last_updated">
+                    {lastUpdatedText}
+                  </div>
+                )}
+              </div>
+              <nav className="flex flex-nowrap items-center space-x-1 overflow-x-auto max-w-full pb-1 lg:pb-0 scrollbar-none snap-x w-full lg:w-auto justify-start lg:justify-end" id="im_top_navbar">
                 {[
-                  { id: 'dashboard', label: 'Dashboard', icon: <Activity className="w-3.5 h-3.5" /> },
-                  { id: 'calculator', label: 'Calculator', icon: <Calculator className="w-3.5 h-3.5" /> },
-                  { id: 'checklist', label: 'Checklist', icon: <ClipboardCheck className="w-3.5 h-3.5" /> },
-                  { id: 'journal', label: 'Journal', icon: <BookOpen className="w-3.5 h-3.5" /> },
-                  { id: 'reference', label: 'Reference', icon: <Eye className="w-3.5 h-3.5" /> }
+                  { id: 'dashboard', label: 'DASHBOARD', icon: <Activity className="w-3 h-3" /> },
+                  { id: 'calculator', label: 'CALCULATOR', icon: <Calculator className="w-3 h-3" /> },
+                  { id: 'checklist', label: 'CHECKLIST', icon: <ClipboardCheck className="w-3 h-3" /> },
+                  { id: 'journal', label: 'JOURNAL', icon: <BookOpen className="w-3 h-3" /> },
+                  { id: 'reference', label: 'REFERENCE', icon: <Eye className="w-3 h-3" /> }
                 ].map((tab) => {
                   const isActive = activeTab === tab.id;
                   return (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`px-3 py-1.5 rounded-md text-xs font-bold tracking-wide transition-all flex items-center gap-1.5 border
+                      className={`px-2.5 py-1 rounded-[2px] text-[11px] font-medium tracking-wider transition-all flex items-center gap-1 border shrink-0 snap-start font-mono
                         ${isActive
-                          ? 'bg-[#00ff88]/10 border-[#00ff88]/35 text-[#00ff88] shadow-sm'
-                          : 'bg-transparent border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40'
+                          ? 'bg-[#22D3EE]/10 border-[#22D3EE]/30 text-[#22D3EE]'
+                          : 'bg-transparent border-transparent text-[#6B7280] hover:text-[#D7DCE5] hover:bg-[#12151B]'
                         }`}
                       id={`im_nav_tab_${tab.id}`}
                     >
@@ -209,26 +213,26 @@ export default function App() {
                 })}
               </nav>
             </div>
-
+ 
           </div>
         </div>
       </header>
-
+ 
       {fetchFailed && (
-        <div className="bg-amber-500/10 border-b border-yellow-500/20 px-4 py-2 text-center text-xs text-yellow-500 flex items-center justify-center gap-2" id="im_fetch_failed_banner">
-          <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse"></span>
+        <div className="bg-[#EA3943]/10 border-b border-[#EA3943]/20 px-4 py-1 text-center text-[10px] text-[#EA3943] flex items-center justify-center gap-1.5" id="im_fetch_failed_banner">
+          <span className="w-1 h-1 rounded-full bg-[#EA3943] animate-pulse"></span>
           <span>Couldn't reach live data — showing last known state.</span>
         </div>
       )}
-
+ 
       {/* PRIMARY VIEWS CONTENT MAIN BLOCK */}
-      <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex-1">
+      <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-4 flex-1">
         {renderActiveTab()}
       </main>
-
+ 
       {/* CENTRAL STRATEGY FOOTER */}
-      <footer className="bg-[#161b22] border-t border-zinc-800/80 py-4" id="im_master_footer">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-[11px] font-mono text-zinc-500 tracking-wide">
+      <footer className="bg-[#12151B] border-t border-[#1F2430] py-2" id="im_master_footer">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-[9px] font-mono text-[#4B5563] tracking-wider">
           Institutional Mirror &mdash; Personal strategy tool &mdash; Not financial advice &mdash; Manage your risk strictly
         </div>
       </footer>
