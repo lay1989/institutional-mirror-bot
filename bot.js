@@ -1,34 +1,31 @@
 // ============================================================
-// INSTITUTIONAL MIRROR — Automated Paper-Trading Signal Bot (v3)
+// INSTITUTIONAL MIRROR — Automated Paper-Trading Signal Bot (v4)
 // ============================================================
-// Changes from v2:
-//  - Market data now comes from Kraken, not Binance/Bybit. Both
-//    of those exchanges return HTTP 451 and hard-block requests
-//    from US IP ranges — and GitHub Actions runners are hosted
-//    on US cloud infrastructure, so every run was being blocked
-//    at the network level regardless of where YOU are. Kraken is
-//    a US-compliant exchange and does not do this.
-//  - Every network call (Kraken, Apps Script, Fear & Greed) now
-//    goes through fetchWithRetry: 3 attempts with backoff, and a
-//    clear labeled error if all attempts fail. If something does
-//    break, the GitHub Actions log will say exactly which call
-//    failed and why — no more guessing.
-//  - All detection logic (CONFIG, HTF bias, AMD bias, Order
-//    Blocks, round numbers, scaled exits, risk guards, snapshot)
-//    is unchanged from v2.
+// Changes from v3:
+//  - All detection rules (CONFIG, HTF bias, sweeps, FVG, AMD bias,
+//    Order Blocks, kill zones, scoring) now live in logic.js,
+//    shared with backtest.js. This file only handles: fetching
+//    live data from Kraken, talking to Sheets, and the run loop.
+//    Change a threshold in logic.js and both live trading and any
+//    backtest use the new value automatically — no drift risk.
+//  - Fixed a real bug: EMA(50) warm-up windows were too short
+//    (52 weekly candles for a 50-period EMA is ~1x the period,
+//    nowhere near enough to converge). Now fetching 200/300/300
+//    candles for weekly/daily/4H so the EMA is actually trustworthy
+//    before being used to decide HTF bias.
 // ============================================================
 
+const {
+  CONFIG, htfBias, getKillZoneInfo, isWeekend, evaluateSetup,
+} = require('./logic.js');
+
 const SHEETS_URL = process.env.SHEETS_URL;
-const PAIRS = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT']; // kept as the internal/Sheet-facing labels
+const PAIRS = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT'];
 const KRAKEN = 'https://api.kraken.com';
 const KRAKEN_FUTURES = 'https://futures.kraken.com';
 
-// Kraken uses its own pair codes (BTC is "XBT"), so map our
-// internal symbols to what Kraken's REST API expects.
 const KRAKEN_SPOT_PAIR = { BTCUSDT: 'XBTUSD', ETHUSDT: 'ETHUSD', SOLUSDT: 'SOLUSD' };
 const KRAKEN_FUTURES_SYMBOL = { BTCUSDT: 'PF_XBTUSD', ETHUSDT: 'PF_ETHUSD', SOLUSDT: 'PF_SOLUSD' };
-
-// English interval names -> Kraken's minutes-based interval values
 const KRAKEN_INTERVAL_MINUTES = { '15m': 15, '1h': 60, '4h': 240, '1d': 1440, '1w': 10080 };
 
 if (!SHEETS_URL) {
@@ -36,56 +33,8 @@ if (!SHEETS_URL) {
   process.exit(1);
 }
 
-// ============================================================
-// CONFIG — unchanged from v2. Every tunable number lives here.
-// ============================================================
-const CONFIG = {
-  EMA_FAST: 20,
-  EMA_SLOW: 50,
-  TREND_SLOPE_LOOKBACK: 5,
-
-  EQUAL_LEVEL_TOLERANCE_PCT: 0.0015,
-  SWEEP_STOP_BUFFER_PCT: 0.0007,
-  DISPLACEMENT_MULTIPLIER: 1.5,
-  FVG_LOOKBACK_CANDLES: 6,
-  EQUILIBRIUM_BUFFER_PCT: 0.005,
-  OB_DISPLACEMENT_MULTIPLIER: 1.5,
-  ROUND_NUMBER_STEP: { BTCUSDT: 1000, ETHUSDT: 100, SOLUSDT: 10 },
-
-  TP1_R: 1.0, TP2_R: 1.5, TP3_R: 3.5,
-  TP1_CLOSE_PCT: 0.3, TP2_CLOSE_PCT: 0.3, TP3_CLOSE_PCT: 0.4,
-
-  MIN_SCORE_TYPE_A: 5,
-  MAX_SCORE: 6,
-
-  // FUNDING_RATE_MAX_ABS_PCT of 0.1 (percent, per 8h) annualizes to
-  // ~110%/year — already a euphoria-extreme threshold, not a
-  // "no crowd allowed" filter. Ordinary healthy bull-market funding
-  // (~0.01-0.03%/8h) passes through untouched.
-  FUNDING_RATE_MAX_ABS_PCT: 0.1,
-  FEAR_GREED_MIN: 20,
-  FEAR_GREED_MAX: 85,
-
-  KILL_ZONES: [
-    { name: 'Asian Range', start: 0, end: 240, entryEligible: false },
-    { name: 'London KZ', start: 420, end: 600, entryEligible: true },
-    { name: 'New York KZ', start: 720, end: 900, entryEligible: true },
-    { name: 'Silver Bullet', start: 900, end: 960, entryEligible: true },
-  ],
-  KILL_ZONE_ENTRY_DELAY_MIN: 20,
-
-  DAILY_PROFIT_CAP_PCT: 0.03,
-  DAILY_LOSS_CAP_PCT: 0.03,
-  LOSS_STREAK_COUNT: 3,
-  LOSS_STREAK_COOLDOWN_HOURS: 24,
-  MAX_TRADE_DURATION_HOURS: 4,
-};
-
 // ---------------------------------------------------------
-// Network helper — every fetch in this file goes through this.
-// Retries transient failures with backoff and always logs a
-// clear, labeled message so failures are diagnosable from the
-// GitHub Actions log alone.
+// Network helper — every fetch goes through this
 // ---------------------------------------------------------
 
 async function fetchWithRetry(url, options = {}, retries = 3, label = url) {
@@ -107,8 +56,6 @@ async function fetchWithRetry(url, options = {}, retries = 3, label = url) {
   throw new Error(`All ${retries} attempts failed for ${label}: ${lastErr.message}`);
 }
 
-// small pause between sequential Kraken calls — stays comfortably
-// under Kraken's documented "1 request/sec per pair" public guidance
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ---------------------------------------------------------
@@ -140,11 +87,9 @@ async function getPrice(symbol) {
   const data = await res.json();
   if (data.error && data.error.length) throw new Error(`Kraken Ticker ${symbol} returned error: ${data.error.join(', ')}`);
   const ticker = Object.values(data.result)[0];
-  return +ticker.c[0]; // c = [last trade closed price, lot volume]
+  return +ticker.c[0];
 }
 
-// Kraken Futures public tickers endpoint returns all perpetuals in
-// one call, including a live fundingRate field, no auth required.
 let _tickersCache = null;
 async function getAllFuturesTickers() {
   if (_tickersCache) return _tickersCache;
@@ -160,7 +105,7 @@ async function getFundingRate(symbol) {
     const wanted = KRAKEN_FUTURES_SYMBOL[symbol].toLowerCase();
     const t = tickers.find(x => (x.symbol || '').toLowerCase() === wanted);
     if (!t || typeof t.fundingRate !== 'number') return null;
-    return t.fundingRate * 100; // treat as a percent, same convention as before
+    return t.fundingRate * 100;
   } catch (err) {
     console.warn(`Funding rate lookup failed for ${symbol} (non-fatal, gate fails open): ${err.message}`);
     return null;
@@ -178,13 +123,6 @@ async function getFearGreed() {
   }
 }
 
-// News calendar — pulls the free, widely-used ForexFactory JSON
-// mirror (nfs.faireconomy.media) that many trading bots rely on.
-// It's not an official ForexFactory product, so treat it as
-// best-effort: if the feed is unreachable or its shape changes,
-// this fails open (doesn't block trading) rather than breaking
-// the run. First live run is the real test of the exact field
-// names below (date / impact / title) — check the log.
 let _newsCache = null;
 async function getHighImpactNewsBlock(now) {
   try {
@@ -198,7 +136,6 @@ async function getHighImpactNewsBlock(now) {
       const evMs = new Date(ev.date).getTime();
       if (isNaN(evMs)) continue;
       const minutesAway = (evMs - nowMs) / 60000;
-      // strategy rule: skip 30 min before through 15 min after a high-impact event
       if (minutesAway <= 30 && minutesAway >= -15) {
         return { blocked: true, event: ev.title, minutesAway: Math.round(minutesAway) };
       }
@@ -211,7 +148,7 @@ async function getHighImpactNewsBlock(now) {
 }
 
 // ---------------------------------------------------------
-// Sheets I/O (the durable database)
+// Sheets I/O
 // ---------------------------------------------------------
 
 async function sheetsGet(status) {
@@ -222,279 +159,31 @@ async function sheetsGet(status) {
 
 async function sheetsPost(body) {
   const res = await fetchWithRetry(SHEETS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(body),
+    method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(body),
   }, 3, `Sheets POST (${body.action})`);
   return res.json();
 }
 
 // ---------------------------------------------------------
-// Technical analysis primitives (unchanged from v2)
-// ---------------------------------------------------------
-
-function ema(values, period) {
-  const k = 2 / (period + 1);
-  const out = [values[0]];
-  for (let i = 1; i < values.length; i++) out.push(values[i] * k + out[i - 1] * (1 - k));
-  return out;
-}
-
-function trendDirection(candles) {
-  const closes = candles.map(c => c.close);
-  const eF = ema(closes, CONFIG.EMA_FAST);
-  const eS = ema(closes, CONFIG.EMA_SLOW);
-  const last = closes.length - 1;
-  const lb = CONFIG.TREND_SLOPE_LOOKBACK;
-  if (eF[last] > eS[last] && eF[last] > eF[last - lb]) return 'bull';
-  if (eF[last] < eS[last] && eF[last] < eF[last - lb]) return 'bear';
-  return 'range';
-}
-
-function htfBias(weekly, daily, h4) {
-  const wt = trendDirection(weekly), dt = trendDirection(daily), ht = trendDirection(h4);
-  const aligned = wt !== 'range' && wt === dt && dt === ht;
-  return { aligned, bias: aligned ? dt : 'range', weekly: wt, daily: dt, h4: ht };
-}
-
-function findSwingPoints(candles, lookback = 2) {
-  const highs = [], lows = [];
-  for (let i = lookback; i < candles.length - lookback; i++) {
-    const wh = candles.slice(i - lookback, i + lookback + 1).map(c => c.high);
-    const wl = candles.slice(i - lookback, i + lookback + 1).map(c => c.low);
-    if (candles[i].high === Math.max(...wh)) highs.push({ index: i, price: candles[i].high });
-    if (candles[i].low === Math.min(...wl)) lows.push({ index: i, price: candles[i].low });
-  }
-  return { highs, lows };
-}
-
-function findEqualLevels(points) {
-  const levels = [];
-  for (let i = 0; i < points.length; i++) {
-    for (let j = i + 1; j < points.length; j++) {
-      if (Math.abs(points[i].price - points[j].price) / points[i].price <= CONFIG.EQUAL_LEVEL_TOLERANCE_PCT) {
-        levels.push((points[i].price + points[j].price) / 2);
-      }
-    }
-  }
-  return levels;
-}
-
-function detectSweep(candles, level, direction) {
-  const last = candles[candles.length - 1], prev = candles[candles.length - 2];
-  if (direction === 'above') return (last.high > level || prev.high > level) && last.close < level;
-  return (last.low < level || prev.low < level) && last.close > level;
-}
-
-function detectDisplacementAndFVG(candles, direction) {
-  const recent = candles.slice(-CONFIG.FVG_LOOKBACK_CANDLES);
-  const bodies = recent.map(c => Math.abs(c.close - c.open));
-  const avgBody = bodies.slice(0, -1).reduce((a, b) => a + b, 0) / (bodies.length - 1);
-  for (let i = 2; i < recent.length; i++) {
-    const c1 = recent[i - 2], c2 = recent[i - 1], c3 = recent[i];
-    const displacement = Math.abs(c2.close - c2.open) >= avgBody * CONFIG.DISPLACEMENT_MULTIPLIER;
-    const bullish = c2.close > c2.open;
-    if (direction === 'bullish' && displacement && bullish && c1.high < c3.low) {
-      return { found: true, mid: (c3.low + c1.high) / 2 };
-    }
-    if (direction === 'bearish' && displacement && !bullish && c1.low > c3.high) {
-      return { found: true, mid: (c1.low + c3.high) / 2 };
-    }
-  }
-  return { found: false };
-}
-
-function premiumDiscountZone(candles, currentPrice) {
-  const swingHigh = Math.max(...candles.map(c => c.high));
-  const swingLow = Math.min(...candles.map(c => c.low));
-  const mid = (swingHigh + swingLow) / 2;
-  if (currentPrice < mid * (1 - CONFIG.EQUILIBRIUM_BUFFER_PCT)) return 'discount';
-  if (currentPrice > mid * (1 + CONFIG.EQUILIBRIUM_BUFFER_PCT)) return 'premium';
-  return 'equilibrium';
-}
-
-function findUnmitigatedOrderBlocks(candles, direction) {
-  const blocks = [];
-  for (let i = 2; i < candles.length; i++) {
-    const move = candles[i];
-    const prevBody = Math.abs(candles[i - 1].close - candles[i - 1].open) || 0.0001;
-    if (Math.abs(move.close - move.open) <= prevBody * CONFIG.OB_DISPLACEMENT_MULTIPLIER) continue;
-    const bullMove = move.close > move.open;
-    const obCandle = candles[i - 1];
-    if (direction === 'bullish' && bullMove && obCandle.close < obCandle.open) {
-      if (!candles.slice(i + 1).some(c => c.low <= obCandle.high)) blocks.push({ top: obCandle.high, bottom: obCandle.low });
-    }
-    if (direction === 'bearish' && !bullMove && obCandle.close > obCandle.open) {
-      if (!candles.slice(i + 1).some(c => c.high >= obCandle.low)) blocks.push({ top: obCandle.high, bottom: obCandle.low });
-    }
-  }
-  return blocks;
-}
-
-function crossesRoundNumber(entry, tp3, symbol) {
-  const step = CONFIG.ROUND_NUMBER_STEP[symbol] || 100;
-  const lo = Math.min(entry, tp3), hi = Math.max(entry, tp3);
-  const first = Math.ceil(lo / step) * step;
-  for (let lvl = first; lvl <= hi; lvl += step) {
-    if (lvl > lo + (hi - lo) * 0.05 && lvl < hi - (hi - lo) * 0.02) return true;
-  }
-  return false;
-}
-
-function runwayIsClean(entry, tp3, orderBlocks, symbol) {
-  const lo = Math.min(entry, tp3), hi = Math.max(entry, tp3);
-  const obBlocked = orderBlocks.some(ob => ob.bottom < hi && ob.top > lo);
-  return !obBlocked && !crossesRoundNumber(entry, tp3, symbol);
-}
-
-// ---------------------------------------------------------
-// AMD bias (unchanged from v2 — see prior explanation of the
-// Accumulation / Manipulation / Distribution model in comments)
-// ---------------------------------------------------------
-
-function getAsianRange(candles15m, now) {
-  const todayStart = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0);
-  const asianEnd = todayStart + 4 * 3600000;
-  const asianCandles = candles15m.filter(c => c.openTime >= todayStart && c.openTime < asianEnd);
-  if (asianCandles.length === 0) return null;
-  return { high: Math.max(...asianCandles.map(c => c.high)), low: Math.min(...asianCandles.map(c => c.low)) };
-}
-
-function getAMDBias(candles15m, now) {
-  const minutesIntoDay = now.getUTCHours() * 60 + now.getUTCMinutes();
-  if (minutesIntoDay < 240) return 'undetermined';
-  const asian = getAsianRange(candles15m, now);
-  if (!asian) return 'undetermined';
-  if (minutesIntoDay < 420) return 'undetermined';
-
-  const todayStart = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0);
-  const londonStart = todayStart + 7 * 3600000;
-  const sinceLondon = candles15m.filter(c => c.openTime >= londonStart && c.openTime <= now.getTime());
-
-  for (const c of sinceLondon) {
-    if (c.high > asian.high && c.close < asian.high) return 'bearish';
-    if (c.low < asian.low && c.close > asian.low) return 'bullish';
-  }
-  return 'undetermined';
-}
-
-// ---------------------------------------------------------
-// Kill zone / calendar logic (UTC only)
-// ---------------------------------------------------------
-
-function getKillZoneInfo(now) {
-  const minutesIntoDay = now.getUTCHours() * 60 + now.getUTCMinutes();
-  for (const z of CONFIG.KILL_ZONES) {
-    if (minutesIntoDay >= z.start && minutesIntoDay < z.end) {
-      const pastDelay = (minutesIntoDay - z.start) >= CONFIG.KILL_ZONE_ENTRY_DELAY_MIN;
-      return { active: true, name: z.name, tradable: z.entryEligible && pastDelay };
-    }
-  }
-  return { active: false, name: null, tradable: false };
-}
-
-function isWeekend(now) {
-  const day = now.getUTCDay(), h = now.getUTCHours();
-  if (day === 6 && h >= 22) return true;
-  if (day === 0 && h < 22) return true;
-  return false;
-}
-
-// ---------------------------------------------------------
-// Setup evaluation — the algorithmic 6-point scorecard
+// Per-pair evaluation — fetches live candles, hands them to the
+// shared evaluateSetup() from logic.js
 // ---------------------------------------------------------
 
 async function evaluatePair(symbol, fearGreed, newsBlock) {
-  // Sequential, not Promise.all — stays under Kraken's public
-  // rate-limit guidance of ~1 request/sec per pair
-  const weekly = await getKlines(symbol, '1w', 52); await sleep(300);
-  const daily = await getKlines(symbol, '1d', 100); await sleep(300);
-  const h4 = await getKlines(symbol, '4h', 100); await sleep(300);
+  // 200+/300+ candles so EMA(50) actually converges (see header note)
+  const weekly = await getKlines(symbol, '1w', 200); await sleep(300);
+  const daily = await getKlines(symbol, '1d', 300); await sleep(300);
+  const h4 = await getKlines(symbol, '4h', 300); await sleep(300);
   const h1 = await getKlines(symbol, '1h', 100); await sleep(300);
   const m15 = await getKlines(symbol, '15m', 150); await sleep(300);
   const price = await getPrice(symbol);
-
-  const htf = htfBias(weekly, daily, h4);
-  // Informational only — does NOT gate trades. Logged so that after
-  // the trial we can see, with real data, how often requiring the
-  // Weekly to agree cost us vs. saved us, instead of guessing.
-  const dailyH4Aligned = htf.daily !== 'range' && htf.daily === htf.h4;
-  if (!htf.aligned) {
-    return {
-      symbol, skip: true, score: 0, reason: 'HTF not aligned', htf, dailyH4Aligned,
-      checklist: {
-        htfAligned: false, inKillZone: null, correctZone: null,
-        sweepConfirmed: null, mssConfirmed: null, cleanRunway: null,
-      },
-    };
-  }
-
-  const direction = htf.bias === 'bull' ? 'long' : 'short';
-  const zone = premiumDiscountZone(h1, price);
-  const zoneOk = (direction === 'long' && zone === 'discount') || (direction === 'short' && zone === 'premium');
-
-  const swings = findSwingPoints(h1, 2);
-  const eqLevels = findEqualLevels(direction === 'long' ? swings.lows : swings.highs);
-  const pdh = daily.length > 1 ? daily[daily.length - 2].high : null;
-  const pdl = daily.length > 1 ? daily[daily.length - 2].low : null;
-  const candidateLevels = [...eqLevels, direction === 'long' ? pdl : pdh].filter(Boolean);
-
-  let sweepLevel = null;
-  for (const lvl of candidateLevels) {
-    if (detectSweep(m15, lvl, direction === 'long' ? 'below' : 'above')) { sweepLevel = lvl; break; }
-  }
-
-  const mss = sweepLevel !== null
-    ? detectDisplacementAndFVG(m15, direction === 'long' ? 'bullish' : 'bearish')
-    : { found: false };
-
-  const kz = getKillZoneInfo(new Date());
-  const weekend = isWeekend(new Date());
   const funding = await getFundingRate(symbol);
-  const fundingOk = funding === null ? true : Math.abs(funding) <= CONFIG.FUNDING_RATE_MAX_ABS_PCT;
-  const macroOk = fearGreed === null ? true : (fearGreed >= CONFIG.FEAR_GREED_MIN && fearGreed <= CONFIG.FEAR_GREED_MAX);
 
-  const amdBias = getAMDBias(m15, new Date());
-  const inNYWindow = kz.name === 'New York KZ' || kz.name === 'Silver Bullet';
-  const amdContradicts = inNYWindow && amdBias !== 'undetermined' &&
-    ((direction === 'long' && amdBias === 'bearish') || (direction === 'short' && amdBias === 'bullish'));
-
-  let entry = null, stop = null, tp1 = null, tp2 = null, tp3 = null, runwayOk = false;
-
-  if (mss.found) {
-    entry = mss.mid;
-    const buffer = price * CONFIG.SWEEP_STOP_BUFFER_PCT;
-    stop = direction === 'long' ? sweepLevel - buffer : sweepLevel + buffer;
-    const dist = Math.abs(entry - stop);
-    tp1 = direction === 'long' ? entry + dist * CONFIG.TP1_R : entry - dist * CONFIG.TP1_R;
-    tp2 = direction === 'long' ? entry + dist * CONFIG.TP2_R : entry - dist * CONFIG.TP2_R;
-    tp3 = direction === 'long' ? entry + dist * CONFIG.TP3_R : entry - dist * CONFIG.TP3_R;
-    const obs = findUnmitigatedOrderBlocks(h1, direction === 'long' ? 'bullish' : 'bearish');
-    runwayOk = runwayIsClean(entry, tp3, obs, symbol);
-  }
-
-  const newsOk = !newsBlock.blocked;
-
-  const hardGatesPass = kz.active && kz.tradable && !weekend && fundingOk && macroOk && mss.found && runwayOk && !amdContradicts && newsOk;
-  const score = [true, kz.active && kz.tradable, zoneOk, sweepLevel !== null, mss.found, runwayOk].filter(Boolean).length;
-
-  return {
-    symbol, skip: !(hardGatesPass && score >= CONFIG.MIN_SCORE_TYPE_A), score, direction, zone,
-    killZoneName: kz.name, killZoneActive: kz.active, weekend, funding, fundingOk, fearGreed, macroOk,
-    amdBias, amdContradicts, newsOk, newsBlock, entry, stop, tp1, tp2, tp3, price, htf, dailyH4Aligned, pdh, pdl,
-    checklist: {
-      htfAligned: htf.aligned,
-      inKillZone: kz.active && kz.tradable,
-      correctZone: zoneOk,
-      sweepConfirmed: sweepLevel !== null,
-      mssConfirmed: mss.found,
-      cleanRunway: mss.found ? runwayOk : null, // null = not evaluated yet (no MSS to check a runway from)
-    },
-  };
+  return evaluateSetup({ symbol, weekly, daily, h4, h1, m15, price, now: new Date(), funding, fearGreed, newsBlock });
 }
 
 // ---------------------------------------------------------
-// Trade lifecycle management (unchanged from v2)
+// Trade lifecycle management
 // ---------------------------------------------------------
 
 async function manageOpenTrades() {
@@ -561,7 +250,7 @@ async function checkRiskGuards() {
 }
 
 // ---------------------------------------------------------
-// Live snapshot (unchanged from v2)
+// Live snapshot
 // ---------------------------------------------------------
 
 async function writeSnapshot(evaluations = {}) {
@@ -585,10 +274,9 @@ async function writeSnapshot(evaluations = {}) {
 
   const snapshot = {
     generatedAtUTC: new Date().toISOString(),
-    open,
-    recentClosed,
+    open, recentClosed,
     stats: { totalClosed: closed.length, winRate, avgR, winRateByZone: byZone },
-    evaluations, // per-pair live checklist state from this run — see evaluatePair()
+    evaluations,
   };
 
   await fs.mkdir('data', { recursive: true });
@@ -677,7 +365,7 @@ async function main() {
         SetupType: 'Type A', Score: result.score, AMDBias: result.amdBias, PriceZone: result.zone,
         Entry: result.entry, StopLoss: result.stop, TP1: result.tp1, TP2: result.tp2, TP3: result.tp3,
         RiskPercent: 1, PositionSizeUnits: '', PositionSizeUSD: '',
-        TP1Hit: false, TP2Hit: false, Notes: 'Auto-generated by bot.js v3 (Kraken)',
+        TP1Hit: false, TP2Hit: false, Notes: 'Auto-generated by bot.js v4 (Kraken)',
       };
       try {
         await sheetsPost({ action: 'createSignal', trade });
@@ -701,13 +389,3 @@ main().catch(err => {
   console.error('Bot run failed:', err);
   process.exit(1);
 });
-
-// ============================================================
-// STILL SIMPLIFIED (unchanged from v2):
-// - Type A (with-trend) signals only.
-// - Order Blocks use a rule-based proxy, not a hand-drawn read.
-// - Kraken Futures funding-rate units are treated as directly
-//   comparable to the old Binance-based reading; if that proves
-//   off, the funding gate fails open anyway, so it never blocks
-//   a run — worst case it's a slightly mis-calibrated soft filter.
-// ============================================================
