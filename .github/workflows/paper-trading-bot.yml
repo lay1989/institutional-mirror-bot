@@ -5,7 +5,7 @@ name: Paper Trading Bot
 
 on:
   schedule:
-    - cron: '*/5 * * * *'   # every 5 min — see SETUP.md for the public/private repo tradeoff
+    - cron: '*/10 * * * *'   # every 10 min — see SETUP.md for the public/private repo tradeoff
   workflow_dispatch: {}       # lets you click "Run workflow" manually to test
 
 concurrency: 
@@ -38,7 +38,7 @@ jobs:
           git add data/latest.json
           if ! git diff --staged --quiet; then
             git commit -m "Update trade snapshot"
-            git pull --rebase origin main
+            git pull --rebase -X theirs origin main
             git push
           else
             echo "No snapshot changes to commit"
