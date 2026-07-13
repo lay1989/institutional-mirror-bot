@@ -10,7 +10,7 @@ on:
 
 concurrency: 
   group: trading-bot-main
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 permissions:
   contents: write             # required so the bot can push data/latest.json back to the repo
