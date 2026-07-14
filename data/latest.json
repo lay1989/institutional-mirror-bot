@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-14T08:55:53.624Z",
+  "generatedAtUTC": "2026-07-14T09:01:46.332Z",
   "open": [],
   "recentClosed": [],
   "stats": {
@@ -67,7 +67,7 @@
       "killZoneName": "London KZ",
       "killZoneActive": true,
       "weekend": false,
-      "funding": 0.035348711708335805,
+      "funding": 0.062489072800002494,
       "fundingOk": true,
       "fearGreed": 22,
       "macroOk": true,
