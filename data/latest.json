@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-14T14:11:30.373Z",
+  "generatedAtUTC": "2026-07-14T14:16:00.393Z",
   "open": [],
   "recentClosed": [],
   "stats": {
@@ -73,13 +73,13 @@
       "macroOk": true,
       "amdBias": "bearish",
       "amdContradicts": false,
-      "newsOk": false,
+      "newsOk": true,
       "entry": null,
       "stop": null,
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 76.73,
+      "price": 76.76,
       "htf": {
         "aligned": true,
         "bias": "bear",
