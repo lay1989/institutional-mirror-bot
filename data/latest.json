@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-14T20:15:56.129Z",
+  "generatedAtUTC": "2026-07-14T20:21:26.593Z",
   "open": [],
   "recentClosed": [],
   "stats": {
@@ -61,42 +61,23 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 5,
-      "direction": "short",
-      "zone": "premium",
-      "killZoneName": null,
-      "killZoneActive": false,
-      "weekend": false,
-      "funding": 0.2038288348,
-      "fundingOk": false,
-      "fearGreed": 22,
-      "macroOk": true,
-      "amdBias": "bearish",
-      "amdContradicts": false,
-      "newsOk": true,
-      "entry": 76.99,
-      "stop": 77.063837,
-      "tp1": 76.91616299999998,
-      "tp2": 76.87924449999997,
-      "tp3": 76.73157049999995,
-      "price": 76.91,
+      "score": 0,
+      "reason": "HTF not aligned",
       "htf": {
-        "aligned": true,
-        "bias": "bear",
+        "aligned": false,
+        "bias": "range",
         "weekly": "bear",
-        "daily": "bear",
+        "daily": "range",
         "h4": "bear"
       },
-      "dailyH4Aligned": true,
-      "pdh": 78.12,
-      "pdl": 74.03,
+      "dailyH4Aligned": false,
       "checklist": {
-        "htfAligned": true,
-        "inKillZone": false,
-        "correctZone": true,
-        "sweepConfirmed": true,
-        "mssConfirmed": true,
-        "cleanRunway": true
+        "htfAligned": false,
+        "inKillZone": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
+        "cleanRunway": null
       }
     }
   }
