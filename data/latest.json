@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-14T11:31:38.932Z",
+  "generatedAtUTC": "2026-07-14T11:35:52.496Z",
   "open": [],
   "recentClosed": [],
   "stats": {
@@ -61,7 +61,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 3,
+      "score": 2,
       "direction": "short",
       "zone": "premium",
       "killZoneName": null,
@@ -79,7 +79,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 75.4,
+      "price": 75.49,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -94,7 +94,7 @@
         "htfAligned": true,
         "inKillZone": false,
         "correctZone": true,
-        "sweepConfirmed": true,
+        "sweepConfirmed": false,
         "mssConfirmed": false,
         "cleanRunway": null
       }
