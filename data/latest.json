@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-14T12:21:21.270Z",
+  "generatedAtUTC": "2026-07-14T12:25:56.706Z",
   "open": [],
   "recentClosed": [],
   "stats": {
@@ -61,7 +61,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 3,
+      "score": 4,
       "direction": "short",
       "zone": "premium",
       "killZoneName": "New York KZ",
@@ -79,7 +79,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 75.3,
+      "price": 75.47,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -94,7 +94,7 @@
         "htfAligned": true,
         "inKillZone": true,
         "correctZone": true,
-        "sweepConfirmed": false,
+        "sweepConfirmed": true,
         "mssConfirmed": false,
         "cleanRunway": null
       }
