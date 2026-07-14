@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-14T01:55:44.879Z",
+  "generatedAtUTC": "2026-07-14T02:01:41.115Z",
   "open": [],
   "recentClosed": [],
   "stats": {
@@ -67,7 +67,7 @@
       "killZoneName": "Asian Range",
       "killZoneActive": true,
       "weekend": false,
-      "funding": 0.0502186855541692,
+      "funding": -0.0770405423958308,
       "fundingOk": true,
       "fearGreed": 22,
       "macroOk": true,
@@ -79,7 +79,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 75.22,
+      "price": 75.14,
       "htf": {
         "aligned": true,
         "bias": "bear",
