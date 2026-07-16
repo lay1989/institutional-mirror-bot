@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-16T13:05:52.169Z",
+  "generatedAtUTC": "2026-07-16T13:11:30.429Z",
   "open": [],
   "recentClosed": [
     {
@@ -89,41 +89,22 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 3,
-      "direction": "short",
-      "zone": "premium",
-      "killZoneName": "New York KZ",
-      "killZoneActive": true,
-      "weekend": false,
-      "funding": 0.097696127375,
-      "fundingOk": true,
-      "fearGreed": 25,
-      "macroOk": true,
-      "amdBias": "undetermined",
-      "amdContradicts": false,
-      "newsOk": true,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 75.92,
+      "score": 0,
+      "reason": "HTF not aligned",
       "htf": {
-        "aligned": true,
-        "bias": "bear",
+        "aligned": false,
+        "bias": "range",
         "weekly": "bear",
-        "daily": "bear",
+        "daily": "range",
         "h4": "bear"
       },
-      "dailyH4Aligned": true,
-      "pdh": 78.95,
-      "pdl": 76.9,
+      "dailyH4Aligned": false,
       "checklist": {
-        "htfAligned": true,
-        "inKillZone": true,
-        "correctZone": true,
-        "sweepConfirmed": false,
-        "mssConfirmed": false,
+        "htfAligned": false,
+        "inKillZone": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
         "cleanRunway": null
       }
     }
