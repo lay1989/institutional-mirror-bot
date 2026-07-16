@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-16T08:21:26.344Z",
+  "generatedAtUTC": "2026-07-16T08:25:55.004Z",
   "open": [
     {
       "ID": "SOLUSDT-1784189756047",
@@ -20,7 +20,7 @@
       "RiskPercent": 1,
       "PositionSizeUnits": "",
       "PositionSizeUSD": "",
-      "TP1Hit": false,
+      "TP1Hit": true,
       "TP2Hit": true,
       "ExitReason": "",
       "ExitPrice": "",
