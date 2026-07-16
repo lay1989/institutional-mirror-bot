@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-16T08:15:59.374Z",
+  "generatedAtUTC": "2026-07-16T08:21:26.344Z",
   "open": [
     {
       "ID": "SOLUSDT-1784189756047",
@@ -21,7 +21,7 @@
       "PositionSizeUnits": "",
       "PositionSizeUSD": "",
       "TP1Hit": false,
-      "TP2Hit": false,
+      "TP2Hit": true,
       "ExitReason": "",
       "ExitPrice": "",
       "ExitTimeUTC": "",
@@ -87,45 +87,8 @@
       }
     },
     "SOLUSDT": {
-      "symbol": "SOLUSDT",
-      "skip": false,
-      "score": 6,
-      "direction": "short",
-      "zone": "premium",
-      "killZoneName": "London KZ",
-      "killZoneActive": true,
-      "weekend": false,
-      "funding": -0.031105182149999997,
-      "fundingOk": true,
-      "fearGreed": 25,
-      "macroOk": true,
-      "amdBias": "undetermined",
-      "amdContradicts": false,
-      "newsOk": true,
-      "entry": 76.64500000000001,
-      "stop": 76.338004,
-      "tp1": 76.338004,
-      "tp2": 76.184506,
-      "tp3": 75.57051399999997,
-      "price": 75.72,
-      "htf": {
-        "aligned": true,
-        "bias": "bear",
-        "weekly": "bear",
-        "daily": "bear",
-        "h4": "bear"
-      },
-      "dailyH4Aligned": true,
-      "pdh": 78.95,
-      "pdl": 76.9,
-      "checklist": {
-        "htfAligned": true,
-        "inKillZone": true,
-        "correctZone": true,
-        "sweepConfirmed": true,
-        "mssConfirmed": true,
-        "cleanRunway": true
-      }
+      "skip": true,
+      "reason": "Already has an open paper trade — not re-evaluated this run"
     }
   }
 }
