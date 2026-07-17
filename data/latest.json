@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-17T00:55:54.479Z",
+  "generatedAtUTC": "2026-07-17T01:01:31.789Z",
   "open": [],
   "recentClosed": [
     {
@@ -95,7 +95,7 @@
       "killZoneName": "Asian Range",
       "killZoneActive": true,
       "weekend": false,
-      "funding": -0.1959443672666692,
+      "funding": -0.1651420069333308,
       "fundingOk": false,
       "fearGreed": 27,
       "macroOk": true,
@@ -107,7 +107,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 75.46,
+      "price": 75.5,
       "htf": {
         "aligned": true,
         "bias": "bear",
