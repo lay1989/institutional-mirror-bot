@@ -1,22 +1,31 @@
 // ============================================================
-// INSTITUTIONAL MIRROR — Automated Paper-Trading Signal Bot (v4)
+// INSTITUTIONAL MIRROR — Automated Paper-Trading Signal Bot (v5 / V2 logic)
 // ============================================================
-// Changes from v3:
-//  - All detection rules (CONFIG, HTF bias, sweeps, FVG, AMD bias,
-//    Order Blocks, kill zones, scoring) now live in logic.js,
-//    shared with backtest.js. This file only handles: fetching
-//    live data from Kraken, talking to Sheets, and the run loop.
-//    Change a threshold in logic.js and both live trading and any
-//    backtest use the new value automatically — no drift risk.
-//  - Fixed a real bug: EMA(50) warm-up windows were too short
-//    (52 weekly candles for a 50-period EMA is ~1x the period,
-//    nowhere near enough to converge). Now fetching 200/300/300
-//    candles for weekly/daily/4H so the EMA is actually trustworthy
-//    before being used to decide HTF bias.
+// This version wires in the V2 strategy changes from logic.js:
+// revised partial-close %, structural break-even, HTF-only runway
+// to TP2, no weekend gate, thesis-invalidation exit with a 24h
+// backstop, wider equilibrium buffer, and News-MSS as a distinct
+// setup type. See logic.js header for the full list and reasoning.
+//
+// What changed here specifically (vs the data-fetching/plumbing):
+//  - getHighImpactNewsBlock() replaced with getNearestHighImpactNews()
+//    which returns the nearest event as {title, timeMs} instead of
+//    a pre-computed blocked/not-blocked flag — logic.js now decides
+//    which of the three news phases we're in.
+//  - manageOpenTrades() rebuilt: for each open trade it now also
+//    fetches Weekly/Daily/4H (thesis-invalidation check) and recent
+//    15m candles since the trade opened (structural break-even
+//    check), then calls the shared evaluateTradeExit() from logic.js
+//    instead of doing the math inline. This means live and backtest
+//    can never quietly diverge on how a trade is managed, not just
+//    how a signal is found.
+//  - New trade fields persisted to Sheets: StructuralBELocked,
+//    StructuralStopLevel. apps-script.gs has matching columns —
+//    redeploy that too, not just this file.
 // ============================================================
 
 const {
-  CONFIG, htfBias, getKillZoneInfo, isWeekend, evaluateSetup,
+  CONFIG, htfBias, evaluateSetup, evaluateTradeExit,
 } = require('./logic.js');
 
 const SHEETS_URL = process.env.SHEETS_URL;
@@ -34,7 +43,7 @@ if (!SHEETS_URL) {
 }
 
 // ---------------------------------------------------------
-// Network helper — every fetch goes through this
+// Network helper
 // ---------------------------------------------------------
 
 async function fetchWithRetry(url, options = {}, retries = 3, label = url) {
@@ -59,7 +68,7 @@ async function fetchWithRetry(url, options = {}, retries = 3, label = url) {
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ---------------------------------------------------------
-// Data fetching — Kraken public endpoints (no key needed)
+// Data fetching — Kraken public endpoints
 // ---------------------------------------------------------
 
 async function getKlines(symbol, intervalName, minCandles = 100) {
@@ -75,7 +84,7 @@ async function getKlines(symbol, intervalName, minCandles = 100) {
     openTime: c[0] * 1000, open: +c[1], high: +c[2], low: +c[3], close: +c[4], volume: +c[6],
   }));
   if (candles.length < minCandles) {
-    console.warn(`${symbol} ${intervalName}: only ${candles.length} candles returned (wanted ${minCandles}) — trend reads may be less reliable until more history accumulates`);
+    console.warn(`${symbol} ${intervalName}: only ${candles.length} candles returned (wanted ${minCandles})`);
   }
   return candles;
 }
@@ -124,26 +133,28 @@ async function getFearGreed() {
 }
 
 let _newsCache = null;
-async function getHighImpactNewsBlock(now) {
+async function getNearestHighImpactNews(now) {
   try {
     if (!_newsCache) {
       const res = await fetchWithRetry('https://nfs.faireconomy.media/ff_calendar_thisweek.json', {}, 2, 'ForexFactory calendar');
       _newsCache = await res.json();
     }
     const nowMs = now.getTime();
+    let nearest = null, nearestDist = Infinity;
     for (const ev of _newsCache) {
       if (ev.impact !== 'High') continue;
       const evMs = new Date(ev.date).getTime();
       if (isNaN(evMs)) continue;
-      const minutesAway = (evMs - nowMs) / 60000;
-      if (minutesAway <= 30 && minutesAway >= -15) {
-        return { blocked: true, event: ev.title, minutesAway: Math.round(minutesAway) };
+      const dist = Math.abs(evMs - nowMs);
+      if (dist < 2 * 3600000 && dist < nearestDist) {
+        nearest = { title: ev.title, timeMs: evMs };
+        nearestDist = dist;
       }
     }
-    return { blocked: false };
+    return nearest;
   } catch (err) {
-    console.warn(`News calendar check failed (non-fatal, gate fails open): ${err.message}`);
-    return { blocked: false, error: err.message };
+    console.warn(`News calendar check failed (non-fatal, treated as no nearby news): ${err.message}`);
+    return null;
   }
 }
 
@@ -165,12 +176,10 @@ async function sheetsPost(body) {
 }
 
 // ---------------------------------------------------------
-// Per-pair evaluation — fetches live candles, hands them to the
-// shared evaluateSetup() from logic.js
+// Per-pair evaluation
 // ---------------------------------------------------------
 
-async function evaluatePair(symbol, fearGreed, newsBlock) {
-  // 200+/300+ candles so EMA(50) actually converges (see header note)
+async function evaluatePair(symbol, fearGreed, newsEvent) {
   const weekly = await getKlines(symbol, '1w', 200); await sleep(300);
   const daily = await getKlines(symbol, '1d', 300); await sleep(300);
   const h4 = await getKlines(symbol, '4h', 300); await sleep(300);
@@ -179,54 +188,87 @@ async function evaluatePair(symbol, fearGreed, newsBlock) {
   const price = await getPrice(symbol);
   const funding = await getFundingRate(symbol);
 
-  return evaluateSetup({ symbol, weekly, daily, h4, h1, m15, price, now: new Date(), funding, fearGreed, newsBlock });
+  return evaluateSetup({ symbol, weekly, daily, h4, h1, m15, price, now: new Date(), funding, fearGreed, newsEvent });
 }
 
 // ---------------------------------------------------------
-// Trade lifecycle management
+// Trade lifecycle management (V2: thesis invalidation + structural BE)
 // ---------------------------------------------------------
+
+function toBool(v) { return v === true || v === 'true' || v === 'TRUE' || v === 1; }
 
 async function manageOpenTrades() {
   const open = await sheetsGet('OPEN');
-  for (const trade of open) {
+  for (const raw of open) {
+    const symbol = raw.Pair.replace('/', '');
+    const isLong = raw.Direction === 'Long';
+
     let price;
     try {
-      price = await getPrice(trade.Pair.replace('/', ''));
+      price = await getPrice(symbol);
     } catch (err) {
-      console.error(`Skipping update for ${trade.ID} — price fetch failed: ${err.message}`);
+      console.error(`Skipping update for ${raw.ID} — price fetch failed: ${err.message}`);
       continue;
     }
-    const isLong = trade.Direction === 'Long';
-    const hoursOpen = (Date.now() - new Date(trade.DateTimeUTC).getTime()) / 3600000;
 
-    const hitTP1 = isLong ? price >= trade.TP1 : price <= trade.TP1;
-    const hitTP2 = isLong ? price >= trade.TP2 : price <= trade.TP2;
-    const hitTP3 = isLong ? price >= trade.TP3 : price <= trade.TP3;
-    const effectiveStop = trade.TP2Hit ? trade.TP1 : (trade.TP1Hit ? trade.Entry : trade.StopLoss);
-    const hitEffectiveStop = isLong ? price <= effectiveStop : price >= effectiveStop;
+    const trade = {
+      direction: isLong ? 'long' : 'short',
+      entry: parseFloat(raw.Entry), stop: parseFloat(raw.StopLoss),
+      tp1: parseFloat(raw.TP1), tp2: parseFloat(raw.TP2), tp3: parseFloat(raw.TP3),
+      openTime: new Date(raw.DateTimeUTC),
+      tp1Hit: toBool(raw.TP1Hit), tp2Hit: toBool(raw.TP2Hit),
+      structuralBELocked: toBool(raw.StructuralBELocked),
+      structuralStopLevel: raw.StructuralStopLevel ? parseFloat(raw.StructuralStopLevel) : null,
+    };
+    const before = { ...trade };
+
+    // Thesis invalidation check — re-read HTF bias for this pair
+    let htfStillAligned = null;
+    try {
+      const weekly = await getKlines(symbol, '1w', 200); await sleep(300);
+      const daily = await getKlines(symbol, '1d', 300); await sleep(300);
+      const h4 = await getKlines(symbol, '4h', 300); await sleep(300);
+      const htf = htfBias(weekly, daily, h4);
+      htfStillAligned = htf.aligned &&
+        ((trade.direction === 'long' && htf.bias === 'bull') || (trade.direction === 'short' && htf.bias === 'bear'));
+    } catch (err) {
+      console.warn(`Thesis check failed for ${raw.ID} (skipping this check this run): ${err.message}`);
+    }
+
+    // Structural BE check — recent 15m candles since the trade opened
+    let candlesSinceEntry = [];
+    try {
+      const m15 = await getKlines(symbol, '15m', 150); await sleep(300);
+      candlesSinceEntry = m15.filter(c => c.openTime >= trade.openTime.getTime());
+    } catch (err) {
+      console.warn(`Structural candle fetch failed for ${raw.ID} (non-fatal): ${err.message}`);
+    }
+
+    const outcome = evaluateTradeExit({
+      trade, high: price, low: price, close: price, // live only has point-in-time price, not a full candle range
+      now: new Date(), candlesSinceEntry, htfStillAligned,
+    });
 
     let update = null;
-    if (hitEffectiveStop) {
-      let reason, r;
-      if (trade.TP2Hit) { reason = 'Partial Win - TP2 then stopped at TP1'; r = CONFIG.TP1_CLOSE_PCT * CONFIG.TP1_R + CONFIG.TP2_CLOSE_PCT * CONFIG.TP2_R; }
-      else if (trade.TP1Hit) { reason = 'Breakeven - TP1 then stopped at BE'; r = CONFIG.TP1_CLOSE_PCT * CONFIG.TP1_R; }
-      else { reason = 'Loss - Stopped Out'; r = -1; }
-      update = { Status: 'CLOSED', ExitReason: reason, ExitPrice: price, ExitTimeUTC: new Date().toISOString(), RMultiple: r };
-    } else if (hitTP3) {
-      const r = CONFIG.TP1_CLOSE_PCT * CONFIG.TP1_R + CONFIG.TP2_CLOSE_PCT * CONFIG.TP2_R + CONFIG.TP3_CLOSE_PCT * CONFIG.TP3_R;
-      update = { Status: 'CLOSED', ExitReason: 'Win - Hit TP3', ExitPrice: price, ExitTimeUTC: new Date().toISOString(), RMultiple: r };
-    } else if (hitTP2 && !trade.TP2Hit) {
-      update = { TP2Hit: true };
-    } else if (hitTP1 && !trade.TP1Hit) {
-      update = { TP1Hit: true };
-    } else if (hoursOpen >= CONFIG.MAX_TRADE_DURATION_HOURS) {
-      const partialR = (isLong ? price - trade.Entry : trade.Entry - price) / Math.abs(trade.Entry - trade.StopLoss);
-      update = { Status: 'CLOSED', ExitReason: 'Closed - Time Limit', ExitPrice: price, ExitTimeUTC: new Date().toISOString(), RMultiple: partialR };
+    if (outcome.closed) {
+      update = {
+        Status: 'CLOSED', ExitReason: outcome.reason, ExitPrice: price,
+        ExitTimeUTC: new Date().toISOString(), RMultiple: +outcome.rMultiple.toFixed(3),
+      };
+    } else {
+      const changed = {};
+      if (trade.tp1Hit !== before.tp1Hit) changed.TP1Hit = trade.tp1Hit;
+      if (trade.tp2Hit !== before.tp2Hit) changed.TP2Hit = trade.tp2Hit;
+      if (trade.structuralBELocked !== before.structuralBELocked) {
+        changed.StructuralBELocked = trade.structuralBELocked;
+        changed.StructuralStopLevel = trade.structuralStopLevel;
+      }
+      if (Object.keys(changed).length > 0) update = changed;
     }
 
     if (update) {
-      await sheetsPost({ action: 'updateTrade', id: trade.ID, updates: update });
-      console.log(`Updated ${trade.ID}:`, update);
+      await sheetsPost({ action: 'updateTrade', id: raw.ID, updates: update });
+      console.log(`Updated ${raw.ID}:`, update);
     }
     await sleep(300);
   }
@@ -314,8 +356,8 @@ async function main() {
   }
 
   const fearGreed = await getFearGreed();
-  const newsBlock = await getHighImpactNewsBlock(new Date());
-  if (newsBlock.blocked) console.log(`News gate active: "${newsBlock.event}" is ${newsBlock.minutesAway} min away — new signals paused`);
+  const newsEvent = await getNearestHighImpactNews(new Date());
+  if (newsEvent) console.log(`Nearest high-impact news: "${newsEvent.title}" at ${new Date(newsEvent.timeMs).toISOString()}`);
   const evaluations = {};
 
   for (const symbol of PAIRS) {
@@ -336,7 +378,7 @@ async function main() {
 
     let result;
     try {
-      result = await evaluatePair(symbol, fearGreed, newsBlock);
+      result = await evaluatePair(symbol, fearGreed, newsEvent);
     } catch (err) {
       console.error(`${symbol}: evaluation failed — ${err.message}`);
       evaluations[symbol] = { skip: true, reason: 'Evaluation failed this run', error: err.message };
@@ -362,14 +404,15 @@ async function main() {
         ID: id, Status: 'OPEN', DateTimeUTC: new Date().toISOString(),
         Pair: pairLabel, KillZone: result.killZoneName,
         Direction: result.direction === 'long' ? 'Long' : 'Short',
-        SetupType: 'Type A', Score: result.score, AMDBias: result.amdBias, PriceZone: result.zone,
+        SetupType: result.setupType, Score: result.score, AMDBias: result.amdBias, PriceZone: result.zone,
         Entry: result.entry, StopLoss: result.stop, TP1: result.tp1, TP2: result.tp2, TP3: result.tp3,
         RiskPercent: 1, PositionSizeUnits: '', PositionSizeUSD: '',
-        TP1Hit: false, TP2Hit: false, Notes: 'Auto-generated by bot.js v4 (Kraken)',
+        TP1Hit: false, TP2Hit: false, StructuralBELocked: false, StructuralStopLevel: '',
+        Notes: `Auto-generated by bot.js V2 (${result.setupType})`,
       };
       try {
         await sheetsPost({ action: 'createSignal', trade });
-        console.log(`Signal created: ${id}`);
+        console.log(`Signal created: ${id} (${result.setupType})`);
       } catch (err) {
         console.error(`Failed to save signal for ${symbol} — ${err.message}`);
       }
