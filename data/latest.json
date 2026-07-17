@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-17T01:15:58.500Z",
+  "generatedAtUTC": "2026-07-17T01:21:03.329Z",
   "open": [],
   "recentClosed": [
     {
@@ -89,7 +89,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 3,
       "direction": "short",
       "zone": "premium",
       "killZoneName": "Asian Range",
@@ -107,7 +107,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 75.6,
+      "price": 75.41,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -122,7 +122,7 @@
         "htfAligned": true,
         "inKillZone": false,
         "correctZone": true,
-        "sweepConfirmed": false,
+        "sweepConfirmed": true,
         "mssConfirmed": false,
         "cleanRunway": null
       }
