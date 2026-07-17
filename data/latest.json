@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-17T13:55:53.644Z",
+  "generatedAtUTC": "2026-07-17T14:01:40.856Z",
   "open": [],
   "recentClosed": [],
   "stats": {
@@ -63,7 +63,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 5,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
@@ -71,18 +71,18 @@
       "killZoneActive": true,
       "newsPhase": "clear",
       "newsEvent": null,
-      "fundingOk": true,
-      "funding": -0.0166378185749975,
+      "fundingOk": false,
+      "funding": -0.19883187843750252,
       "fearGreed": 27,
       "macroOk": true,
       "amdBias": "bullish",
       "amdContradicts": true,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 73.91,
+      "entry": 74.075,
+      "stop": 74.37203099999999,
+      "tp1": 73.77796900000001,
+      "tp2": 73.62945350000001,
+      "tp3": 73.03539150000003,
+      "price": 74.33,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -97,9 +97,9 @@
         "htfAligned": true,
         "inTimingWindow": true,
         "correctZone": false,
-        "sweepConfirmed": false,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "sweepConfirmed": true,
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     }
   }
