@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-17T06:55:49.870Z",
+  "generatedAtUTC": "2026-07-17T07:01:31.957Z",
   "open": [],
   "recentClosed": [
     {
@@ -89,25 +89,25 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 5,
+      "score": 2,
       "direction": "short",
       "zone": "premium",
-      "killZoneName": null,
-      "killZoneActive": false,
+      "killZoneName": "London KZ",
+      "killZoneActive": true,
       "weekend": false,
-      "funding": -0.008380383449999999,
+      "funding": -0.0687363048,
       "fundingOk": true,
       "fearGreed": 27,
       "macroOk": true,
       "amdBias": "undetermined",
       "amdContradicts": false,
       "newsOk": true,
-      "entry": 74.565,
-      "stop": 74.682136,
-      "tp1": 74.447864,
-      "tp2": 74.389296,
-      "tp3": 74.155024,
-      "price": 74.48,
+      "entry": null,
+      "stop": null,
+      "tp1": null,
+      "tp2": null,
+      "tp3": null,
+      "price": 74.52,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -122,9 +122,9 @@
         "htfAligned": true,
         "inKillZone": false,
         "correctZone": true,
-        "sweepConfirmed": true,
-        "mssConfirmed": true,
-        "cleanRunway": true
+        "sweepConfirmed": false,
+        "mssConfirmed": false,
+        "cleanRunway": null
       }
     }
   }
