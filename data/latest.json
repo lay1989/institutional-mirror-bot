@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-17T02:35:53.030Z",
+  "generatedAtUTC": "2026-07-17T02:41:08.011Z",
   "open": [],
   "recentClosed": [
     {
@@ -89,7 +89,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 5,
       "direction": "short",
       "zone": "premium",
       "killZoneName": "Asian Range",
@@ -102,12 +102,12 @@
       "amdBias": "undetermined",
       "amdContradicts": false,
       "newsOk": true,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 74.94,
+      "entry": 75.305,
+      "stop": 74.942346,
+      "tp1": 74.942346,
+      "tp2": 74.761019,
+      "tp3": 74.03571099999999,
+      "price": 74.78,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -122,9 +122,9 @@
         "htfAligned": true,
         "inKillZone": false,
         "correctZone": true,
-        "sweepConfirmed": false,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "sweepConfirmed": true,
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     }
   }
