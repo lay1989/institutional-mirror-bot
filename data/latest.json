@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-17T14:55:48.510Z",
+  "generatedAtUTC": "2026-07-17T15:01:41.109Z",
   "open": [],
   "recentClosed": [],
   "stats": {
@@ -63,16 +63,16 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 3,
+      "score": 2,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
-      "killZoneName": "New York KZ",
+      "killZoneName": "Silver Bullet",
       "killZoneActive": true,
       "newsPhase": "clear",
       "newsEvent": null,
-      "fundingOk": false,
-      "funding": -0.19883187843750252,
+      "fundingOk": true,
+      "funding": 0.0498350771625,
       "fearGreed": 27,
       "macroOk": true,
       "amdBias": "bullish",
@@ -82,7 +82,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 74.27,
+      "price": 74.13,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -95,7 +95,7 @@
       "pdl": 74.98,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": true,
+        "inTimingWindow": false,
         "correctZone": false,
         "sweepConfirmed": true,
         "mssConfirmed": false,
