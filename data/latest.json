@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-17T07:16:04.614Z",
+  "generatedAtUTC": "2026-07-17T07:21:04.339Z",
   "open": [],
   "recentClosed": [
     {
@@ -89,7 +89,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 4,
       "direction": "short",
       "zone": "premium",
       "killZoneName": "London KZ",
@@ -107,7 +107,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 74.48,
+      "price": 74.42,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -120,9 +120,9 @@
       "pdl": 74.98,
       "checklist": {
         "htfAligned": true,
-        "inKillZone": false,
+        "inKillZone": true,
         "correctZone": true,
-        "sweepConfirmed": false,
+        "sweepConfirmed": true,
         "mssConfirmed": false,
         "cleanRunway": null
       }
