@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-17T07:56:01.918Z",
+  "generatedAtUTC": "2026-07-17T08:01:38.369Z",
   "open": [],
   "recentClosed": [
     {
@@ -95,7 +95,7 @@
       "killZoneName": "London KZ",
       "killZoneActive": true,
       "weekend": false,
-      "funding": -0.0687363048,
+      "funding": -0.0667261370541642,
       "fundingOk": true,
       "fearGreed": 27,
       "macroOk": true,
@@ -107,7 +107,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 74.61,
+      "price": 74.56,
       "htf": {
         "aligned": true,
         "bias": "bear",
