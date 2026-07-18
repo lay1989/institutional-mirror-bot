@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-18T06:55:47.638Z",
+  "generatedAtUTC": "2026-07-18T07:01:27.611Z",
   "open": [],
   "recentClosed": [],
   "stats": {
@@ -67,12 +67,12 @@
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
-      "killZoneName": null,
-      "killZoneActive": false,
+      "killZoneName": "London KZ",
+      "killZoneActive": true,
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": true,
-      "funding": 0.0374460921458308,
+      "funding": 0.0624756037125,
       "fearGreed": 25,
       "macroOk": true,
       "amdBias": "undetermined",
@@ -82,7 +82,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 74.96,
+      "price": 74.93,
       "htf": {
         "aligned": true,
         "bias": "bear",
