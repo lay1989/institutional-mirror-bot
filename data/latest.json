@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-18T12:31:17.834Z",
+  "generatedAtUTC": "2026-07-18T12:35:51.141Z",
   "open": [],
   "recentClosed": [
     {
@@ -138,12 +138,12 @@
       "macroOk": true,
       "amdBias": "bullish",
       "amdContradicts": true,
-      "entry": 74.82,
-      "stop": 74.942297,
-      "tp1": 74.69770299999999,
-      "tp2": 74.63655449999999,
-      "tp3": 74.39196049999998,
-      "price": 74.71,
+      "entry": 74.86500000000001,
+      "stop": 74.942381,
+      "tp1": 74.78761900000002,
+      "tp2": 74.74892850000003,
+      "tp3": 74.59416650000006,
+      "price": 74.83,
       "htf": {
         "aligned": true,
         "bias": "bear",
