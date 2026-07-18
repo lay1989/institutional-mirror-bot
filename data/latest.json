@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-18T17:55:47.057Z",
+  "generatedAtUTC": "2026-07-18T18:01:31.076Z",
   "open": [],
   "recentClosed": [
     {
@@ -133,7 +133,7 @@
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": true,
-      "funding": 0.0813984402458308,
+      "funding": -0.0313187303916692,
       "fearGreed": 25,
       "macroOk": true,
       "amdBias": "bullish",
