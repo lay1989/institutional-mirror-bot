@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-18T09:16:00.299Z",
+  "generatedAtUTC": "2026-07-18T09:21:05.486Z",
   "open": [
     {
       "ID": "SOLUSDT-1784366156422",
@@ -20,11 +20,11 @@
       "RiskPercent": 1,
       "PositionSizeUnits": "",
       "PositionSizeUSD": "",
-      "TP1Hit": false,
+      "TP1Hit": true,
       "TP2Hit": false,
       "StructuralBELocked": false,
       "StructuralStopLevel": "",
-      "LastCheckedUTC": "2026-07-18T09:15:56.422Z",
+      "LastCheckedUTC": "2026-07-18T09:20:49.464Z",
       "ExitReason": "",
       "ExitPrice": "",
       "ExitTimeUTC": "",
@@ -123,46 +123,8 @@
       }
     },
     "SOLUSDT": {
-      "symbol": "SOLUSDT",
-      "skip": false,
-      "score": 5,
-      "direction": "short",
-      "zone": "equilibrium",
-      "setupType": "Type A",
-      "killZoneName": "London KZ",
-      "killZoneActive": true,
-      "newsPhase": "clear",
-      "newsEvent": null,
-      "fundingOk": true,
-      "funding": 0.029167251800000002,
-      "fearGreed": 25,
-      "macroOk": true,
-      "amdBias": "bullish",
-      "amdContradicts": false,
-      "entry": 74.85,
-      "stop": 74.942381,
-      "tp1": 74.75761899999999,
-      "tp2": 74.71142849999998,
-      "tp3": 74.52666649999998,
-      "price": 74.83,
-      "htf": {
-        "aligned": true,
-        "bias": "bear",
-        "weekly": "bear",
-        "daily": "bear",
-        "h4": "bear"
-      },
-      "dailyH4Aligned": true,
-      "pdh": 75.68,
-      "pdl": 73.32,
-      "checklist": {
-        "htfAligned": true,
-        "inTimingWindow": true,
-        "correctZone": false,
-        "sweepConfirmed": true,
-        "mssConfirmed": true,
-        "cleanRunway": true
-      }
+      "skip": true,
+      "reason": "Already has an open paper trade — not re-evaluated this run"
     }
   }
 }
