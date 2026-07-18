@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-18T07:21:06.101Z",
+  "generatedAtUTC": "2026-07-18T07:25:55.719Z",
   "open": [
     {
       "ID": "SOLUSDT-1784359261927",
@@ -24,7 +24,7 @@
       "TP2Hit": false,
       "StructuralBELocked": false,
       "StructuralStopLevel": "",
-      "LastCheckedUTC": "2026-07-18T07:21:01.927Z",
+      "LastCheckedUTC": "2026-07-18T07:25:36.068Z",
       "ExitReason": "",
       "ExitPrice": "",
       "ExitTimeUTC": "",
@@ -92,46 +92,8 @@
       }
     },
     "SOLUSDT": {
-      "symbol": "SOLUSDT",
-      "skip": false,
-      "score": 5,
-      "direction": "short",
-      "zone": "equilibrium",
-      "setupType": "Type A",
-      "killZoneName": "London KZ",
-      "killZoneActive": true,
-      "newsPhase": "clear",
-      "newsEvent": null,
-      "fundingOk": true,
-      "funding": 0.0624756037125,
-      "fearGreed": 25,
-      "macroOk": true,
-      "amdBias": "undetermined",
-      "amdContradicts": false,
-      "entry": 74.905,
-      "stop": 74.942395,
-      "tp1": 74.867605,
-      "tp2": 74.8489075,
-      "tp3": 74.77411749999999,
-      "price": 74.85,
-      "htf": {
-        "aligned": true,
-        "bias": "bear",
-        "weekly": "bear",
-        "daily": "bear",
-        "h4": "bear"
-      },
-      "dailyH4Aligned": true,
-      "pdh": 75.68,
-      "pdl": 73.32,
-      "checklist": {
-        "htfAligned": true,
-        "inTimingWindow": true,
-        "correctZone": false,
-        "sweepConfirmed": true,
-        "mssConfirmed": true,
-        "cleanRunway": true
-      }
+      "skip": true,
+      "reason": "Already has an open paper trade — not re-evaluated this run"
     }
   }
 }
