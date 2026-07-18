@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-18T10:10:57.269Z",
+  "generatedAtUTC": "2026-07-18T10:15:57.706Z",
   "open": [],
   "recentClosed": [
     {
@@ -124,7 +124,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 1,
+      "score": 4,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
@@ -138,12 +138,12 @@
       "macroOk": true,
       "amdBias": "bullish",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 74.82,
+      "entry": 74.75999999999999,
+      "stop": 74.872367,
+      "tp1": 74.64763299999998,
+      "tp2": 74.59144949999998,
+      "tp3": 74.36671549999997,
+      "price": 74.81,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -158,9 +158,9 @@
         "htfAligned": true,
         "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": false,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "sweepConfirmed": true,
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     }
   }
