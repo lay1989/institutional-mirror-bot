@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-18T05:11:02.064Z",
+  "generatedAtUTC": "2026-07-18T05:15:56.660Z",
   "open": [],
   "recentClosed": [],
   "stats": {
@@ -63,7 +63,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 1,
+      "score": 4,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
@@ -77,12 +77,12 @@
       "macroOk": true,
       "amdBias": "undetermined",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 74.95,
+      "entry": 75.105,
+      "stop": 74.972437,
+      "tp1": 74.972437,
+      "tp2": 74.9061555,
+      "tp3": 74.64102949999999,
+      "price": 74.91,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -97,9 +97,9 @@
         "htfAligned": true,
         "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": false,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "sweepConfirmed": true,
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     }
   }
