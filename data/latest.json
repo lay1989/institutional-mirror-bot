@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-25T11:56:44.583Z",
+  "generatedAtUTC": "2026-07-25T12:01:27.454Z",
   "open": [],
   "recentClosed": [
     {
@@ -128,16 +128,16 @@
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
-      "killZoneName": null,
-      "killZoneActive": false,
+      "killZoneName": "New York KZ",
+      "killZoneActive": true,
       "newsPhase": "clear",
       "newsEvent": null,
-      "fundingOk": true,
-      "funding": -0.097925673875,
+      "fundingOk": false,
+      "funding": -0.11247572745000001,
       "fearGreed": 27,
       "macroOk": true,
       "amdBias": "bullish",
-      "amdContradicts": false,
+      "amdContradicts": true,
       "entry": null,
       "stop": null,
       "tp1": null,
