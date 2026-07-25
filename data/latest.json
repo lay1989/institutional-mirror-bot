@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-25T15:55:47.051Z",
+  "generatedAtUTC": "2026-07-25T16:01:27.106Z",
   "open": [],
   "recentClosed": [
     {
@@ -124,26 +124,26 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 3,
+      "score": 1,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
-      "killZoneName": "Silver Bullet",
-      "killZoneActive": true,
+      "killZoneName": null,
+      "killZoneActive": false,
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": true,
-      "funding": -0.0834935525,
+      "funding": -0.07496191055,
       "fearGreed": 27,
       "macroOk": true,
       "amdBias": "bullish",
-      "amdContradicts": true,
+      "amdContradicts": false,
       "entry": null,
       "stop": null,
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 74.13,
+      "price": 74.11,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -156,9 +156,9 @@
       "pdl": 73.41,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": true,
+        "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": true,
+        "sweepConfirmed": false,
         "mssConfirmed": false,
         "cleanRunway": null
       }
