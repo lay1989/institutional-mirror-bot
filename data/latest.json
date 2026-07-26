@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-25T23:55:45.999Z",
+  "generatedAtUTC": "2026-07-26T00:01:37.217Z",
   "open": [],
   "recentClosed": [
     {
@@ -128,22 +128,22 @@
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
-      "killZoneName": null,
-      "killZoneActive": false,
+      "killZoneName": "Asian Range",
+      "killZoneActive": true,
       "newsPhase": "clear",
       "newsEvent": null,
-      "fundingOk": true,
-      "funding": 0.0625242651333309,
-      "fearGreed": 27,
+      "fundingOk": false,
+      "funding": 0.1063231772166691,
+      "fearGreed": 26,
       "macroOk": true,
-      "amdBias": "bullish",
+      "amdBias": "undetermined",
       "amdContradicts": false,
       "entry": null,
       "stop": null,
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 74.44,
+      "price": 74.46,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -152,8 +152,8 @@
         "h4": "bear"
       },
       "dailyH4Aligned": true,
-      "pdh": 76.37,
-      "pdl": 73.41,
+      "pdh": 74.65,
+      "pdl": 73.51,
       "checklist": {
         "htfAligned": true,
         "inTimingWindow": false,
