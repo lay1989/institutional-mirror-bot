@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-26T23:55:35.645Z",
+  "generatedAtUTC": "2026-07-27T00:01:36.372Z",
   "open": [],
   "recentClosed": [
     {
@@ -136,36 +136,72 @@
   },
   "evaluations": {
     "BTCUSDT": {
+      "symbol": "BTCUSDT",
       "skip": true,
-      "reason": "Risk guard active — see guards",
-      "guards": {
-        "blocked": true,
-        "profitCapHit": true,
-        "lossCapHit": false,
-        "coolingDown": false,
-        "todaysR": 0.048
+      "score": 0,
+      "reason": "HTF not aligned",
+      "htf": {
+        "aligned": false,
+        "bias": "range",
+        "weekly": "bear",
+        "daily": "range",
+        "h4": "range"
+      },
+      "dailyH4Aligned": false,
+      "setupType": null,
+      "checklist": {
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
+        "cleanRunway": null
       }
     },
     "ETHUSDT": {
+      "symbol": "ETHUSDT",
       "skip": true,
-      "reason": "Risk guard active — see guards",
-      "guards": {
-        "blocked": true,
-        "profitCapHit": true,
-        "lossCapHit": false,
-        "coolingDown": false,
-        "todaysR": 0.048
+      "score": 0,
+      "reason": "HTF not aligned",
+      "htf": {
+        "aligned": false,
+        "bias": "range",
+        "weekly": "bear",
+        "daily": "bull",
+        "h4": "bull"
+      },
+      "dailyH4Aligned": true,
+      "setupType": null,
+      "checklist": {
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
+        "cleanRunway": null
       }
     },
     "SOLUSDT": {
+      "symbol": "SOLUSDT",
       "skip": true,
-      "reason": "Risk guard active — see guards",
-      "guards": {
-        "blocked": true,
-        "profitCapHit": true,
-        "lossCapHit": false,
-        "coolingDown": false,
-        "todaysR": 0.048
+      "score": 0,
+      "reason": "HTF not aligned",
+      "htf": {
+        "aligned": false,
+        "bias": "range",
+        "weekly": "bear",
+        "daily": "bear",
+        "h4": "range"
+      },
+      "dailyH4Aligned": false,
+      "setupType": null,
+      "checklist": {
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
+        "cleanRunway": null
       }
     }
   }
