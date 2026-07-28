@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-28T18:01:27.332Z",
+  "generatedAtUTC": "2026-07-28T18:05:54.488Z",
   "open": [],
   "recentClosed": [
     {
@@ -138,7 +138,7 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 1,
+      "score": 4,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
@@ -152,12 +152,12 @@
       "macroOk": true,
       "amdBias": "bullish",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 63708.3,
+      "entry": 63785.850000000006,
+      "stop": 63793.23328,
+      "tp1": 63778.46672000001,
+      "tp2": 63774.775080000014,
+      "tp3": 63760.008520000025,
+      "price": 63690.4,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -172,9 +172,9 @@
         "htfAligned": true,
         "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": false,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "sweepConfirmed": true,
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     },
     "ETHUSDT": {
@@ -203,7 +203,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 1,
+      "score": 4,
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
@@ -217,12 +217,12 @@
       "macroOk": true,
       "amdBias": "bullish",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 73.85,
+      "entry": 74.035,
+      "stop": 74.016751,
+      "tp1": 74.016751,
+      "tp2": 74.0076265,
+      "tp3": 73.9711285,
+      "price": 73.93,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -237,9 +237,9 @@
         "htfAligned": true,
         "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": false,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "sweepConfirmed": true,
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     }
   }
