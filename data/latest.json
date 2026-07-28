@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-28T03:57:33.070Z",
+  "generatedAtUTC": "2026-07-28T04:02:27.661Z",
   "open": [],
   "recentClosed": [
     {
@@ -142,12 +142,12 @@
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
-      "killZoneName": "Asian Range",
-      "killZoneActive": true,
+      "killZoneName": null,
+      "killZoneActive": false,
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": false,
-      "funding": 5.081548055,
+      "funding": 33.207984954050005,
       "fearGreed": 29,
       "macroOk": true,
       "amdBias": "undetermined",
@@ -157,7 +157,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 63255.8,
+      "price": 63260.1,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -187,9 +187,9 @@
         "bias": "range",
         "weekly": "bear",
         "daily": "bull",
-        "h4": "bull"
+        "h4": "range"
       },
-      "dailyH4Aligned": true,
+      "dailyH4Aligned": false,
       "setupType": null,
       "checklist": {
         "htfAligned": false,
@@ -207,12 +207,12 @@
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
-      "killZoneName": "Asian Range",
-      "killZoneActive": true,
+      "killZoneName": null,
+      "killZoneActive": false,
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": false,
-      "funding": -0.1876052893000024,
+      "funding": -0.10203989054999998,
       "fearGreed": 29,
       "macroOk": true,
       "amdBias": "undetermined",
@@ -222,7 +222,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 73.15,
+      "price": 73.13,
       "htf": {
         "aligned": true,
         "bias": "bear",
