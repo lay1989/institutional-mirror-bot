@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-28T15:40:58.399Z",
+  "generatedAtUTC": "2026-07-28T15:46:43.577Z",
   "open": [],
   "recentClosed": [
     {
@@ -138,7 +138,7 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 3,
+      "score": 2,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
@@ -157,7 +157,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 63744.4,
+      "price": 63888.9,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -172,7 +172,7 @@
         "htfAligned": true,
         "inTimingWindow": true,
         "correctZone": false,
-        "sweepConfirmed": true,
+        "sweepConfirmed": false,
         "mssConfirmed": false,
         "cleanRunway": null
       }
@@ -205,7 +205,7 @@
       "skip": true,
       "score": 2,
       "direction": "short",
-      "zone": "discount",
+      "zone": "equilibrium",
       "setupType": "Type A",
       "killZoneName": "Silver Bullet",
       "killZoneActive": true,
@@ -222,7 +222,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 74.33,
+      "price": 74.46,
       "htf": {
         "aligned": true,
         "bias": "bear",
