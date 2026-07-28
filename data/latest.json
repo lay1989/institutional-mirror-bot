@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-28T08:37:10.955Z",
+  "generatedAtUTC": "2026-07-28T08:41:04.333Z",
   "open": [],
   "recentClosed": [
     {
@@ -153,11 +153,11 @@
       "amdBias": "undetermined",
       "amdContradicts": false,
       "entry": 63452.45,
-      "stop": 63460.60193,
-      "tp1": 63444.29807,
-      "tp2": 63440.22210499999,
-      "tp3": 63423.91824499999,
-      "price": 63359.9,
+      "stop": 63460.63189,
+      "tp1": 63444.26811,
+      "tp2": 63440.177165,
+      "tp3": 63423.813385,
+      "price": 63402.7,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -222,7 +222,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 73.18,
+      "price": 73.24,
       "htf": {
         "aligned": true,
         "bias": "bear",
