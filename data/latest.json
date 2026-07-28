@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-28T17:14:42.431Z",
+  "generatedAtUTC": "2026-07-28T17:16:07.966Z",
   "open": [],
   "recentClosed": [
     {
@@ -138,7 +138,7 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 2,
+      "score": 4,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
@@ -152,12 +152,12 @@
       "macroOk": true,
       "amdBias": "bullish",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 63741.1,
+      "entry": 63776.850000000006,
+      "stop": 63957.57758999999,
+      "tp1": 63596.12241000002,
+      "tp2": 63505.75861500003,
+      "tp3": 63144.30343500005,
+      "price": 63753.7,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -173,8 +173,8 @@
         "inTimingWindow": false,
         "correctZone": false,
         "sweepConfirmed": true,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     },
     "ETHUSDT": {
@@ -203,7 +203,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 4,
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
@@ -217,12 +217,12 @@
       "macroOk": true,
       "amdBias": "bullish",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 73.91,
+      "entry": 74.02,
+      "stop": 74.246709,
+      "tp1": 73.793291,
+      "tp2": 73.6799365,
+      "tp3": 73.2265185,
+      "price": 73.87,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -238,8 +238,8 @@
         "inTimingWindow": false,
         "correctZone": false,
         "sweepConfirmed": true,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     }
   }
