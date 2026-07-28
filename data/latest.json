@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-28T22:55:47.499Z",
+  "generatedAtUTC": "2026-07-28T23:01:27.041Z",
   "open": [],
   "recentClosed": [
     {
@@ -138,7 +138,7 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 2,
+      "score": 4,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
@@ -147,17 +147,17 @@
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": false,
-      "funding": 121.8342251558812,
+      "funding": 73.31782311428955,
       "fearGreed": 29,
       "macroOk": true,
       "amdBias": "bullish",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 63724.9,
+      "entry": 63744.05,
+      "stop": 63793.236990000005,
+      "tp1": 63694.86301,
+      "tp2": 63670.269515,
+      "tp3": 63571.895534999996,
+      "price": 63695.7,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -173,8 +173,8 @@
         "inTimingWindow": false,
         "correctZone": false,
         "sweepConfirmed": true,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     },
     "ETHUSDT": {
@@ -211,18 +211,18 @@
       "killZoneActive": false,
       "newsPhase": "clear",
       "newsEvent": null,
-      "fundingOk": false,
-      "funding": 0.19362590914583092,
+      "fundingOk": true,
+      "funding": 0.0433634431083358,
       "fearGreed": 29,
       "macroOk": true,
       "amdBias": "bullish",
       "amdContradicts": false,
-      "entry": 73.785,
-      "stop": 73.49637299999999,
-      "tp1": 73.49637299999999,
-      "tp2": 73.3520595,
-      "tp3": 72.77480549999999,
-      "price": 73.39,
+      "entry": 73.52000000000001,
+      "stop": 73.496359,
+      "tp1": 73.496359,
+      "tp2": 73.48453849999999,
+      "tp3": 73.43725649999996,
+      "price": 73.37,
       "htf": {
         "aligned": true,
         "bias": "bear",
