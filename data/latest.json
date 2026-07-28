@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-28T02:31:24.931Z",
+  "generatedAtUTC": "2026-07-28T02:35:57.453Z",
   "open": [],
   "recentClosed": [
     {
@@ -144,8 +144,8 @@
       "setupType": "Type A",
       "killZoneName": "Asian Range",
       "killZoneActive": true,
-      "newsPhase": "clear",
-      "newsEvent": null,
+      "newsPhase": "blackout",
+      "newsEvent": "RBA Gov Bullock Speaks",
       "fundingOk": false,
       "funding": -1.866903885675,
       "fearGreed": 29,
@@ -157,7 +157,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 63179.7,
+      "price": 63156.1,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -209,8 +209,8 @@
       "setupType": "Type A",
       "killZoneName": "Asian Range",
       "killZoneActive": true,
-      "newsPhase": "clear",
-      "newsEvent": null,
+      "newsPhase": "blackout",
+      "newsEvent": "RBA Gov Bullock Speaks",
       "fundingOk": false,
       "funding": -0.27868070619999996,
       "fearGreed": 29,
@@ -222,7 +222,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 73.34,
+      "price": 73.31,
       "htf": {
         "aligned": true,
         "bias": "bear",
