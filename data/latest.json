@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-28T03:16:00.627Z",
+  "generatedAtUTC": "2026-07-28T03:21:12.483Z",
   "open": [],
   "recentClosed": [
     {
@@ -138,26 +138,26 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 4,
+      "score": 1,
       "direction": "short",
       "zone": "equilibrium",
-      "setupType": "News-MSS",
+      "setupType": "Type A",
       "killZoneName": "Asian Range",
       "killZoneActive": true,
-      "newsPhase": "news-window",
-      "newsEvent": "RBA Gov Bullock Speaks",
+      "newsPhase": "clear",
+      "newsEvent": null,
       "fundingOk": false,
       "funding": 5.081548055,
       "fearGreed": 29,
       "macroOk": true,
       "amdBias": "undetermined",
       "amdContradicts": false,
-      "entry": 63144.7,
-      "stop": 63247.94035,
-      "tp1": 63041.45965,
-      "tp2": 62989.839475,
-      "tp3": 62783.358775,
-      "price": 63200.5,
+      "entry": null,
+      "stop": null,
+      "tp1": null,
+      "tp2": null,
+      "tp3": null,
+      "price": 63275.7,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -170,11 +170,11 @@
       "pdl": 63550,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": true,
+        "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": true,
-        "mssConfirmed": true,
-        "cleanRunway": false
+        "sweepConfirmed": false,
+        "mssConfirmed": false,
+        "cleanRunway": null
       }
     },
     "ETHUSDT": {
@@ -203,14 +203,14 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 1,
       "direction": "short",
       "zone": "discount",
-      "setupType": "News-MSS",
+      "setupType": "Type A",
       "killZoneName": "Asian Range",
       "killZoneActive": true,
-      "newsPhase": "news-window",
-      "newsEvent": "RBA Gov Bullock Speaks",
+      "newsPhase": "clear",
+      "newsEvent": null,
       "fundingOk": false,
       "funding": -0.1876052893000024,
       "fearGreed": 29,
@@ -222,7 +222,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 73.2,
+      "price": 73.29,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -235,7 +235,7 @@
       "pdl": 73.7,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": true,
+        "inTimingWindow": false,
         "correctZone": false,
         "sweepConfirmed": false,
         "mssConfirmed": false,
