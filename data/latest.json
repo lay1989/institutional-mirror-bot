@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-28T03:05:53.295Z",
+  "generatedAtUTC": "2026-07-28T03:11:10.881Z",
   "open": [],
   "recentClosed": [
     {
@@ -138,13 +138,13 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 1,
+      "score": 2,
       "direction": "short",
       "zone": "equilibrium",
-      "setupType": "Type A",
+      "setupType": "News-MSS",
       "killZoneName": "Asian Range",
       "killZoneActive": true,
-      "newsPhase": "blackout",
+      "newsPhase": "news-window",
       "newsEvent": "RBA Gov Bullock Speaks",
       "fundingOk": false,
       "funding": 5.081548055,
@@ -157,7 +157,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 63120.3,
+      "price": 63132.5,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -170,7 +170,7 @@
       "pdl": 63550,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": false,
+        "inTimingWindow": true,
         "correctZone": false,
         "sweepConfirmed": false,
         "mssConfirmed": false,
@@ -203,13 +203,13 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 1,
+      "score": 2,
       "direction": "short",
       "zone": "discount",
-      "setupType": "Type A",
+      "setupType": "News-MSS",
       "killZoneName": "Asian Range",
       "killZoneActive": true,
-      "newsPhase": "blackout",
+      "newsPhase": "news-window",
       "newsEvent": "RBA Gov Bullock Speaks",
       "fundingOk": false,
       "funding": -0.1876052893000024,
@@ -222,7 +222,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 73.3,
+      "price": 73.17,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -235,7 +235,7 @@
       "pdl": 73.7,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": false,
+        "inTimingWindow": true,
         "correctZone": false,
         "sweepConfirmed": false,
         "mssConfirmed": false,
