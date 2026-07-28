@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-28T07:28:23.675Z",
+  "generatedAtUTC": "2026-07-28T07:31:17.490Z",
   "open": [],
   "recentClosed": [
     {
@@ -157,7 +157,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 63517,
+      "price": 63491.1,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -201,9 +201,46 @@
       }
     },
     "SOLUSDT": {
+      "symbol": "SOLUSDT",
       "skip": true,
-      "reason": "Could not reach Sheets this run",
-      "error": "All 3 attempts failed for Sheets GET (OPEN): HTTP 404 from Sheets GET (OPEN) — <!DOCTYPE html><html lang=\"en\"><head><meta name=\"description\" content=\"Web word processing, presentations and spreadsheets\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0\"><link rel=\"shortcut icon\" href=\"//docs.google.com/f"
+      "score": 2,
+      "direction": "short",
+      "zone": "discount",
+      "setupType": "Type A",
+      "killZoneName": "London KZ",
+      "killZoneActive": true,
+      "newsPhase": "clear",
+      "newsEvent": null,
+      "fundingOk": true,
+      "funding": -0.0188205361208358,
+      "fearGreed": 29,
+      "macroOk": true,
+      "amdBias": "undetermined",
+      "amdContradicts": false,
+      "entry": null,
+      "stop": null,
+      "tp1": null,
+      "tp2": null,
+      "tp3": null,
+      "price": 73.31,
+      "htf": {
+        "aligned": true,
+        "bias": "bear",
+        "weekly": "bear",
+        "daily": "bear",
+        "h4": "bear"
+      },
+      "dailyH4Aligned": true,
+      "pdh": 77.42,
+      "pdl": 73.7,
+      "checklist": {
+        "htfAligned": true,
+        "inTimingWindow": true,
+        "correctZone": false,
+        "sweepConfirmed": false,
+        "mssConfirmed": false,
+        "cleanRunway": null
+      }
     }
   }
 }
