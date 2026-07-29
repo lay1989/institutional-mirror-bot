@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-29T18:31:18.325Z",
+  "generatedAtUTC": "2026-07-29T18:35:53.083Z",
   "open": [],
   "recentClosed": [
     {
@@ -168,13 +168,13 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 2,
+      "score": 3,
       "direction": "short",
       "zone": "equilibrium",
-      "setupType": "Type A",
+      "setupType": "News-MSS",
       "killZoneName": null,
       "killZoneActive": false,
-      "newsPhase": "blackout",
+      "newsPhase": "news-window",
       "newsEvent": "FOMC Press Conference",
       "fundingOk": false,
       "funding": 84.10318508785203,
@@ -187,7 +187,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 64100.9,
+      "price": 63796.6,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -200,7 +200,7 @@
       "pdl": 62684.4,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": false,
+        "inTimingWindow": true,
         "correctZone": false,
         "sweepConfirmed": true,
         "mssConfirmed": false,
@@ -233,13 +233,13 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 3,
       "direction": "short",
       "zone": "discount",
-      "setupType": "Type A",
+      "setupType": "News-MSS",
       "killZoneName": null,
       "killZoneActive": false,
-      "newsPhase": "blackout",
+      "newsPhase": "news-window",
       "newsEvent": "FOMC Press Conference",
       "fundingOk": false,
       "funding": 0.12578630797499998,
@@ -252,7 +252,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 73.93,
+      "price": 73.38,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -265,7 +265,7 @@
       "pdl": 72.31,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": false,
+        "inTimingWindow": true,
         "correctZone": false,
         "sweepConfirmed": true,
         "mssConfirmed": false,
