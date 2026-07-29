@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-29T01:41:05.243Z",
+  "generatedAtUTC": "2026-07-29T01:46:05.471Z",
   "open": [],
   "recentClosed": [
     {
@@ -141,11 +141,11 @@
       "score": 2,
       "direction": "short",
       "zone": "equilibrium",
-      "setupType": "News-MSS",
+      "setupType": "Type A",
       "killZoneName": "Asian Range",
       "killZoneActive": true,
-      "newsPhase": "news-window",
-      "newsEvent": "CPI m/m",
+      "newsPhase": "clear",
+      "newsEvent": null,
       "fundingOk": false,
       "funding": 100.09575560966452,
       "fearGreed": 29,
@@ -157,7 +157,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 63775.3,
+      "price": 63732.6,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -170,9 +170,9 @@
       "pdl": 62684.4,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": true,
+        "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": false,
+        "sweepConfirmed": true,
         "mssConfirmed": false,
         "cleanRunway": null
       }
@@ -203,26 +203,26 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 3,
+      "score": 4,
       "direction": "short",
       "zone": "discount",
-      "setupType": "News-MSS",
+      "setupType": "Type A",
       "killZoneName": "Asian Range",
       "killZoneActive": true,
-      "newsPhase": "news-window",
-      "newsEvent": "CPI m/m",
+      "newsPhase": "clear",
+      "newsEvent": null,
       "fundingOk": false,
       "funding": -0.2036834453333309,
       "fearGreed": 29,
       "macroOk": true,
       "amdBias": "undetermined",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 73.44,
+      "entry": 73.395,
+      "stop": 73.49635199999999,
+      "tp1": 73.293648,
+      "tp2": 73.24297200000001,
+      "tp3": 73.04026800000003,
+      "price": 73.36,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -235,11 +235,11 @@
       "pdl": 72.31,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": true,
+        "inTimingWindow": false,
         "correctZone": false,
         "sweepConfirmed": true,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     }
   }
