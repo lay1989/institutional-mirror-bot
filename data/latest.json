@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-29T08:41:12.978Z",
+  "generatedAtUTC": "2026-07-29T08:46:02.229Z",
   "open": [
     {
       "ID": "SOLUSDT-1785312966369",
@@ -24,7 +24,7 @@
       "TP2Hit": false,
       "StructuralBELocked": false,
       "StructuralStopLevel": "",
-      "LastCheckedUTC": "2026-07-29T08:40:54.859Z",
+      "LastCheckedUTC": "2026-07-29T08:45:44.554Z",
       "ExitReason": "",
       "ExitPrice": "",
       "ExitTimeUTC": "",
@@ -169,43 +169,24 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 6,
-      "direction": "short",
-      "zone": "premium",
-      "setupType": "Type A",
-      "killZoneName": "London KZ",
-      "killZoneActive": true,
-      "newsPhase": "clear",
-      "newsEvent": null,
-      "fundingOk": false,
-      "funding": 36.085811252,
-      "fearGreed": 29,
-      "macroOk": true,
-      "amdBias": "undetermined",
-      "amdContradicts": false,
-      "entry": 64353.9,
-      "stop": 64294.97073,
-      "tp1": 64294.97073,
-      "tp2": 64265.506095000004,
-      "tp3": 64147.647555,
-      "price": 64243.9,
+      "score": 0,
+      "reason": "HTF not aligned",
       "htf": {
-        "aligned": true,
-        "bias": "bear",
+        "aligned": false,
+        "bias": "range",
         "weekly": "bear",
-        "daily": "bear",
+        "daily": "range",
         "h4": "bear"
       },
-      "dailyH4Aligned": true,
-      "pdh": 64018.6,
-      "pdl": 62684.4,
+      "dailyH4Aligned": false,
+      "setupType": null,
       "checklist": {
-        "htfAligned": true,
-        "inTimingWindow": true,
-        "correctZone": true,
-        "sweepConfirmed": true,
-        "mssConfirmed": true,
-        "cleanRunway": true
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
+        "cleanRunway": null
       }
     },
     "ETHUSDT": {
