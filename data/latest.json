@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-29T15:41:16.530Z",
+  "generatedAtUTC": "2026-07-29T15:46:09.477Z",
   "open": [],
   "recentClosed": [
     {
@@ -187,7 +187,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 63929.8,
+      "price": 63874.6,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -217,9 +217,9 @@
         "bias": "range",
         "weekly": "bear",
         "daily": "bull",
-        "h4": "bull"
+        "h4": "range"
       },
-      "dailyH4Aligned": true,
+      "dailyH4Aligned": false,
       "setupType": null,
       "checklist": {
         "htfAligned": false,
@@ -252,7 +252,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 73.12,
+      "price": 73.05,
       "htf": {
         "aligned": true,
         "bias": "bear",
