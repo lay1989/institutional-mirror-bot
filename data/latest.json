@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-29T14:36:10.897Z",
+  "generatedAtUTC": "2026-07-29T14:41:16.191Z",
   "open": [],
   "recentClosed": [
     {
@@ -180,14 +180,14 @@
       "funding": 71.42988896884799,
       "fearGreed": 29,
       "macroOk": true,
-      "amdBias": "undetermined",
+      "amdBias": "bearish",
       "amdContradicts": false,
       "entry": null,
       "stop": null,
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 64107.1,
+      "price": 64034.8,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -252,7 +252,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 73.15,
+      "price": 73.08,
       "htf": {
         "aligned": true,
         "bias": "bear",
