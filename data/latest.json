@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-29T13:25:59.327Z",
+  "generatedAtUTC": "2026-07-29T13:31:38.012Z",
   "open": [
     {
       "ID": "SOLUSDT-1785312966369",
@@ -24,7 +24,7 @@
       "TP2Hit": true,
       "StructuralBELocked": false,
       "StructuralStopLevel": "",
-      "LastCheckedUTC": "2026-07-29T13:25:38.410Z",
+      "LastCheckedUTC": "2026-07-29T13:31:16.161Z",
       "ExitReason": "",
       "ExitPrice": "",
       "ExitTimeUTC": "",
@@ -169,7 +169,7 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 5,
+      "score": 3,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
@@ -181,14 +181,14 @@
       "funding": 22.87824631372714,
       "fearGreed": 29,
       "macroOk": true,
-      "amdBias": "bearish",
+      "amdBias": "undetermined",
       "amdContradicts": false,
-      "entry": 64330.3,
-      "stop": 64218.46377,
-      "tp1": 64218.46377,
-      "tp2": 64162.545655,
-      "tp3": 63938.873195,
-      "price": 64091.1,
+      "entry": null,
+      "stop": null,
+      "tp1": null,
+      "tp2": null,
+      "tp3": null,
+      "price": 64146.8,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -204,8 +204,8 @@
         "inTimingWindow": true,
         "correctZone": false,
         "sweepConfirmed": true,
-        "mssConfirmed": true,
-        "cleanRunway": true
+        "mssConfirmed": false,
+        "cleanRunway": null
       }
     },
     "ETHUSDT": {
