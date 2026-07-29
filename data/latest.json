@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-29T07:16:01.866Z",
+  "generatedAtUTC": "2026-07-29T07:21:02.717Z",
   "open": [],
   "recentClosed": [
     {
@@ -184,7 +184,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 3,
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
@@ -216,7 +216,7 @@
       "pdl": 72.31,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": false,
+        "inTimingWindow": true,
         "correctZone": false,
         "sweepConfirmed": true,
         "mssConfirmed": false,
