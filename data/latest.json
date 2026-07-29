@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-29T00:55:56.416Z",
+  "generatedAtUTC": "2026-07-29T01:01:32.858Z",
   "open": [],
   "recentClosed": [
     {
@@ -144,10 +144,10 @@
       "setupType": "Type A",
       "killZoneName": "Asian Range",
       "killZoneActive": true,
-      "newsPhase": "clear",
-      "newsEvent": null,
+      "newsPhase": "blackout",
+      "newsEvent": "CPI m/m",
       "fundingOk": false,
-      "funding": 89.56144116813121,
+      "funding": 100.09575560966452,
       "fearGreed": 29,
       "macroOk": true,
       "amdBias": "undetermined",
@@ -157,7 +157,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 63950.3,
+      "price": 63872.9,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -209,10 +209,10 @@
       "setupType": "Type A",
       "killZoneName": "Asian Range",
       "killZoneActive": true,
-      "newsPhase": "clear",
-      "newsEvent": null,
-      "fundingOk": true,
-      "funding": -0.0230906333333309,
+      "newsPhase": "blackout",
+      "newsEvent": "CPI m/m",
+      "fundingOk": false,
+      "funding": -0.2036834453333309,
       "fearGreed": 29,
       "macroOk": true,
       "amdBias": "undetermined",
@@ -222,7 +222,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 73.83,
+      "price": 73.64,
       "htf": {
         "aligned": true,
         "bias": "bear",
