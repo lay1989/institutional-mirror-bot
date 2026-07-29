@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-29T12:36:09.298Z",
+  "generatedAtUTC": "2026-07-29T12:41:21.916Z",
   "open": [
     {
       "ID": "SOLUSDT-1785312966369",
@@ -24,7 +24,7 @@
       "TP2Hit": true,
       "StructuralBELocked": false,
       "StructuralStopLevel": "",
-      "LastCheckedUTC": "2026-07-29T12:35:44.549Z",
+      "LastCheckedUTC": "2026-07-29T12:40:52.828Z",
       "ExitReason": "",
       "ExitPrice": "",
       "ExitTimeUTC": "",
@@ -169,24 +169,43 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 0,
-      "reason": "HTF not aligned",
+      "score": 6,
+      "direction": "short",
+      "zone": "premium",
+      "setupType": "Type A",
+      "killZoneName": "New York KZ",
+      "killZoneActive": true,
+      "newsPhase": "clear",
+      "newsEvent": null,
+      "fundingOk": false,
+      "funding": 69.26187680197702,
+      "fearGreed": 29,
+      "macroOk": true,
+      "amdBias": "undetermined",
+      "amdContradicts": false,
+      "entry": 64330.3,
+      "stop": 64294.97101,
+      "tp1": 64294.97101,
+      "tp2": 64277.306515000004,
+      "tp3": 64206.648535,
+      "price": 64244.3,
       "htf": {
-        "aligned": false,
-        "bias": "range",
+        "aligned": true,
+        "bias": "bear",
         "weekly": "bear",
-        "daily": "range",
+        "daily": "bear",
         "h4": "bear"
       },
-      "dailyH4Aligned": false,
-      "setupType": null,
+      "dailyH4Aligned": true,
+      "pdh": 64018.6,
+      "pdl": 62684.4,
       "checklist": {
-        "htfAligned": false,
-        "inTimingWindow": null,
-        "correctZone": null,
-        "sweepConfirmed": null,
-        "mssConfirmed": null,
-        "cleanRunway": null
+        "htfAligned": true,
+        "inTimingWindow": true,
+        "correctZone": true,
+        "sweepConfirmed": true,
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     },
     "ETHUSDT": {
