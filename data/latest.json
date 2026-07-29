@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-29T12:46:16.334Z",
+  "generatedAtUTC": "2026-07-29T12:51:13.408Z",
   "open": [
     {
       "ID": "SOLUSDT-1785312966369",
@@ -24,7 +24,7 @@
       "TP2Hit": true,
       "StructuralBELocked": false,
       "StructuralStopLevel": "",
-      "LastCheckedUTC": "2026-07-29T12:45:53.239Z",
+      "LastCheckedUTC": "2026-07-29T12:50:54.612Z",
       "ExitReason": "",
       "ExitPrice": "",
       "ExitTimeUTC": "",
@@ -184,11 +184,11 @@
       "amdBias": "undetermined",
       "amdContradicts": false,
       "entry": 64330.3,
-      "stop": 64337.125,
-      "tp1": 64323.475000000006,
-      "tp2": 64320.06250000001,
-      "tp3": 64306.41250000001,
-      "price": 64250,
+      "stop": 64294.97024,
+      "tp1": 64294.97024,
+      "tp2": 64277.30536,
+      "tp3": 64206.64584,
+      "price": 64243.2,
       "htf": {
         "aligned": true,
         "bias": "bear",
