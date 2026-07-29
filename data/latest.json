@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-29T14:21:14.372Z",
+  "generatedAtUTC": "2026-07-29T14:26:01.418Z",
   "open": [],
   "recentClosed": [
     {
@@ -168,9 +168,9 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 4,
+      "score": 3,
       "direction": "short",
-      "zone": "premium",
+      "zone": "equilibrium",
       "setupType": "Type A",
       "killZoneName": "New York KZ",
       "killZoneActive": true,
@@ -187,7 +187,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 64269.3,
+      "price": 64176.1,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -201,7 +201,7 @@
       "checklist": {
         "htfAligned": true,
         "inTimingWindow": true,
-        "correctZone": true,
+        "correctZone": false,
         "sweepConfirmed": true,
         "mssConfirmed": false,
         "cleanRunway": null
@@ -252,7 +252,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 73.43,
+      "price": 73.22,
       "htf": {
         "aligned": true,
         "bias": "bear",
