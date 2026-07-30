@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-30T11:11:03.360Z",
+  "generatedAtUTC": "2026-07-30T11:16:06.163Z",
   "open": [
     {
       "ID": "SOLUSDT-1785409551954",
@@ -24,7 +24,7 @@
       "TP2Hit": false,
       "StructuralBELocked": false,
       "StructuralStopLevel": "",
-      "LastCheckedUTC": "2026-07-30T11:10:45.484Z",
+      "LastCheckedUTC": "2026-07-30T11:15:51.060Z",
       "ExitReason": "",
       "ExitPrice": "",
       "ExitTimeUTC": "",
@@ -199,14 +199,14 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 3,
+      "score": 2,
       "direction": "short",
       "zone": "premium",
-      "setupType": "News-MSS",
+      "setupType": "Type A",
       "killZoneName": null,
       "killZoneActive": false,
-      "newsPhase": "news-window",
-      "newsEvent": "BOE Monetary Policy Report",
+      "newsPhase": "blackout",
+      "newsEvent": "BOE Gov Bailey Speaks",
       "fundingOk": false,
       "funding": 80.53725377565,
       "fearGreed": 28,
@@ -218,7 +218,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 64522.7,
+      "price": 64515.1,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -231,7 +231,7 @@
       "pdl": 63208.4,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": true,
+        "inTimingWindow": false,
         "correctZone": true,
         "sweepConfirmed": false,
         "mssConfirmed": false,
