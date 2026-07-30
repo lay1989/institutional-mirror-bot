@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-30T09:05:48.205Z",
+  "generatedAtUTC": "2026-07-30T09:11:01.784Z",
   "open": [],
   "recentClosed": [
     {
@@ -168,9 +168,9 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 3,
+      "score": 4,
       "direction": "short",
-      "zone": "equilibrium",
+      "zone": "premium",
       "setupType": "Type A",
       "killZoneName": "London KZ",
       "killZoneActive": true,
@@ -187,7 +187,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 64190.1,
+      "price": 64210.8,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -201,7 +201,7 @@
       "checklist": {
         "htfAligned": true,
         "inTimingWindow": true,
-        "correctZone": false,
+        "correctZone": true,
         "sweepConfirmed": true,
         "mssConfirmed": false,
         "cleanRunway": null
@@ -252,7 +252,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 73.75,
+      "price": 73.81,
       "htf": {
         "aligned": true,
         "bias": "bear",
