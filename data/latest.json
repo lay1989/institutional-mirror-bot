@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-30T11:46:02.000Z",
+  "generatedAtUTC": "2026-07-30T11:51:11.760Z",
   "open": [],
   "recentClosed": [
     {
@@ -198,42 +198,23 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 3,
-      "direction": "short",
-      "zone": "premium",
-      "setupType": "Type A",
-      "killZoneName": null,
-      "killZoneActive": false,
-      "newsPhase": "blackout",
-      "newsEvent": "BOE Gov Bailey Speaks",
-      "fundingOk": false,
-      "funding": 80.53725377565,
-      "fearGreed": 28,
-      "macroOk": true,
-      "amdBias": "bearish",
-      "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 64575.2,
+      "score": 0,
+      "reason": "HTF not aligned",
       "htf": {
-        "aligned": true,
-        "bias": "bear",
+        "aligned": false,
+        "bias": "range",
         "weekly": "bear",
-        "daily": "bear",
+        "daily": "range",
         "h4": "bear"
       },
-      "dailyH4Aligned": true,
-      "pdh": 64643.8,
-      "pdl": 63208.4,
+      "dailyH4Aligned": false,
+      "setupType": null,
       "checklist": {
-        "htfAligned": true,
-        "inTimingWindow": false,
-        "correctZone": true,
-        "sweepConfirmed": true,
-        "mssConfirmed": false,
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
         "cleanRunway": null
       }
     },
@@ -247,9 +228,9 @@
         "bias": "range",
         "weekly": "bear",
         "daily": "bull",
-        "h4": "range"
+        "h4": "bull"
       },
-      "dailyH4Aligned": false,
+      "dailyH4Aligned": true,
       "setupType": null,
       "checklist": {
         "htfAligned": false,
@@ -282,7 +263,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 74.04,
+      "price": 74.21,
       "htf": {
         "aligned": true,
         "bias": "bear",
