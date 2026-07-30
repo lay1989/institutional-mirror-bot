@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-30T15:16:08.530Z",
+  "generatedAtUTC": "2026-07-30T15:21:24.226Z",
   "open": [],
   "recentClosed": [
     {
@@ -204,7 +204,7 @@
         "aligned": false,
         "bias": "range",
         "weekly": "bear",
-        "daily": "bear",
+        "daily": "range",
         "h4": "range"
       },
       "dailyH4Aligned": false,
@@ -263,7 +263,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 74.57,
+      "price": 74.69,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -276,9 +276,9 @@
       "pdl": 72.25,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": false,
+        "inTimingWindow": true,
         "correctZone": false,
-        "sweepConfirmed": true,
+        "sweepConfirmed": false,
         "mssConfirmed": false,
         "cleanRunway": null
       }
