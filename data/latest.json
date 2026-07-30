@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-30T12:01:38.378Z",
+  "generatedAtUTC": "2026-07-30T12:06:02.598Z",
   "open": [],
   "recentClosed": [
     {
@@ -244,13 +244,13 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 1,
+      "score": 2,
       "direction": "short",
       "zone": "discount",
-      "setupType": "Type A",
+      "setupType": "News-MSS",
       "killZoneName": "New York KZ",
       "killZoneActive": true,
-      "newsPhase": "blackout",
+      "newsPhase": "news-window",
       "newsEvent": "BOE Gov Bailey Speaks",
       "fundingOk": false,
       "funding": 0.1272708013541691,
@@ -263,7 +263,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 74.13,
+      "price": 74.17,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -276,7 +276,7 @@
       "pdl": 72.25,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": false,
+        "inTimingWindow": true,
         "correctZone": false,
         "sweepConfirmed": false,
         "mssConfirmed": false,
