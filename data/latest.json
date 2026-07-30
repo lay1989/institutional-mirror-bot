@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-30T10:55:55.627Z",
+  "generatedAtUTC": "2026-07-30T11:01:39.362Z",
   "open": [],
   "recentClosed": [
     {
@@ -177,7 +177,7 @@
       "newsPhase": "blackout",
       "newsEvent": "BOE Monetary Policy Report",
       "fundingOk": false,
-      "funding": 104.39689877318547,
+      "funding": 80.53725377565,
       "fearGreed": 28,
       "macroOk": true,
       "amdBias": "bearish",
@@ -187,7 +187,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 64480,
+      "price": 64463,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -233,7 +233,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 4,
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
@@ -242,17 +242,17 @@
       "newsPhase": "blackout",
       "newsEvent": "BOE Monetary Policy Report",
       "fundingOk": true,
-      "funding": -0.03957097725,
+      "funding": -0.033246867050000004,
       "fearGreed": 28,
       "macroOk": true,
       "amdBias": "bearish",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 73.78,
+      "entry": 73.89,
+      "stop": 74.01666,
+      "tp1": 73.76334,
+      "tp2": 73.70000999999999,
+      "tp3": 73.44668999999999,
+      "price": 73.8,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -268,8 +268,8 @@
         "inTimingWindow": false,
         "correctZone": false,
         "sweepConfirmed": true,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     }
   }
