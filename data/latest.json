@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-30T00:41:03.418Z",
+  "generatedAtUTC": "2026-07-30T00:45:59.137Z",
   "open": [],
   "recentClosed": [
     {
@@ -168,7 +168,7 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 2,
+      "score": 3,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
@@ -182,12 +182,12 @@
       "macroOk": true,
       "amdBias": "undetermined",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 63722.4,
+      "entry": 63757,
+      "stop": 63957.49177,
+      "tp1": 63556.50823,
+      "tp2": 63456.262344999996,
+      "tp3": 63055.278804999994,
+      "price": 63631.1,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -203,8 +203,8 @@
         "inTimingWindow": false,
         "correctZone": false,
         "sweepConfirmed": true,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "mssConfirmed": true,
+        "cleanRunway": false
       }
     },
     "ETHUSDT": {
@@ -233,7 +233,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 4,
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
@@ -247,12 +247,12 @@
       "macroOk": true,
       "amdBias": "undetermined",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 73.34,
+      "entry": 73.4,
+      "stop": 73.496212,
+      "tp1": 73.30378800000001,
+      "tp2": 73.25568200000001,
+      "tp3": 73.06325800000002,
+      "price": 73.16,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -268,8 +268,8 @@
         "inTimingWindow": false,
         "correctZone": false,
         "sweepConfirmed": true,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     }
   }
