@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-30T11:05:56.305Z",
+  "generatedAtUTC": "2026-07-30T11:11:03.360Z",
   "open": [
     {
       "ID": "SOLUSDT-1785409551954",
@@ -24,7 +24,7 @@
       "TP2Hit": false,
       "StructuralBELocked": false,
       "StructuralStopLevel": "",
-      "LastCheckedUTC": "2026-07-30T11:05:51.954Z",
+      "LastCheckedUTC": "2026-07-30T11:10:45.484Z",
       "ExitReason": "",
       "ExitPrice": "",
       "ExitTimeUTC": "",
@@ -199,7 +199,7 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 4,
+      "score": 3,
       "direction": "short",
       "zone": "premium",
       "setupType": "News-MSS",
@@ -218,7 +218,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 64477.1,
+      "price": 64522.7,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -233,7 +233,7 @@
         "htfAligned": true,
         "inTimingWindow": true,
         "correctZone": true,
-        "sweepConfirmed": true,
+        "sweepConfirmed": false,
         "mssConfirmed": false,
         "cleanRunway": null
       }
@@ -262,46 +262,8 @@
       }
     },
     "SOLUSDT": {
-      "symbol": "SOLUSDT",
-      "skip": false,
-      "score": 5,
-      "direction": "short",
-      "zone": "discount",
-      "setupType": "News-MSS",
-      "killZoneName": null,
-      "killZoneActive": false,
-      "newsPhase": "news-window",
-      "newsEvent": "BOE Monetary Policy Report",
-      "fundingOk": true,
-      "funding": -0.033246867050000004,
-      "fearGreed": 28,
-      "macroOk": true,
-      "amdBias": "bearish",
-      "amdContradicts": false,
-      "entry": 73.89,
-      "stop": 74.016681,
-      "tp1": 73.763319,
-      "tp2": 73.69997849999999,
-      "tp3": 73.44661649999998,
-      "price": 73.83,
-      "htf": {
-        "aligned": true,
-        "bias": "bear",
-        "weekly": "bear",
-        "daily": "bear",
-        "h4": "bear"
-      },
-      "dailyH4Aligned": true,
-      "pdh": 74.42,
-      "pdl": 72.25,
-      "checklist": {
-        "htfAligned": true,
-        "inTimingWindow": true,
-        "correctZone": false,
-        "sweepConfirmed": true,
-        "mssConfirmed": true,
-        "cleanRunway": true
-      }
+      "skip": true,
+      "reason": "Already has an open paper trade — not re-evaluated this run"
     }
   }
 }
