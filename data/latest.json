@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-30T12:42:14.759Z",
+  "generatedAtUTC": "2026-07-30T12:46:05.550Z",
   "open": [],
   "recentClosed": [
     {
@@ -247,11 +247,11 @@
       "score": 3,
       "direction": "short",
       "zone": "discount",
-      "setupType": "News-MSS",
+      "setupType": "Type A",
       "killZoneName": "New York KZ",
       "killZoneActive": true,
-      "newsPhase": "news-window",
-      "newsEvent": "Advance GDP q/q",
+      "newsPhase": "clear",
+      "newsEvent": null,
       "fundingOk": false,
       "funding": 0.1272708013541691,
       "fearGreed": 28,
@@ -263,7 +263,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 74.22,
+      "price": 74.16,
       "htf": {
         "aligned": true,
         "bias": "bear",
