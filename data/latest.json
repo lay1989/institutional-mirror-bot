@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-30T11:42:57.439Z",
+  "generatedAtUTC": "2026-07-30T11:46:02.000Z",
   "open": [],
   "recentClosed": [
     {
@@ -198,13 +198,13 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 4,
+      "score": 3,
       "direction": "short",
       "zone": "premium",
-      "setupType": "News-MSS",
+      "setupType": "Type A",
       "killZoneName": null,
       "killZoneActive": false,
-      "newsPhase": "news-window",
+      "newsPhase": "blackout",
       "newsEvent": "BOE Gov Bailey Speaks",
       "fundingOk": false,
       "funding": 80.53725377565,
@@ -217,7 +217,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 64566.2,
+      "price": 64575.2,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -230,7 +230,7 @@
       "pdl": 63208.4,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": true,
+        "inTimingWindow": false,
         "correctZone": true,
         "sweepConfirmed": true,
         "mssConfirmed": false,
@@ -263,13 +263,13 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 1,
       "direction": "short",
       "zone": "discount",
-      "setupType": "News-MSS",
+      "setupType": "Type A",
       "killZoneName": null,
       "killZoneActive": false,
-      "newsPhase": "news-window",
+      "newsPhase": "blackout",
       "newsEvent": "BOE Gov Bailey Speaks",
       "fundingOk": true,
       "funding": -0.033246867050000004,
@@ -282,7 +282,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 74.03,
+      "price": 74.04,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -295,7 +295,7 @@
       "pdl": 72.25,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": true,
+        "inTimingWindow": false,
         "correctZone": false,
         "sweepConfirmed": false,
         "mssConfirmed": false,
