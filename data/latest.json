@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-30T02:41:10.516Z",
+  "generatedAtUTC": "2026-07-30T02:45:58.960Z",
   "open": [],
   "recentClosed": [
     {
@@ -168,9 +168,9 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 2,
+      "score": 3,
       "direction": "short",
-      "zone": "equilibrium",
+      "zone": "premium",
       "setupType": "Type A",
       "killZoneName": "Asian Range",
       "killZoneActive": true,
@@ -187,7 +187,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 64183.7,
+      "price": 64212.2,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -201,7 +201,7 @@
       "checklist": {
         "htfAligned": true,
         "inTimingWindow": false,
-        "correctZone": false,
+        "correctZone": true,
         "sweepConfirmed": true,
         "mssConfirmed": false,
         "cleanRunway": null
@@ -233,7 +233,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 1,
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
@@ -267,7 +267,7 @@
         "htfAligned": true,
         "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": true,
+        "sweepConfirmed": false,
         "mssConfirmed": false,
         "cleanRunway": null
       }
