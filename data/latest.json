@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-30T04:55:51.771Z",
+  "generatedAtUTC": "2026-07-30T05:01:27.066Z",
   "open": [],
   "recentClosed": [
     {
@@ -168,7 +168,7 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 2,
+      "score": 4,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
@@ -177,17 +177,17 @@
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": false,
-      "funding": 92.20346246475,
+      "funding": 85.90374120537713,
       "fearGreed": 28,
       "macroOk": true,
       "amdBias": "undetermined",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 64009.3,
+      "entry": 63948.2,
+      "stop": 64011.44988,
+      "tp1": 63884.950119999994,
+      "tp2": 63853.32517999999,
+      "tp3": 63726.82541999999,
+      "price": 63928.4,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -203,8 +203,8 @@
         "inTimingWindow": false,
         "correctZone": false,
         "sweepConfirmed": true,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     },
     "ETHUSDT": {
@@ -233,7 +233,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 1,
+      "score": 4,
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
@@ -242,17 +242,17 @@
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": true,
-      "funding": 0.014550900975000001,
+      "funding": -0.058252814491664195,
       "fearGreed": 28,
       "macroOk": true,
       "amdBias": "undetermined",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 73.5,
+      "entry": 73.56,
+      "stop": 73.496394,
+      "tp1": 73.496394,
+      "tp2": 73.46459099999998,
+      "tp3": 73.33737899999997,
+      "price": 73.42,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -267,9 +267,9 @@
         "htfAligned": true,
         "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": false,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "sweepConfirmed": true,
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     }
   }
