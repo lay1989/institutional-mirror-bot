@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-31T12:31:18.725Z",
+  "generatedAtUTC": "2026-07-31T12:35:59.441Z",
   "open": [],
   "recentClosed": [
     {
@@ -201,10 +201,10 @@
       "score": 2,
       "direction": "short",
       "zone": "equilibrium",
-      "setupType": "Type A",
+      "setupType": "News-MSS",
       "killZoneName": "New York KZ",
       "killZoneActive": true,
-      "newsPhase": "blackout",
+      "newsPhase": "news-window",
       "newsEvent": "GDP m/m",
       "fundingOk": false,
       "funding": 25.130992712275003,
@@ -217,7 +217,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 63671.1,
+      "price": 63574.4,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -263,13 +263,13 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 3,
       "direction": "short",
       "zone": "discount",
-      "setupType": "Type A",
+      "setupType": "News-MSS",
       "killZoneName": "New York KZ",
       "killZoneActive": true,
-      "newsPhase": "blackout",
+      "newsPhase": "news-window",
       "newsEvent": "GDP m/m",
       "fundingOk": false,
       "funding": 0.1083200785458309,
@@ -282,7 +282,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 73.48,
+      "price": 73.39,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -297,7 +297,7 @@
         "htfAligned": true,
         "inTimingWindow": true,
         "correctZone": false,
-        "sweepConfirmed": false,
+        "sweepConfirmed": true,
         "mssConfirmed": false,
         "cleanRunway": null
       }
