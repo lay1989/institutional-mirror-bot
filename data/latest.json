@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-31T10:06:43.725Z",
+  "generatedAtUTC": "2026-07-31T10:11:08.247Z",
   "open": [],
   "recentClosed": [
     {
@@ -198,42 +198,23 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 1,
-      "direction": "short",
-      "zone": "equilibrium",
-      "setupType": "Type A",
-      "killZoneName": null,
-      "killZoneActive": false,
-      "newsPhase": "clear",
-      "newsEvent": null,
-      "fundingOk": false,
-      "funding": 15.436287925727044,
-      "fearGreed": 25,
-      "macroOk": true,
-      "amdBias": "undetermined",
-      "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 63574.9,
+      "score": 0,
+      "reason": "HTF not aligned",
       "htf": {
-        "aligned": true,
-        "bias": "bear",
+        "aligned": false,
+        "bias": "range",
         "weekly": "bear",
         "daily": "bear",
-        "h4": "bear"
+        "h4": "range"
       },
-      "dailyH4Aligned": true,
-      "pdh": 65078.5,
-      "pdl": 63536.5,
+      "dailyH4Aligned": false,
+      "setupType": null,
       "checklist": {
-        "htfAligned": true,
-        "inTimingWindow": false,
-        "correctZone": false,
-        "sweepConfirmed": false,
-        "mssConfirmed": false,
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
         "cleanRunway": null
       }
     },
@@ -263,7 +244,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 4,
+      "score": 1,
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
@@ -277,12 +258,12 @@
       "macroOk": true,
       "amdBias": "undetermined",
       "amdContradicts": false,
-      "entry": 73.515,
-      "stop": 73.496282,
-      "tp1": 73.496282,
-      "tp2": 73.48692299999999,
-      "tp3": 73.44948699999998,
-      "price": 73.26,
+      "entry": null,
+      "stop": null,
+      "tp1": null,
+      "tp2": null,
+      "tp3": null,
+      "price": 73.45,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -297,9 +278,9 @@
         "htfAligned": true,
         "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": true,
-        "mssConfirmed": true,
-        "cleanRunway": true
+        "sweepConfirmed": false,
+        "mssConfirmed": false,
+        "cleanRunway": null
       }
     }
   }
