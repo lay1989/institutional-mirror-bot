@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-31T14:26:00.593Z",
+  "generatedAtUTC": "2026-07-31T14:32:23.011Z",
   "open": [],
   "recentClosed": [
     {
@@ -243,11 +243,11 @@
       "amdBias": "undetermined",
       "amdContradicts": false,
       "entry": 62929.5,
-      "stop": 62921.93779999999,
-      "tp1": 62921.93779999999,
-      "tp2": 62918.15669999999,
-      "tp3": 62903.03229999998,
-      "price": 62554,
+      "stop": 62643.35817,
+      "tp1": 62643.35817,
+      "tp2": 62500.287255,
+      "tp3": 61928.003595,
+      "price": 62583.1,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -293,7 +293,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 4,
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
@@ -307,12 +307,12 @@
       "macroOk": true,
       "amdBias": "undetermined",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 73.47,
+      "entry": 73.485,
+      "stop": 73.496226,
+      "tp1": 73.473774,
+      "tp2": 73.46816100000001,
+      "tp3": 73.44570900000002,
+      "price": 73.18,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -327,9 +327,9 @@
         "htfAligned": true,
         "inTimingWindow": true,
         "correctZone": false,
-        "sweepConfirmed": false,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "sweepConfirmed": true,
+        "mssConfirmed": true,
+        "cleanRunway": false
       }
     }
   }
