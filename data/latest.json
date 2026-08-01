@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-01T16:26:54.427Z",
+  "generatedAtUTC": "2026-08-01T17:35:05.558Z",
   "open": [],
   "recentClosed": [
     {
@@ -228,7 +228,7 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 4,
+      "score": 1,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
@@ -237,17 +237,17 @@
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": false,
-      "funding": 48.4077124344229,
+      "funding": 26.3318179659,
       "fearGreed": 27,
       "macroOk": true,
       "amdBias": "bearish",
       "amdContradicts": false,
-      "entry": 62928.05,
-      "stop": 62922.16284999999,
-      "tp1": 62922.16284999999,
-      "tp2": 62919.21927499999,
-      "tp3": 62907.44497499997,
-      "price": 62875.5,
+      "entry": null,
+      "stop": null,
+      "tp1": null,
+      "tp2": null,
+      "tp3": null,
+      "price": 62697.8,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -262,9 +262,9 @@
         "htfAligned": true,
         "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": true,
-        "mssConfirmed": true,
-        "cleanRunway": true
+        "sweepConfirmed": false,
+        "mssConfirmed": false,
+        "cleanRunway": null
       }
     },
     "ETHUSDT": {
@@ -302,7 +302,7 @@
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": true,
-      "funding": -0.0728514653833309,
+      "funding": -0.08528533032499999,
       "fearGreed": 27,
       "macroOk": true,
       "amdBias": "bullish",
@@ -312,7 +312,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 72.84,
+      "price": 71.66,
       "htf": {
         "aligned": true,
         "bias": "bear",
