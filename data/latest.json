@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-07-31T23:47:06.804Z",
+  "generatedAtUTC": "2026-08-01T01:20:38.560Z",
   "open": [],
   "recentClosed": [
     {
@@ -228,26 +228,26 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 4,
+      "score": 1,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
-      "killZoneName": null,
-      "killZoneActive": false,
+      "killZoneName": "Asian Range",
+      "killZoneActive": true,
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": false,
-      "funding": 33.51620528701457,
-      "fearGreed": 25,
+      "funding": 26.157459086089567,
+      "fearGreed": 27,
       "macroOk": true,
       "amdBias": "undetermined",
       "amdContradicts": false,
-      "entry": 62899.5,
-      "stop": 62922.15458999999,
-      "tp1": 62876.84541000001,
-      "tp2": 62865.51811500001,
-      "tp3": 62820.20893500003,
-      "price": 62863.7,
+      "entry": null,
+      "stop": null,
+      "tp1": null,
+      "tp2": null,
+      "tp3": null,
+      "price": 62893.4,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -256,15 +256,15 @@
         "h4": "bear"
       },
       "dailyH4Aligned": true,
-      "pdh": 65078.5,
-      "pdl": 63536.5,
+      "pdh": 65369.8,
+      "pdl": 62344,
       "checklist": {
         "htfAligned": true,
         "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": true,
-        "mssConfirmed": true,
-        "cleanRunway": true
+        "sweepConfirmed": false,
+        "mssConfirmed": false,
+        "cleanRunway": null
       }
     },
     "ETHUSDT": {
@@ -297,13 +297,13 @@
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
-      "killZoneName": null,
-      "killZoneActive": false,
+      "killZoneName": "Asian Range",
+      "killZoneActive": true,
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": false,
-      "funding": -0.2248967933333358,
-      "fearGreed": 25,
+      "funding": -0.1521225352708309,
+      "fearGreed": 27,
       "macroOk": true,
       "amdBias": "undetermined",
       "amdContradicts": false,
@@ -312,7 +312,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 72.79,
+      "price": 73.01,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -321,8 +321,8 @@
         "h4": "bear"
       },
       "dailyH4Aligned": true,
-      "pdh": 74.9,
-      "pdl": 73.05,
+      "pdh": 75.23,
+      "pdl": 72.5,
       "checklist": {
         "htfAligned": true,
         "inTimingWindow": false,
