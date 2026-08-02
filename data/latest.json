@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-02T09:28:08.063Z",
+  "generatedAtUTC": "2026-08-02T11:04:30.887Z",
   "open": [],
   "recentClosed": [
     {
@@ -228,26 +228,26 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 5,
+      "score": 2,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
-      "killZoneName": "London KZ",
-      "killZoneActive": true,
+      "killZoneName": null,
+      "killZoneActive": false,
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": false,
-      "funding": 38.46620395239373,
+      "funding": 43.4392927076854,
       "fearGreed": 27,
       "macroOk": true,
       "amdBias": "undetermined",
       "amdContradicts": false,
-      "entry": 63239.15,
-      "stop": 63234.032790000005,
-      "tp1": 63234.032790000005,
-      "tp2": 63231.47418500001,
-      "tp3": 63221.23976500001,
-      "price": 63189.7,
+      "entry": null,
+      "stop": null,
+      "tp1": null,
+      "tp2": null,
+      "tp3": null,
+      "price": 63109.9,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -260,11 +260,11 @@
       "pdl": 62200.5,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": true,
+        "inTimingWindow": false,
         "correctZone": false,
         "sweepConfirmed": true,
-        "mssConfirmed": true,
-        "cleanRunway": true
+        "mssConfirmed": false,
+        "cleanRunway": null
       }
     },
     "ETHUSDT": {
@@ -293,16 +293,16 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 2,
+      "score": 1,
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
-      "killZoneName": "London KZ",
-      "killZoneActive": true,
+      "killZoneName": null,
+      "killZoneActive": false,
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": true,
-      "funding": 0.0540302569333309,
+      "funding": 0.0166592525000024,
       "fearGreed": 27,
       "macroOk": true,
       "amdBias": "bearish",
@@ -312,7 +312,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 73.27,
+      "price": 73.21,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -325,7 +325,7 @@
       "pdl": 70.54,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": true,
+        "inTimingWindow": false,
         "correctZone": false,
         "sweepConfirmed": false,
         "mssConfirmed": false,
