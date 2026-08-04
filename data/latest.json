@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-03T23:55:26.550Z",
+  "generatedAtUTC": "2026-08-04T03:25:21.771Z",
   "open": [],
   "recentClosed": [
     {
@@ -228,42 +228,23 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 2,
-      "direction": "short",
-      "zone": "equilibrium",
-      "setupType": "Type A",
-      "killZoneName": null,
-      "killZoneActive": false,
-      "newsPhase": "clear",
-      "newsEvent": null,
-      "fundingOk": false,
-      "funding": -1.9531507676854516,
-      "fearGreed": 28,
-      "macroOk": true,
-      "amdBias": "bullish",
-      "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 63436.1,
+      "score": 0,
+      "reason": "HTF not aligned",
       "htf": {
-        "aligned": true,
-        "bias": "bear",
+        "aligned": false,
+        "bias": "range",
         "weekly": "bear",
         "daily": "bear",
-        "h4": "bear"
+        "h4": "range"
       },
-      "dailyH4Aligned": true,
-      "pdh": 63712.1,
-      "pdl": 62740.2,
+      "dailyH4Aligned": false,
+      "setupType": null,
       "checklist": {
-        "htfAligned": true,
-        "inTimingWindow": false,
-        "correctZone": false,
-        "sweepConfirmed": true,
-        "mssConfirmed": false,
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
         "cleanRunway": null
       }
     },
@@ -276,7 +257,7 @@
         "aligned": false,
         "bias": "range",
         "weekly": "bear",
-        "daily": "bull",
+        "daily": "range",
         "h4": "bear"
       },
       "dailyH4Aligned": false,
