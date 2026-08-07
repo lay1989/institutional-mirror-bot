@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-07T19:36:03.286Z",
+  "generatedAtUTC": "2026-08-07T20:21:46.357Z",
   "open": [],
   "recentClosed": [
     {
@@ -274,42 +274,23 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 1,
-      "direction": "short",
-      "zone": "equilibrium",
-      "setupType": "Type A",
-      "killZoneName": null,
-      "killZoneActive": false,
-      "newsPhase": "clear",
-      "newsEvent": null,
-      "fundingOk": false,
-      "funding": 0.1061406187875,
-      "fearGreed": 29,
-      "macroOk": true,
-      "amdBias": "undetermined",
-      "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 73.8,
+      "score": 0,
+      "reason": "HTF not aligned",
       "htf": {
-        "aligned": true,
-        "bias": "bear",
+        "aligned": false,
+        "bias": "range",
         "weekly": "bear",
         "daily": "bear",
-        "h4": "bear"
+        "h4": "range"
       },
-      "dailyH4Aligned": true,
-      "pdh": 74.26,
-      "pdl": 72.29,
+      "dailyH4Aligned": false,
+      "setupType": null,
       "checklist": {
-        "htfAligned": true,
-        "inTimingWindow": false,
-        "correctZone": false,
-        "sweepConfirmed": false,
-        "mssConfirmed": false,
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
         "cleanRunway": null
       }
     }
