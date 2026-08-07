@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-07T17:32:54.375Z",
+  "generatedAtUTC": "2026-08-07T18:29:40.714Z",
   "open": [],
   "recentClosed": [
     {
@@ -274,7 +274,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 1,
+      "score": 2,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
@@ -282,8 +282,8 @@
       "killZoneActive": false,
       "newsPhase": "clear",
       "newsEvent": null,
-      "fundingOk": false,
-      "funding": 0.107897979925,
+      "fundingOk": true,
+      "funding": 0.054207334749997595,
       "fearGreed": 29,
       "macroOk": true,
       "amdBias": "undetermined",
@@ -293,7 +293,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 73.2,
+      "price": 73.45,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -308,7 +308,7 @@
         "htfAligned": true,
         "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": false,
+        "sweepConfirmed": true,
         "mssConfirmed": false,
         "cleanRunway": null
       }
