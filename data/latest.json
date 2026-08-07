@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-07T03:38:19.737Z",
+  "generatedAtUTC": "2026-08-07T05:24:24.645Z",
   "open": [],
   "recentClosed": [
     {
@@ -278,12 +278,12 @@
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
-      "killZoneName": "Asian Range",
-      "killZoneActive": true,
+      "killZoneName": null,
+      "killZoneActive": false,
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": true,
-      "funding": 0.0729201482666691,
+      "funding": 0.0312262632958309,
       "fearGreed": 29,
       "macroOk": true,
       "amdBias": "undetermined",
@@ -293,7 +293,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 72.64,
+      "price": 72.57,
       "htf": {
         "aligned": true,
         "bias": "bear",
