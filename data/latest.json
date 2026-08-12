@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-12T14:47:21.586Z",
+  "generatedAtUTC": "2026-08-12T15:45:14.696Z",
   "open": [],
   "recentClosed": [
     {
@@ -232,12 +232,12 @@
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
-      "killZoneName": "New York KZ",
+      "killZoneName": "Silver Bullet",
       "killZoneActive": true,
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": false,
-      "funding": -9.60609998955,
+      "funding": 74.64901232502295,
       "fearGreed": 27,
       "macroOk": true,
       "amdBias": "bearish",
@@ -247,7 +247,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 63569.1,
+      "price": 63453.6,
       "htf": {
         "aligned": true,
         "bias": "bear",
