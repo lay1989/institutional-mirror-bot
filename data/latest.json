@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-12T15:45:14.696Z",
+  "generatedAtUTC": "2026-08-12T16:41:49.670Z",
   "open": [],
   "recentClosed": [
     {
@@ -228,16 +228,16 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 2,
+      "score": 1,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
-      "killZoneName": "Silver Bullet",
-      "killZoneActive": true,
+      "killZoneName": null,
+      "killZoneActive": false,
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": false,
-      "funding": 74.64901232502295,
+      "funding": 121.92404166652295,
       "fearGreed": 27,
       "macroOk": true,
       "amdBias": "bearish",
@@ -247,7 +247,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 63453.6,
+      "price": 63450,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -260,7 +260,7 @@
       "pdl": 63137.2,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": true,
+        "inTimingWindow": false,
         "correctZone": false,
         "sweepConfirmed": false,
         "mssConfirmed": false,
