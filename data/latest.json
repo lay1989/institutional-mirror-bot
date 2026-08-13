@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-13T14:44:12.784Z",
+  "generatedAtUTC": "2026-08-13T15:44:13.934Z",
   "open": [],
   "recentClosed": [
     {
@@ -228,26 +228,26 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 2,
+      "score": 5,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
-      "killZoneName": "New York KZ",
+      "killZoneName": "Silver Bullet",
       "killZoneActive": true,
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": false,
-      "funding": 55.51890922826879,
+      "funding": 55.684441363424995,
       "fearGreed": 29,
       "macroOk": true,
       "amdBias": "bearish",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 63887.5,
+      "entry": 63724.649999999994,
+      "stop": 63754.933489999996,
+      "tp1": 63694.36650999999,
+      "tp2": 63679.22476499999,
+      "tp3": 63618.65778499999,
+      "price": 63690.7,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -262,9 +262,9 @@
         "htfAligned": true,
         "inTimingWindow": true,
         "correctZone": false,
-        "sweepConfirmed": false,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "sweepConfirmed": true,
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     },
     "ETHUSDT": {
