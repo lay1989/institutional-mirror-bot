@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-13T07:05:03.113Z",
+  "generatedAtUTC": "2026-08-13T08:42:59.785Z",
   "open": [],
   "recentClosed": [
     {
@@ -236,8 +236,8 @@
       "killZoneActive": true,
       "newsPhase": "clear",
       "newsEvent": null,
-      "fundingOk": true,
-      "funding": null,
+      "fundingOk": false,
+      "funding": 11.931965577324164,
       "fearGreed": 29,
       "macroOk": true,
       "amdBias": "undetermined",
@@ -247,7 +247,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 63813.2,
+      "price": 63725,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -260,9 +260,9 @@
       "pdl": 63247.4,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": false,
+        "inTimingWindow": true,
         "correctZone": false,
-        "sweepConfirmed": true,
+        "sweepConfirmed": false,
         "mssConfirmed": false,
         "cleanRunway": null
       }
@@ -300,7 +300,7 @@
         "bias": "range",
         "weekly": "bear",
         "daily": "range",
-        "h4": "range"
+        "h4": "bull"
       },
       "dailyH4Aligned": false,
       "setupType": null,
