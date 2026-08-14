@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-14T13:35:55.917Z",
+  "generatedAtUTC": "2026-08-14T13:40:06.806Z",
   "open": [],
   "recentClosed": [
     {
@@ -230,7 +230,7 @@
       "skip": true,
       "score": 2,
       "direction": "short",
-      "zone": "equilibrium",
+      "zone": "discount",
       "setupType": "Type A",
       "killZoneName": "New York KZ",
       "killZoneActive": true,
@@ -247,7 +247,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 62657.7,
+      "price": 62554.9,
       "htf": {
         "aligned": true,
         "bias": "bear",
