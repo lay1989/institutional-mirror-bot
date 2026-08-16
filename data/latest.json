@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-16T21:55:51.306Z",
+  "generatedAtUTC": "2026-08-16T22:01:39.278Z",
   "open": [],
   "recentClosed": [
     {
@@ -237,7 +237,7 @@
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": false,
-      "funding": -55.93730664509376,
+      "funding": -53.9206482934396,
       "fearGreed": 34,
       "macroOk": true,
       "amdBias": "bullish",
@@ -247,7 +247,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 62897.8,
+      "price": 62775.2,
       "htf": {
         "aligned": true,
         "bias": "bear",
