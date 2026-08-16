@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-16T10:51:01.155Z",
+  "generatedAtUTC": "2026-08-16T10:55:51.703Z",
   "open": [],
   "recentClosed": [
     {
@@ -247,7 +247,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 62924.9,
+      "price": 62925,
       "htf": {
         "aligned": true,
         "bias": "bear",
