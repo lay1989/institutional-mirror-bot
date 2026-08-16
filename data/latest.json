@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-16T00:55:48.558Z",
+  "generatedAtUTC": "2026-08-16T01:01:24.510Z",
   "open": [],
   "recentClosed": [
     {
@@ -237,7 +237,7 @@
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": false,
-      "funding": -21.20693748755623,
+      "funding": -12.0557599135604,
       "fearGreed": 34,
       "macroOk": true,
       "amdBias": "undetermined",
@@ -247,7 +247,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 63001.1,
+      "price": 63001.9,
       "htf": {
         "aligned": true,
         "bias": "bear",
