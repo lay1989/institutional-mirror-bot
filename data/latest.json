@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-16T20:57:36.502Z",
+  "generatedAtUTC": "2026-08-16T21:01:30.370Z",
   "open": [],
   "recentClosed": [
     {
@@ -228,7 +228,7 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 2,
+      "score": 1,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
@@ -237,7 +237,7 @@
       "newsPhase": "clear",
       "newsEvent": null,
       "fundingOk": false,
-      "funding": -15.900979811881232,
+      "funding": -55.93730664509376,
       "fearGreed": 34,
       "macroOk": true,
       "amdBias": "bullish",
@@ -262,7 +262,7 @@
         "htfAligned": true,
         "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": true,
+        "sweepConfirmed": false,
         "mssConfirmed": false,
         "cleanRunway": null
       }
