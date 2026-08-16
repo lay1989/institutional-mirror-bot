@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-16T05:16:00.077Z",
+  "generatedAtUTC": "2026-08-16T05:19:04.151Z",
   "open": [],
   "recentClosed": [
     {
@@ -228,7 +228,7 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 1,
+      "score": 4,
       "direction": "short",
       "zone": "equilibrium",
       "setupType": "Type A",
@@ -242,12 +242,12 @@
       "macroOk": true,
       "amdBias": "undetermined",
       "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 63031.2,
+      "entry": 63043.350000000006,
+      "stop": 63064.70637,
+      "tp1": 63021.99363000001,
+      "tp2": 63011.315445000015,
+      "tp3": 62968.60270500003,
+      "price": 63009.1,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -262,9 +262,9 @@
         "htfAligned": true,
         "inTimingWindow": false,
         "correctZone": false,
-        "sweepConfirmed": false,
-        "mssConfirmed": false,
-        "cleanRunway": null
+        "sweepConfirmed": true,
+        "mssConfirmed": true,
+        "cleanRunway": true
       }
     },
     "ETHUSDT": {
