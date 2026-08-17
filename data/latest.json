@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-17T03:55:53.196Z",
+  "generatedAtUTC": "2026-08-17T04:01:38.975Z",
   "open": [],
   "recentClosed": [
     {
@@ -228,42 +228,23 @@
     "BTCUSDT": {
       "symbol": "BTCUSDT",
       "skip": true,
-      "score": 1,
-      "direction": "short",
-      "zone": "equilibrium",
-      "setupType": "Type A",
-      "killZoneName": "Asian Range",
-      "killZoneActive": true,
-      "newsPhase": "clear",
-      "newsEvent": null,
-      "fundingOk": false,
-      "funding": 8.633840132685389,
-      "fearGreed": 31,
-      "macroOk": true,
-      "amdBias": "undetermined",
-      "amdContradicts": false,
-      "entry": null,
-      "stop": null,
-      "tp1": null,
-      "tp2": null,
-      "tp3": null,
-      "price": 63422.2,
+      "score": 0,
+      "reason": "HTF not aligned",
       "htf": {
-        "aligned": true,
-        "bias": "bear",
+        "aligned": false,
+        "bias": "range",
         "weekly": "bear",
         "daily": "bear",
-        "h4": "bear"
+        "h4": "range"
       },
-      "dailyH4Aligned": true,
-      "pdh": 63310,
-      "pdl": 62660,
+      "dailyH4Aligned": false,
+      "setupType": null,
       "checklist": {
-        "htfAligned": true,
-        "inTimingWindow": false,
-        "correctZone": false,
-        "sweepConfirmed": false,
-        "mssConfirmed": false,
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
         "cleanRunway": null
       }
     },
@@ -300,7 +281,7 @@
         "bias": "range",
         "weekly": "bear",
         "daily": "range",
-        "h4": "bear"
+        "h4": "range"
       },
       "dailyH4Aligned": false,
       "setupType": null,
