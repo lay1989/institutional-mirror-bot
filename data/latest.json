@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-19T08:09:34.088Z",
+  "generatedAtUTC": "2026-08-19T08:11:57.874Z",
   "open": [],
   "recentClosed": [
     {
@@ -226,9 +226,27 @@
   },
   "evaluations": {
     "BTCUSDT": {
+      "symbol": "BTCUSDT",
       "skip": true,
-      "reason": "Could not reach Sheets this run",
-      "error": "All 3 attempts failed for Sheets GET (OPEN): HTTP 404 from Sheets GET (OPEN) — <!DOCTYPE html><html lang=\"en\"><head><script nonce=\"pb2UX0kBu-lgAC1e56Yfng\">window['ppConfig'] = {productName: '26981ed0d57bbad37e728ff58134270c', deleteIsEnforced:  false , sealIsEnforced:  false , heartbeatRate:  0.5 , periodicReportingRateMillis:  60000.0 , disableAllReporting:  false };(function"
+      "score": 0,
+      "reason": "HTF not aligned",
+      "htf": {
+        "aligned": false,
+        "bias": "range",
+        "weekly": "bear",
+        "daily": "range",
+        "h4": "bull"
+      },
+      "dailyH4Aligned": false,
+      "setupType": null,
+      "checklist": {
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
+        "cleanRunway": null
+      }
     },
     "ETHUSDT": {
       "symbol": "ETHUSDT",
