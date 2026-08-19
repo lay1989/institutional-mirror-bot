@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-08-19T07:00:24.359Z",
+  "generatedAtUTC": "2026-08-19T07:04:56.117Z",
   "open": [],
   "recentClosed": [
     {
@@ -249,9 +249,27 @@
       }
     },
     "ETHUSDT": {
+      "symbol": "ETHUSDT",
       "skip": true,
-      "reason": "Could not reach Sheets this run",
-      "error": "All 3 attempts failed for Sheets GET (OPEN): HTTP 404 from Sheets GET (OPEN) — <!DOCTYPE html><html lang=\"en\"><head><script nonce=\"NYAYiy41TFLqx-TN6G-U6Q\">window['ppConfig'] = {productName: '26981ed0d57bbad37e728ff58134270c', deleteIsEnforced:  false , sealIsEnforced:  false , heartbeatRate:  0.5 , periodicReportingRateMillis:  60000.0 , disableAllReporting:  false };(function"
+      "score": 0,
+      "reason": "HTF not aligned",
+      "htf": {
+        "aligned": false,
+        "bias": "range",
+        "weekly": "bear",
+        "daily": "bull",
+        "h4": "bull"
+      },
+      "dailyH4Aligned": true,
+      "setupType": null,
+      "checklist": {
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
+        "cleanRunway": null
+      }
     },
     "SOLUSDT": {
       "symbol": "SOLUSDT",
