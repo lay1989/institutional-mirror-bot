@@ -37,7 +37,7 @@ export default function ChecklistTab({ onSetActiveTab, onSetPrefilledSetup, botD
   // Pre-execution safety (5 checklists)
   const [safetyChecks, setSafetyChecks] = useState<boolean[]>(() => {
     const val = localStorage.getItem('im_checklist_safety');
-    return val ? JSON.parse(val) : Array(5).fill(false);
+    return val ? JSON.parse(val) : Array(4).fill(false);
   });
 
   // Sync state to localStorage on changes
@@ -156,7 +156,6 @@ export default function ChecklistTab({ onSetActiveTab, onSetPrefilledSetup, botD
   const safetyLabels = [
     { label: 'Funding rate is neutral (-0.1% to +0.1%)', caption: 'Sufficient funding rate gap supports leverage bias.' },
     { label: 'No high-impact news releases within 30 min', caption: 'High-impact news event window is currently clear.' },
-    { label: 'Not a weekend (Sat 22:00 – Sun 22:00 UTC)', caption: 'Avoid low-volume spread widening on closed retail streams.' },
     { label: 'Not re-entering same setup this Kill Zone window', caption: 'Preserve psychological discipline; avoid revenge triggers.' },
     { label: 'Daily loss is currently below 3% of account', caption: 'System defense gate enforces standard capital safety.' }
   ];
@@ -305,10 +304,10 @@ export default function ChecklistTab({ onSetActiveTab, onSetPrefilledSetup, botD
                                 HTF Aligned
                               </span>
                               <span className="flex items-center gap-1">
-                                <span className={checklist?.inKillZone ? 'text-[#16C784]' : 'text-[#EA3943]'}>
-                                  {checklist?.inKillZone ? '✓' : '✗'}
+                                <span className={checklist?.inTimingWindow ? 'text-[#16C784]' : 'text-[#EA3943]'}>
+                                  {checklist?.inTimingWindow ? '✓' : '✗'}
                                 </span>
-                                In Kill Zone
+                                In Timing Window
                               </span>
                               <span className="flex items-center gap-1">
                                 <span className={checklist?.correctZone ? 'text-[#16C784]' : 'text-[#EA3943]'}>

@@ -86,11 +86,15 @@ export default function DashboardTab({ onSetActiveTab, botData }: DashboardTabPr
         if (!exists) {
           let mappedResult = 'Loss';
           const rMult = botTrade.RMultiple !== undefined ? parseFloat(botTrade.RMultiple) : 0;
-          if (rMult >= 3.0) mappedResult = 'Win-TP3';
-          else if (rMult >= 1.2) mappedResult = 'Partial-TP2';
-          else if (rMult > 0.0) mappedResult = 'Partial-TP1';
-          else if (rMult === 0.0) mappedResult = 'Breakeven';
-          else mappedResult = 'Loss';
+          if (botTrade.ExitReason) {
+            mappedResult = botTrade.ExitReason;
+          } else {
+            if (rMult >= 3.0) mappedResult = 'Win-TP3';
+            else if (rMult >= 1.2) mappedResult = 'Partial-TP2';
+            else if (rMult > 0.0) mappedResult = 'Partial-TP1';
+            else if (rMult === 0.0) mappedResult = 'Breakeven';
+            else mappedResult = 'Loss';
+          }
 
           local.push({
             id: `bot_${botTrade.ID}`,
@@ -98,7 +102,7 @@ export default function DashboardTab({ onSetActiveTab, botData }: DashboardTabPr
             pair: botTrade.Pair || 'BTC/USDT',
             killZone: botTrade.KillZone || 'Asian Range',
             direction: botTrade.Direction || 'Long',
-            setupType: botTrade.SetupType === 'Type B' ? 'Type B' : 'Type A',
+            setupType: botTrade.SetupType || 'Type A',
             rMultiple: rMult,
             result: mappedResult
           });
@@ -169,6 +173,27 @@ export default function DashboardTab({ onSetActiveTab, botData }: DashboardTabPr
     return bestKz;
   };
   const bestKz = getBestKillZone();
+
+  // Check for Portfolio Cap Status across evaluations
+  const getPortfolioCapInfo = () => {
+    if (!botData?.evaluations) return null;
+    for (const key of Object.keys(botData.evaluations)) {
+      const item = botData.evaluations[key];
+      if (item?.reason && /portfolio cap/i.test(item.reason)) {
+        const match = item.reason.match(/(\d+)\/(\d+)/);
+        const openCount = match ? match[1] : (botData.open?.length || 2);
+        const maxCount = match ? match[2] : 2;
+        return {
+          openCount,
+          maxCount,
+          reason: item.reason,
+        };
+      }
+    }
+    return null;
+  };
+
+  const portfolioCapInfo = getPortfolioCapInfo();
 
   return (
     <div className="space-y-4" id="im_dashboard_view">
@@ -452,6 +477,15 @@ export default function DashboardTab({ onSetActiveTab, botData }: DashboardTabPr
                           <td className="py-2.5 px-3 font-bold font-mono text-[#D7DCE5] flex items-center gap-1.5">
                             <span className="text-[#6B7280] text-[9px]">{isExpanded ? '▼' : '▶'}</span>
                             {trade.Pair}
+                            {trade.SetupType && (
+                              <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-[2px] ${
+                                trade.SetupType === 'News-MSS' 
+                                  ? 'bg-amber-500/15 border border-amber-500/30 text-amber-500'
+                                  : 'bg-[#22D3EE]/15 border border-[#22D3EE]/30 text-[#22D3EE]'
+                              }`}>
+                                {trade.SetupType}
+                              </span>
+                            )}
                           </td>
                           <td className="py-2.5 px-3">
                             <span className="flex items-center gap-1.5 font-mono text-[11px] text-[#22D3EE]">
@@ -484,7 +518,11 @@ export default function DashboardTab({ onSetActiveTab, botData }: DashboardTabPr
                             <td colSpan={7} className="p-0 bg-[#0A0C10]/60">
                               <div className="px-3 py-2 border-t border-b border-[#1F2430] flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[11px] font-mono text-[#6B7280]">
                                 <span className="text-[#4B5563] uppercase tracking-wider text-[10px] font-bold">Execution Targets:</span>
-                                <span>SL: <strong className="text-[#EA3943]">${trade.StopLoss}</strong></span>
+                                {trade.StructuralBELocked ? (
+                                  <span className="bg-[#16C784]/15 border border-[#16C784]/30 px-1.5 py-0.5 rounded text-[#16C784]">Stop: Structural @ <strong className="font-bold">${trade.StructuralStopLevel}</strong></span>
+                                ) : (
+                                  <span>SL: <strong className="text-[#EA3943]">${trade.StopLoss}</strong></span>
+                                )}
                                 <span>
                                   TP1: <strong className={trade.TP1Hit ? 'text-[#16C784]' : 'text-[#D7DCE5]'}>${trade.TP1}</strong> 
                                   {trade.TP1Hit && <span className="text-[#16C784] ml-0.5">✓</span>}
@@ -533,7 +571,18 @@ export default function DashboardTab({ onSetActiveTab, botData }: DashboardTabPr
                     id={`im_bot_closed_${trade.ID}`}
                   >
                     <div className="flex justify-between items-center">
-                      <span className="font-mono font-bold text-xs text-[#D7DCE5]">{trade.Pair}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono font-bold text-xs text-[#D7DCE5]">{trade.Pair}</span>
+                        {trade.SetupType && (
+                          <span className={`text-[8px] font-bold uppercase font-mono px-1 py-0.5 rounded-[2px] ${
+                            trade.SetupType === 'News-MSS' 
+                              ? 'bg-amber-500/15 border border-amber-500/30 text-amber-500'
+                              : 'bg-[#22D3EE]/15 border border-[#22D3EE]/30 text-[#22D3EE]'
+                          }`}>
+                            {trade.SetupType}
+                          </span>
+                        )}
+                      </div>
                       <span className={`text-[10.5px] font-mono font-bold
                         ${isProfit ? 'text-[#16C784]' : isLoss ? 'text-[#EA3943]' : 'text-[#6B7280]'}`}
                       >
@@ -569,6 +618,24 @@ export default function DashboardTab({ onSetActiveTab, botData }: DashboardTabPr
             </span>
           </div>
         </div>
+
+        {/* Portfolio Cap Banner */}
+        {portfolioCapInfo && (
+          <div 
+            className="mb-3.5 p-3 bg-amber-500/10 border border-amber-500/30 rounded-[2px] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-amber-400"
+            id="im_portfolio_cap_banner"
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0"></span>
+              <span className="text-xs font-mono font-bold tracking-wide text-amber-300">
+                Portfolio cap reached ({portfolioCapInfo.openCount}/{portfolioCapInfo.maxCount} positions open) — new signals paused until a position closes.
+              </span>
+            </div>
+            <span className="text-[9px] font-mono uppercase bg-amber-500/20 border border-amber-500/30 px-2 py-0.5 rounded-[2px] font-bold text-amber-300 self-start sm:self-auto shrink-0">
+              PAUSED (PORTFOLIO CAP)
+            </span>
+          </div>
+        )}
 
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -616,6 +683,8 @@ export default function DashboardTab({ onSetActiveTab, botData }: DashboardTabPr
                   reason
                 } = evalItem;
 
+                const isCapPaused = reason && /portfolio cap/i.test(reason);
+
                 return (
                   <React.Fragment key={p}>
                     <tr 
@@ -625,11 +694,29 @@ export default function DashboardTab({ onSetActiveTab, botData }: DashboardTabPr
                       <td className="py-2.5 px-3 font-bold font-mono text-[#D7DCE5] flex items-center gap-1.5">
                         <span className="text-[#6B7280] text-[9px]">{isExpanded ? '▼' : '▶'}</span>
                         {formatPairName(p)}
+                        {evalItem.setupType && (
+                          <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-[2px] ${
+                            evalItem.setupType === 'News-MSS' 
+                              ? 'bg-amber-500/15 border border-amber-500/30 text-amber-500'
+                              : 'bg-[#22D3EE]/15 border border-[#22D3EE]/30 text-[#22D3EE]'
+                          }`}>
+                            {evalItem.setupType}
+                          </span>
+                        )}
                       </td>
                       <td className="py-2.5 px-3">
                         <span className="flex items-center gap-1.5 font-mono text-[11px]">
-                          <span className={`w-1.5 h-1.5 rounded-full ${skip ? 'bg-[#6B7280]' : 'bg-[#16C784] animate-pulse'}`}></span>
-                          {skip ? 'Watching' : 'Ready'}
+                          {isCapPaused ? (
+                            <>
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                              <span className="text-amber-400 font-bold">Cap Paused</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className={`w-1.5 h-1.5 rounded-full ${skip ? 'bg-[#6B7280]' : 'bg-[#16C784] animate-pulse'}`}></span>
+                              <span className={skip ? 'text-[#6B7280]' : 'text-[#16C784]'}>{skip ? 'Watching' : 'Ready'}</span>
+                            </>
+                          )}
                         </span>
                       </td>
                       <td className="py-2.5 px-3 font-mono">{score}/6</td>
@@ -672,10 +759,10 @@ export default function DashboardTab({ onSetActiveTab, botData }: DashboardTabPr
                               HTF Aligned
                             </span>
                             <span className="flex items-center gap-1">
-                              <span className={checklist?.inKillZone ? 'text-[#16C784]' : 'text-[#EA3943]'}>
-                                {checklist?.inKillZone ? '✓' : '✗'}
+                              <span className={checklist?.inTimingWindow ? 'text-[#16C784]' : 'text-[#EA3943]'}>
+                                {checklist?.inTimingWindow ? '✓' : '✗'}
                               </span>
-                              In Kill Zone
+                              In Timing Window
                             </span>
                             <span className="flex items-center gap-1">
                               <span className={checklist?.correctZone ? 'text-[#16C784]' : 'text-[#EA3943]'}>

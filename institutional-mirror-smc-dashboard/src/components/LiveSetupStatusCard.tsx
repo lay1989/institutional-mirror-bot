@@ -11,7 +11,7 @@ export interface HTFState {
 
 export interface EvaluationChecklist {
   htfAligned: boolean;
-  inKillZone: boolean;
+  inTimingWindow: boolean;
   correctZone: boolean;
   sweepConfirmed: boolean;
   mssConfirmed: boolean;
@@ -22,6 +22,7 @@ export interface PairEvaluation {
   skip: boolean;
   reason?: string;
   score?: number;
+  setupType?: 'Type A' | 'News-MSS';
   direction?: 'long' | 'short';
   zone?: 'discount' | 'premium' | 'equilibrium';
   killZoneName?: string | null;
@@ -171,7 +172,18 @@ export default function LiveSetupStatusCard({ pair, evaluation, disabled, disabl
         {/* Top Header: Pair name & Score / State */}
         <div className="flex items-center justify-between border-b border-[#232B3D] pb-3 mb-4">
           <div className="flex flex-col">
-            <span className="font-display font-bold text-base text-[#E7EAF0] tracking-wide">{formattedPair}</span>
+            <div className="flex items-center gap-2">
+              <span className="font-display font-bold text-base text-[#E7EAF0] tracking-wide">{formattedPair}</span>
+              {evaluation?.setupType && (
+                <span className={`text-[9px] font-bold uppercase font-mono px-1.5 py-0.5 rounded-[2px] ${
+                  evaluation.setupType === 'News-MSS' 
+                    ? 'bg-amber-500/15 border border-amber-500/30 text-amber-500'
+                    : 'bg-[#22D3EE]/15 border border-[#22D3EE]/30 text-[#22D3EE]'
+                }`}>
+                  {evaluation.setupType}
+                </span>
+              )}
+            </div>
             {direction && (
               <span className={`text-[10px] font-bold uppercase font-mono mt-0.5 tracking-wider ${direction === 'long' ? 'text-[#2DD4BF]' : 'text-[#FB7185]'}`}>
                 {direction === 'long' ? '📈 Long Setup' : '📉 Short Setup'}
@@ -235,9 +247,9 @@ export default function LiveSetupStatusCard({ pair, evaluation, disabled, disabl
                   val: checklist?.htfAligned 
                 },
                 { 
-                  label: 'In Kill Zone', 
+                  label: 'In Timing Window', 
                   caption: 'Price is trading within a high-probability liquidity window.', 
-                  val: checklist?.inKillZone 
+                  val: checklist?.inTimingWindow 
                 },
                 { 
                   label: 'Correct Zone', 

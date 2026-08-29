@@ -19,13 +19,17 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
       botData.recentClosed.forEach((botTrade: any) => {
         const exists = local.some(t => t.id === botTrade.ID || t.id === `bot_${botTrade.ID}`);
         if (!exists) {
-          let mappedResult: Trade['result'] = 'Loss';
+          let mappedResult = 'Loss';
           const rMult = botTrade.RMultiple !== undefined ? parseFloat(botTrade.RMultiple) : 0;
-          if (rMult >= 3.0) mappedResult = 'Win-TP3';
-          else if (rMult >= 1.2) mappedResult = 'Partial-TP2';
-          else if (rMult > 0.0) mappedResult = 'Partial-TP1';
-          else if (rMult === 0.0) mappedResult = 'Breakeven';
-          else mappedResult = 'Loss';
+          if (botTrade.ExitReason) {
+            mappedResult = botTrade.ExitReason;
+          } else {
+            if (rMult >= 3.0) mappedResult = 'Win-TP3';
+            else if (rMult >= 1.2) mappedResult = 'Partial-TP2';
+            else if (rMult > 0.0) mappedResult = 'Partial-TP1';
+            else if (rMult === 0.0) mappedResult = 'Breakeven';
+            else mappedResult = 'Loss';
+          }
 
           const mappedTrade: Trade = {
             id: `bot_${botTrade.ID}`,
@@ -33,7 +37,7 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
             pair: botTrade.Pair || 'BTC/USDT',
             killZone: botTrade.KillZone || 'Asian Range',
             direction: botTrade.Direction || 'Long',
-            setupType: botTrade.SetupType === 'Type B' ? 'Type B' : 'Type A',
+            setupType: botTrade.SetupType || 'Type A',
             confluenceScore: botTrade.Score !== undefined ? parseInt(botTrade.Score) : 6,
             amdBias: botTrade.AMDBias === 'Bullish NY' ? 'Bullish NY' : botTrade.AMDBias === 'Bearish NY' ? 'Bearish NY' : 'N/A',
             priceZone: botTrade.PriceZone === 'Discount' ? 'Discount' : botTrade.PriceZone === 'Premium' ? 'Premium' : 'Neutral',
@@ -1154,7 +1158,20 @@ export default function JournalTab({ prefilledSetup, onClearPrefilledSetup, sync
                               <span className="text-[9px] font-bold text-[#6B7280]">MANUAL</span>
                             )}
                           </td>
-                          <td className="py-2 px-3 font-bold text-[#D7DCE5]">{t.pair}</td>
+                          <td className="py-2 px-3 font-bold text-[#D7DCE5]">
+                            <div className="flex items-center gap-1.5">
+                              <span>{t.pair}</span>
+                              {t.setupType && (
+                                <span className={`text-[8px] font-bold uppercase font-mono px-1 py-[1px] rounded-[2px] ${
+                                  t.setupType === 'News-MSS' 
+                                    ? 'bg-amber-500/15 border border-amber-500/30 text-amber-500'
+                                    : 'bg-[#22D3EE]/15 border border-[#22D3EE]/30 text-[#22D3EE]'
+                                }`}>
+                                  {t.setupType}
+                                </span>
+                              )}
+                            </div>
+                          </td>
                           <td className="py-2 px-3">
                             <span className="text-[11px] text-[#D7DCE5]">
                               {t.killZone.replace(' Range', '').replace(' KZ', '')}
