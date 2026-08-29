@@ -4,10 +4,37 @@ import CalculatorTab from './components/CalculatorTab';
 import ChecklistTab from './components/ChecklistTab';
 import JournalTab from './components/JournalTab';
 import ReferenceTab from './components/ReferenceTab';
-import { Eye, ShieldCheck, Activity, BookOpen, Calculator, ClipboardCheck } from 'lucide-react';
+import { Eye, ShieldCheck, Activity, BookOpen, Calculator, ClipboardCheck, AlertTriangle } from 'lucide-react';
 
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzjK7wrcMSopxOHL0KC2bBTsdbF-qNYteiAcyhHj-EyLNqY2-nw9yYZUTNuJECsCUXJ/exec';
-const BOT_URL = 'https://raw.githubusercontent.com/lay1989/institutional-mirror-bot/main/data/latest.json';
+const DATA_URL_PRIMARY = 'https://raw.githubusercontent.com/lay1989/institutional-mirror-bot/main/data/latest.json';
+const DATA_URL_FALLBACK: string = ''; // Fallback data source if primary is unreachable
+
+// Helper to perform cache-busting fetch with a timeout
+const fetchWithTimeout = async (url: string, timeoutMs: number = 5000): Promise<any> => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const separator = url.includes('?') ? '&' : '?';
+    const cacheBustedUrl = `${url}${separator}t=${Date.now()}`;
+    const res = await fetch(cacheBustedUrl, {
+      signal: controller.signal,
+      cache: 'no-store',
+      headers: {
+        'Pragma': 'no-cache',
+        'Cache-Control': 'no-cache',
+      },
+    });
+    clearTimeout(timeoutId);
+    if (!res.ok) {
+      throw new Error(`HTTP error ${res.status}`);
+    }
+    return await res.json();
+  } catch (err) {
+    clearTimeout(timeoutId);
+    throw err;
+  }
+};
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>(() => {
@@ -26,19 +53,35 @@ export default function App() {
   const [botData, setBotData] = useState<any>(null);
   const [fetchFailed, setFetchFailed] = useState<boolean>(false);
   const [lastUpdatedText, setLastUpdatedText] = useState<string>('');
+  const [isDataStale, setIsDataStale] = useState<boolean>(false);
 
   const fetchBotData = async () => {
+    let data: any = null;
+    let fetchedSuccessfully = false;
+
+    // 1. Try Primary Data Source
     try {
-      const res = await fetch(BOT_URL);
-      if (!res.ok) {
-        throw new Error(`Failed to fetch: ${res.status}`);
+      data = await fetchWithTimeout(DATA_URL_PRIMARY, 5000);
+      fetchedSuccessfully = true;
+    } catch (primaryErr) {
+      console.warn('Primary bot data fetch failed or timed out:', primaryErr);
+      
+      // 2. Try Fallback Data Source if specified
+      if (DATA_URL_FALLBACK && DATA_URL_FALLBACK.trim() !== '') {
+        try {
+          data = await fetchWithTimeout(DATA_URL_FALLBACK.trim(), 5000);
+          fetchedSuccessfully = true;
+        } catch (fallbackErr) {
+          console.error('Fallback bot data fetch also failed:', fallbackErr);
+        }
       }
-      const data = await res.json();
+    }
+
+    if (fetchedSuccessfully && data) {
       setBotData(data);
       setFetchFailed(false);
       localStorage.setItem('im_last_bot_data', JSON.stringify(data));
-    } catch (err) {
-      console.error('Error fetching bot data:', err);
+    } else {
       setFetchFailed(true);
       const cached = localStorage.getItem('im_last_bot_data');
       if (cached) {
@@ -58,16 +101,32 @@ export default function App() {
   useEffect(() => {
     if (!botData || !botData.generatedAtUTC) {
       setLastUpdatedText('');
+      setIsDataStale(false);
       return;
     }
     const updateText = () => {
       const generatedTime = new Date(botData.generatedAtUTC).getTime();
       if (isNaN(generatedTime)) {
         setLastUpdatedText('');
+        setIsDataStale(false);
         return;
       }
       const diffSecs = Math.max(0, Math.floor((Date.now() - generatedTime) / 1000));
-      setLastUpdatedText(`Last updated: ${diffSecs}s ago`);
+      
+      let timeStr = '';
+      if (diffSecs < 60) {
+        timeStr = `${diffSecs}s ago`;
+      } else if (diffSecs < 3600) {
+        const mins = Math.floor(diffSecs / 60);
+        timeStr = `${mins}m ago`;
+      } else {
+        const hours = Math.floor(diffSecs / 3600);
+        timeStr = `${hours}h ago`;
+      }
+
+      setLastUpdatedText(`Last updated: ${timeStr}`);
+      // Stale if exceeds 20 minutes (1200 seconds)
+      setIsDataStale(diffSecs >= 1200);
     };
 
     updateText();
@@ -181,8 +240,21 @@ export default function App() {
                   </div>
                 )}
                 {lastUpdatedText && (
-                  <div className="text-[9px] font-mono text-[#6B7280] bg-[#12151B] px-2 py-0.5 rounded-[2px] border border-[#1F2430] shrink-0" id="im_bot_last_updated">
-                    {lastUpdatedText}
+                  <div 
+                    className={`text-[9px] font-mono px-2 py-0.5 rounded-[2px] border shrink-0 flex items-center gap-1.5 transition-colors ${
+                      isDataStale 
+                        ? 'bg-[#EA3943]/15 border-[#EA3943]/40 text-[#EA3943] font-bold shadow-[0_0_10px_rgba(234,57,67,0.15)]' 
+                        : 'bg-[#12151B] border-[#1F2430] text-[#6B7280]'
+                    }`} 
+                    id="im_bot_last_updated"
+                  >
+                    {isDataStale && <AlertTriangle className="w-3 h-3 text-[#EA3943] shrink-0 animate-pulse" />}
+                    <span>{lastUpdatedText}</span>
+                    {isDataStale && (
+                      <span className="bg-[#EA3943]/20 border border-[#EA3943]/30 px-1 py-0.2 rounded text-[8px] uppercase tracking-wider text-[#EA3943] font-extrabold">
+                        ⚠ Data may be stale
+                      </span>
+                    )}
                   </div>
                 )}
               </div>

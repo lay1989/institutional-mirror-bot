@@ -8,7 +8,7 @@ export interface Trade {
   pair: string; // BTC/USDT | ETH/USDT | SOL/USDT | Other
   killZone: string; // Asian Range | London KZ | NY KZ | Silver Bullet | Outside / Other
   direction: 'Long' | 'Short';
-  setupType: 'Type A' | 'Type B';
+  setupType: 'Type A' | 'Type B' | 'News-MSS';
   confluenceScore: number; // 1-6
   amdBias: 'Bullish NY' | 'Bearish NY' | 'N/A';
   priceZone: 'Discount' | 'Premium' | 'Neutral';
@@ -20,7 +20,7 @@ export interface Trade {
   riskPercent: number;
   positionSizeUsd: number;
   preTradeNotes: string;
-  result: 'Win-TP3' | 'Partial-TP2' | 'Partial-TP1' | 'Loss' | 'Breakeven' | 'Closed-Time-Limit';
+  result: string;
   rMultiple: number; // Positive/negative number
   whatWentRight: string;
   whatWentWrong: string;
@@ -43,8 +43,8 @@ export interface CalculatorState {
 
 export interface ChecklistState {
   confluences: boolean[]; // array of 6 booleans
-  setupType: 'Type A' | 'Type B';
-  safetyChecked: boolean[]; // array of 5 booleans
+  setupType: 'Type A' | 'Type B' | 'News-MSS';
+  safetyChecked: boolean[]; // array of 4 booleans
 }
 
 export interface KillZone {
