@@ -302,9 +302,13 @@ async function checkRiskGuards() {
   const streak = recentClosed.length === CONFIG.LOSS_STREAK_COUNT && recentClosed.every(t => parseFloat(t.RMultiple) < 0);
   const coolingDown = streak && (Date.now() - new Date(recentClosed[0].ExitTimeUTC).getTime()) < CONFIG.LOSS_STREAK_COOLDOWN_HOURS * 3600000;
 
+  const openCount = all.filter(t => t.Status === 'OPEN').length;
+  const portfolioCapHit = openCount >= CONFIG.MAX_CONCURRENT_TRADES;
+
   return {
-    blocked: todaysR >= CONFIG.DAILY_PROFIT_CAP_PCT || todaysR <= -CONFIG.DAILY_LOSS_CAP_PCT || coolingDown,
-    profitCapHit: todaysR >= CONFIG.DAILY_PROFIT_CAP_PCT, lossCapHit: todaysR <= -CONFIG.DAILY_LOSS_CAP_PCT, coolingDown, todaysR,
+    blocked: todaysR >= CONFIG.DAILY_PROFIT_CAP_PCT || todaysR <= -CONFIG.DAILY_LOSS_CAP_PCT || coolingDown || portfolioCapHit,
+    profitCapHit: todaysR >= CONFIG.DAILY_PROFIT_CAP_PCT, lossCapHit: todaysR <= -CONFIG.DAILY_LOSS_CAP_PCT,
+    coolingDown, todaysR, openCount, portfolioCapHit,
   };
 }
 
@@ -365,9 +369,11 @@ async function main() {
   }
 
   if (guards.blocked) {
-    console.log('Risk guard active — no new signals this run:', guards);
+    const why = guards.portfolioCapHit ? `portfolio cap (${guards.openCount}/${CONFIG.MAX_CONCURRENT_TRADES} open)`
+      : guards.coolingDown ? '3-loss cooldown' : guards.profitCapHit ? 'daily profit cap' : 'daily loss cap';
+    console.log(`Risk guard active (${why}) — no new signals this run:`, guards);
     const evaluations = {};
-    for (const symbol of PAIRS) evaluations[symbol] = { skip: true, reason: 'Risk guard active — see guards', guards };
+    for (const symbol of PAIRS) evaluations[symbol] = { skip: true, reason: `Risk guard active: ${why}`, guards };
     try { await writeSnapshot(evaluations); } catch (err) { console.error('writeSnapshot failed:', err.message); }
     return;
   }
