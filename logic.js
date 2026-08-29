@@ -110,6 +110,13 @@ const CONFIG = {
   LOSS_STREAK_COUNT: 3,
   LOSS_STREAK_COOLDOWN_HOURS: 24,
 
+  // Portfolio-level cap — was always part of the original risk spec
+  // ("max concurrent trades = 2") but was never actually wired in.
+  // BTC/ETH/SOL are highly correlated; without this, all 3 could
+  // fire together and turn "three independent 1% bets" into one
+  // effectively-3%-risk correlated bet.
+  MAX_CONCURRENT_TRADES: 2,
+
   // Changed from 4 — now an outer backstop only. The real exit
   // trigger is thesis invalidation (see evaluateTradeExit).
   MAX_TRADE_DURATION_HOURS: 24,
