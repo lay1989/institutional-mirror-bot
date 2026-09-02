@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-09-02T14:41:13.242Z",
+  "generatedAtUTC": "2026-09-02T14:46:07.069Z",
   "open": [],
   "recentClosed": [
     {
@@ -249,50 +249,14 @@
       }
     },
     "ETHUSDT": {
-      "symbol": "ETHUSDT",
       "skip": true,
-      "score": 0,
-      "reason": "HTF not aligned",
-      "htf": {
-        "aligned": false,
-        "bias": "range",
-        "weekly": "range",
-        "daily": "bull",
-        "h4": "range"
-      },
-      "dailyH4Aligned": false,
-      "setupType": null,
-      "checklist": {
-        "htfAligned": false,
-        "inTimingWindow": null,
-        "correctZone": null,
-        "sweepConfirmed": null,
-        "mssConfirmed": null,
-        "cleanRunway": null
-      }
+      "reason": "Evaluation failed this run",
+      "error": "Kraken OHLC ETHUSDT 1d returned error: EGeneral:Internal error"
     },
     "SOLUSDT": {
-      "symbol": "SOLUSDT",
       "skip": true,
-      "score": 0,
-      "reason": "HTF not aligned",
-      "htf": {
-        "aligned": false,
-        "bias": "range",
-        "weekly": "range",
-        "daily": "bull",
-        "h4": "range"
-      },
-      "dailyH4Aligned": false,
-      "setupType": null,
-      "checklist": {
-        "htfAligned": false,
-        "inTimingWindow": null,
-        "correctZone": null,
-        "sweepConfirmed": null,
-        "mssConfirmed": null,
-        "cleanRunway": null
-      }
+      "reason": "Evaluation failed this run",
+      "error": "Kraken OHLC SOLUSDT 1w returned error: EGeneral:Internal error"
     }
   }
 }
