@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-09-17T18:56:23.134Z",
+  "generatedAtUTC": "2026-09-17T19:02:27.381Z",
   "open": [],
   "recentClosed": [
     {
@@ -280,7 +280,7 @@
         "aligned": false,
         "bias": "range",
         "weekly": "range",
-        "daily": "bull",
+        "daily": "range",
         "h4": "range"
       },
       "dailyH4Aligned": false,
