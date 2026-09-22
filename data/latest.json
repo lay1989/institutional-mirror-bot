@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-09-22T03:19:56.892Z",
+  "generatedAtUTC": "2026-09-22T03:30:44.638Z",
   "open": [],
   "recentClosed": [
     {
@@ -272,27 +272,9 @@
       }
     },
     "SOLUSDT": {
-      "symbol": "SOLUSDT",
       "skip": true,
-      "score": 0,
-      "reason": "HTF not aligned",
-      "htf": {
-        "aligned": false,
-        "bias": "range",
-        "weekly": "range",
-        "daily": "bull",
-        "h4": "bull"
-      },
-      "dailyH4Aligned": true,
-      "setupType": null,
-      "checklist": {
-        "htfAligned": false,
-        "inTimingWindow": null,
-        "correctZone": null,
-        "sweepConfirmed": null,
-        "mssConfirmed": null,
-        "cleanRunway": null
-      }
+      "reason": "Could not reach Sheets this run",
+      "error": "All 3 attempts failed for Sheets GET (OPEN): HTTP 404 from Sheets GET (OPEN) — <!DOCTYPE html><html lang=\"en\"><head><script nonce=\"b81dK4s9dDyjpgYrfe2gXw\">window['ppConfig'] = {productName: '26981ed0d57bbad37e728ff58134270c', deleteIsEnforced:  false , sealIsEnforced:  false , heartbeatRate:  0.5 , periodicReportingRateMillis:  60000.0 , disableAllReporting:  false };(function"
     }
   }
 }
