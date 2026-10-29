@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-10-29T08:01:35.272Z",
+  "generatedAtUTC": "2026-10-29T08:06:00.895Z",
   "open": [],
   "recentClosed": [
     {
@@ -226,19 +226,73 @@
   },
   "evaluations": {
     "BTCUSDT": {
+      "symbol": "BTCUSDT",
       "skip": true,
-      "reason": "Evaluation failed this run",
-      "error": "Kraken Ticker BTCUSDT returned error: EGeneral:No data"
+      "score": 0,
+      "reason": "HTF not aligned",
+      "htf": {
+        "aligned": false,
+        "bias": "range",
+        "weekly": "range",
+        "daily": "range",
+        "h4": "bear"
+      },
+      "dailyH4Aligned": false,
+      "setupType": null,
+      "checklist": {
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
+        "cleanRunway": null
+      }
     },
     "ETHUSDT": {
+      "symbol": "ETHUSDT",
       "skip": true,
-      "reason": "Evaluation failed this run",
-      "error": "Kraken Ticker ETHUSDT returned error: EGeneral:No data"
+      "score": 0,
+      "reason": "HTF not aligned",
+      "htf": {
+        "aligned": false,
+        "bias": "range",
+        "weekly": "range",
+        "daily": "bear",
+        "h4": "bear"
+      },
+      "dailyH4Aligned": true,
+      "setupType": null,
+      "checklist": {
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
+        "cleanRunway": null
+      }
     },
     "SOLUSDT": {
+      "symbol": "SOLUSDT",
       "skip": true,
-      "reason": "Evaluation failed this run",
-      "error": "Kraken Ticker SOLUSDT returned error: EGeneral:No data"
+      "score": 0,
+      "reason": "HTF not aligned",
+      "htf": {
+        "aligned": false,
+        "bias": "range",
+        "weekly": "range",
+        "daily": "bear",
+        "h4": "bear"
+      },
+      "dailyH4Aligned": true,
+      "setupType": null,
+      "checklist": {
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
+        "cleanRunway": null
+      }
     }
   }
 }
