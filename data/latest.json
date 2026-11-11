@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-11-11T09:01:33.905Z",
+  "generatedAtUTC": "2026-11-11T09:05:54.138Z",
   "open": [],
   "recentClosed": [
     {
@@ -272,9 +272,27 @@
       }
     },
     "SOLUSDT": {
+      "symbol": "SOLUSDT",
       "skip": true,
-      "reason": "Evaluation failed this run",
-      "error": "Kraken OHLC SOLUSDT 1w returned error: EGeneral:Internal error"
+      "score": 0,
+      "reason": "HTF not aligned",
+      "htf": {
+        "aligned": false,
+        "bias": "range",
+        "weekly": "range",
+        "daily": "bear",
+        "h4": "bear"
+      },
+      "dailyH4Aligned": true,
+      "setupType": null,
+      "checklist": {
+        "htfAligned": false,
+        "inTimingWindow": null,
+        "correctZone": null,
+        "sweepConfirmed": null,
+        "mssConfirmed": null,
+        "cleanRunway": null
+      }
     }
   }
 }
