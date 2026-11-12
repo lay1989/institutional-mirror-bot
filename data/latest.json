@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-11-12T07:15:57.770Z",
+  "generatedAtUTC": "2026-11-12T07:20:59.871Z",
   "open": [],
   "recentClosed": [
     {
@@ -251,7 +251,7 @@
     "ETHUSDT": {
       "symbol": "ETHUSDT",
       "skip": true,
-      "score": 1,
+      "score": 2,
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
@@ -270,7 +270,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 2044.21,
+      "price": 2046.23,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -283,7 +283,7 @@
       "pdl": 2033.49,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": false,
+        "inTimingWindow": true,
         "correctZone": false,
         "sweepConfirmed": false,
         "mssConfirmed": false,
@@ -293,7 +293,7 @@
     "SOLUSDT": {
       "symbol": "SOLUSDT",
       "skip": true,
-      "score": 1,
+      "score": 2,
       "direction": "short",
       "zone": "discount",
       "setupType": "Type A",
@@ -312,7 +312,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 82.67,
+      "price": 82.81,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -325,7 +325,7 @@
       "pdl": 82.1,
       "checklist": {
         "htfAligned": true,
-        "inTimingWindow": false,
+        "inTimingWindow": true,
         "correctZone": false,
         "sweepConfirmed": false,
         "mssConfirmed": false,
