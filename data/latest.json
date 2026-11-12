@@ -1,5 +1,5 @@
 {
-  "generatedAtUTC": "2026-11-12T06:25:50.810Z",
+  "generatedAtUTC": "2026-11-12T06:31:17.088Z",
   "open": [],
   "recentClosed": [
     {
@@ -257,8 +257,8 @@
       "setupType": "Type A",
       "killZoneName": null,
       "killZoneActive": false,
-      "newsPhase": "clear",
-      "newsEvent": null,
+      "newsPhase": "blackout",
+      "newsEvent": "GDP m/m",
       "fundingOk": false,
       "funding": -0.4417629708249319,
       "fearGreed": 28,
@@ -270,7 +270,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 2050.42,
+      "price": 2047.17,
       "htf": {
         "aligned": true,
         "bias": "bear",
@@ -299,8 +299,8 @@
       "setupType": "Type A",
       "killZoneName": null,
       "killZoneActive": false,
-      "newsPhase": "clear",
-      "newsEvent": null,
+      "newsPhase": "blackout",
+      "newsEvent": "GDP m/m",
       "fundingOk": false,
       "funding": 0.2227463210416694,
       "fearGreed": 28,
@@ -312,7 +312,7 @@
       "tp1": null,
       "tp2": null,
       "tp3": null,
-      "price": 83.12,
+      "price": 82.9,
       "htf": {
         "aligned": true,
         "bias": "bear",
